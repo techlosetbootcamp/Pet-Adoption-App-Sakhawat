@@ -1,21 +1,109 @@
 buildscript {
+    repositories {
+        google()
+        mavenCentral()
+    }
     ext {
         buildToolsVersion = "35.0.0"
         minSdkVersion = 24
         compileSdkVersion = 35
         targetSdkVersion = 34
         ndkVersion = "26.1.10909125"
-        kotlinVersion = "1.9.24"
-    }
-    repositories {
-        google()
-        mavenCentral()
+        kotlinVersion= "1.9.24"
+    // kotlin_version = "1.8.10"
     }
     dependencies {
         classpath("com.android.tools.build:gradle")
         classpath("com.facebook.react:react-native-gradle-plugin")
         classpath("org.jetbrains.kotlin:kotlin-gradle-plugin")
+    classpath 'com.google.gms:google-services:4.4.2'
+    // classpath("org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version")
     }
+allprojects {
+    repositories {
+        google()  // Required for Google services rm -rf .gradle .idea
+
+        mavenCentral()  // Ensure this is added
+        jcenter()  // You can include this for compatibility if needed
+    }
+}
 }
 
 apply plugin: "com.facebook.react.rootproject"
+
+// buildscript {
+//     repositories {
+//         google()
+//         mavenCentral()
+//         jcenter() // Optional, only if required
+//     }
+//     dependencies {
+//     classpath("com.android.tools.build:gradle:7.0.4") // Adjust based on your Gradle version
+//     classpath("com.facebook.react:react-native-gradle-plugin")
+//     classpath("com.google.gms:google-services:4.3.15") // Only if you are using Firebase
+// }
+// }
+
+// allprojects {
+//     repositories {
+//         google()
+//         mavenCentral()
+//         jcenter() // Optional, only if required
+//     }
+// }
+
+// apply plugin: "com.android.application"
+
+// buildscript {
+//     //  ext.kotlin_version = "1.8.10" 
+//      ext {
+//         buildToolsVersion = "35.0.0"
+//         minSdkVersion = 24
+//         compileSdkVersion = 35
+//         targetSdkVersion = 34
+//         ndkVersion = "26.1.10909125"
+//        kotlin_version= "1.9.24"
+//         // kotlinVersion = "1.9.24"
+//     }
+//     repositories {
+//         google()
+//         mavenCentral()
+//         jcenter() // Optional, only if required
+//     }
+//     dependencies {
+//         classpath("com.android.tools.build:gradle") // Use the appropriate version // If using Firebase
+//         classpath("com.facebook.react:react-native-gradle-plugin")
+//      classpath("org.jetbrains.kotlin:kotlin-gradle-plugin")
+//         classpath('com.google.gms:google-services:4.4.2') // React Native plugin
+//      classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
+//     classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:1.8.0"
+//     }
+// }
+// apply plugin:"com.facebook.react.rootproject"
+
+// buildscript {
+//     ext {
+//         buildToolsVersion = "35.0.0"
+//         minSdkVersion = 24
+//         compileSdkVersion = 35
+//         targetSdkVersion = 34
+//         ndkVersion = "26.1.10909125"
+//         kotlin_version = "1.9.24"  // Keep only one Kotlin version definition
+//     }
+//     repositories {
+//         google()
+//         mavenCentral()
+//         jcenter() // Optional, only if required
+//     }
+//     dependencies {
+//         classpath("com.android.tools.build:gradle:8.1.0") // Ensure correct Android Gradle plugin version
+//         classpath("com.facebook.react:react-native-gradle-plugin")
+//         classpath("org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version") // Use the defined Kotlin version
+//         classpath("com.google.gms:google-services:4.4.2") // For Firebase and other services
+//     }
+// }
+
+// // Ensure that you are using the correct plugin for React Native
+// apply plugin: "com.android.application"
+// apply plugin: "com.facebook.react"
+
