@@ -186,7 +186,6 @@
 
 // export default Home;
 
-
 import React, { useEffect } from 'react';
 import {
   View,
@@ -197,14 +196,17 @@ import {
   Dimensions,
   FlatList,
   ActivityIndicator,
+  TouchableOpacity,
 } from 'react-native';
-import { useDispatch, useSelector } from 'react-redux'; // Import useDispatch and useSelector
+import { useAppDispatch, useAppSelector } from '../../hooks/useSelector'; // Typed hooks
 import Search from '../../components/search/Searchbar';
-import { listenToPets } from '../../redux/slices/petDonationSlice'; // Import the real-time listener
+import { fetchPets, setSelectedPet } from '../../redux/slices/petDonationSlice'; // Updated actions to fetch pets and set selected pet
+import { useNavigation } from '@react-navigation/native';
+import { NativeStackNavigationProp } from '@react-navigation/native-stack'; // Import the correct type
+import { RootStackParamList } from '../../navigations/RootStackParamList'; // Import your stack param list
 
-const { width, height } = Dimensions.get('window'); 
+const { width, height } = Dimensions.get('window');
 
-// Define the type for the pet object
 interface Pet {
   id: string;
   name: string;
@@ -214,38 +216,48 @@ interface Pet {
   location: string;
   image: string;
   type: string;
+  gender?: string;
+  description?: string;
+  weight?: number;
+  Vaccinated?: boolean;
+  userName?: string;
 }
 
 const Home = () => {
-  const dispatch = useDispatch(); // Use dispatch to trigger actions
-  const { pets, status, error } = useSelector((state: any) => state.petDonation); // Use useSelector to get pet data
+  // Correctly type the navigation prop
+  const navigation = useNavigation<NativeStackNavigationProp<RootStackParamList, 'Home'>>();
+  const dispatch = useAppDispatch();
+  const { pets, status, error } = useAppSelector((state) => state.petDonation);
 
-  console.log(pets)
+  const handleNavigateToDetails = (pet: Pet) => {
+    dispatch(setSelectedPet(pet)); // Save the selected pet to Redux
+    navigation.navigate("PetDetails", { petId: pet.id }); // Ensure correct passing of petId
+  };
+  
+
+
   useEffect(() => {
-    // Trigger the real-time listener when the component mounts
-    dispatch(listenToPets());
-
-    // Clean up listener on component unmount
-    return () => {
-      // Add unsubscribe logic here if necessary, but you don't need to do this in Redux
-    };
+    // Dispatch the action to fetch pets in real-time
+    dispatch(fetchPets());
   }, [dispatch]);
-
 
   const handleSearch = (searchText: string) => {
     console.log('Search Text:', searchText);
   };
 
   const renderPet = ({ item }: { item: Pet }) => (
-    <View style={styles.petCard}>
-      <View style={styles.petDetails}>
-        <Text style={styles.petName}>{item.name}</Text>
-        <Text style={styles.petType}>{item.type}</Text>
-        <Text style={styles.petInfo}>Age: {item.age} months</Text>
-        <Text style={styles.petInfo}>Price: ${item.amount}</Text>
+    <TouchableOpacity onPress={() => handleNavigateToDetails(item)}>
+      <View style={styles.petCard}>
+        <View style={styles.petDetails}>
+          <Text style={styles.petName}>{item.name}</Text>
+          <Text style={styles.petType}>{item.type}</Text>
+          <Text style={styles.petInfo}>Age: {item.age} months</Text>
+          <Text style={styles.petInfo}>Price: ${item.amount}</Text>
+        </View>
       </View>
-    </View>
+    </TouchableOpacity>
   );
+
 
   return (
     <KeyboardAvoidingView
@@ -271,8 +283,7 @@ const Home = () => {
           <FlatList
             data={pets}
             keyExtractor={(item) => item.id}
-            renderItem={renderPet}
-            showsVerticalScrollIndicator={true}
+            renderItem={renderPet} // Render each pet item
           />
         )}
       </View>

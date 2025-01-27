@@ -6,14 +6,15 @@ import Login from '../screens/auth/Login';
 import Home from '../screens/home/Home'; // Ensure this path is correct
 import RecoverPassword from '../screens/auth/RecoverPassword'; // Ensure this path is correct
 import SignUp from '../screens/auth/SignUp'; // Ensure this path is correct
+import PetDetails from '../screens/details/PetDetails'; // Import PetDetails here
 
-// Define the type for the stack navigator's routes
 export type RootStackParamList = {
   MainApp: undefined;
   Login: undefined;
   RecoverPassword: undefined;
   SignUp: undefined;
-  Home: undefined; // Add Home route to the type definition
+  Home: undefined;
+  PetDetails: { petId: string }; // Define `petId` as a string for the PetDetails route
 };
 
 // Create the stack navigator with the type
@@ -32,10 +33,12 @@ const AppNavigator: React.FC = () => {
         <Stack.Screen name="Login" component={Login} />
         
         {/* Home Screen */}
-        <Stack.Screen name="Home" component={Home}  />
+        <Stack.Screen name="Home" component={Home} />
 
         {/* Drawer Navigator (Main App) */}
-        <Stack.Screen name="MainApp" component={DrawerNavigator} />
+        <Stack.Screen name="MainApp">
+          {props => <DrawerNavigator {...props} onLogout={() => setIsLoggedIn(false)} />}
+        </Stack.Screen>
 
         {/* Recover Password Screen */}
         <Stack.Screen
@@ -50,6 +53,10 @@ const AppNavigator: React.FC = () => {
 
         {/* Sign-Up Screen */}
         <Stack.Screen name="SignUp" component={SignUp} />
+        
+        {/* PetDetails Screen */}
+        <Stack.Screen name="PetDetails" component={PetDetails} />
+        
       </Stack.Navigator>
     </NavigationContainer>
   );
