@@ -1,11 +1,12 @@
-import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
+import {createSlice, createAsyncThunk, PayloadAction} from '@reduxjs/toolkit';
 import auth from '@react-native-firebase/auth'; // Firebase Authentication module directly imported
-import { RootState } from '../store'; // Import RootState for typing
+import firestore from '@react-native-firebase/firestore'; // Firebase Firestore module directly imported
+import {RootState} from '../store'; // Import RootState for typing
 
 interface AuthState {
   isLoading: boolean;
   error: string | null;
-  user: { username: string; email: string | null } | null; // Make email nullable
+  user: {username: string; email: string | null} | null; // Make email nullable
 }
 
 const initialState: AuthState = {
@@ -14,56 +15,135 @@ const initialState: AuthState = {
   user: null, // Initialize user as null
 };
 
-// Async sign-up action
-export const signUpUser = createAsyncThunk(
-  'auth/signUpUser',
-  async ({ username, email, password }: { username: string; email: string; password: string }, { rejectWithValue }) => {
+// Async register action
+export const registerUser = createAsyncThunk(
+  'auth/registerUser',
+  async (
+    {
+      email,
+      password,
+      username,
+    }: {email: string; password: string; username: string},
+    {rejectWithValue},
+  ) => {
     try {
-      const userCredential = await auth().createUserWithEmailAndPassword(email, password);
-      const user = userCredential.user;
+      // Create user with email and password
+      const response = await auth().createUserWithEmailAndPassword(
+        email,
+        password,
+      );
+      const user = response?.user;
 
-      return { username, email: user.email }; // user.email can be null here, so make sure it's handled properly
+      // Update user's display name
+      await user.updateProfile({displayName: username});
+
+      // Save user details to Firestore in a "users" collection
+      await firestore().collection('users').doc(user?.uid).set({
+        username: username,
+        email: email.toLowerCase(),
+      });
+      console.log('User registered successfully!', {
+        username,
+        email: user?.email,
+      });
+
+      return {username, email: user.email}; // Return user data to be stored in state
     } catch (error: any) {
       return rejectWithValue(error.message); // Handle error
     }
-  }
+  },
 );
 
-// Async login action (previously signInUser, now renamed to loginUser)
-export const loginUser = createAsyncThunk(
-  'auth/loginUser',
-  async ({ email, password }: { email: string; password: string }, { rejectWithValue }) => {
+// Async sign-up action (used in signUpUser)
+export const signUpUser = createAsyncThunk(
+  'auth/signUpUser',
+  async (
+    {
+      username,
+      email,
+      password,
+    }: {username: string; email: string; password: string},
+    {rejectWithValue},
+  ) => {
     try {
-      const userCredential = await auth().signInWithEmailAndPassword(email, password);
+      const userCredential = await auth().createUserWithEmailAndPassword(
+        email,
+        password,
+      );
       const user = userCredential.user;
 
-      return { username: user.displayName || '', email: user.email }; // Handle email properly
+      await user.updateProfile({
+        displayName: username,
+      });
+
+      return {username, email: user.email}; // user.email can be null here, so make sure it's handled properly
     } catch (error: any) {
       return rejectWithValue(error.message); // Handle error
     }
-  }
+  },
+);
+
+// Async login action
+export const loginUser = createAsyncThunk(
+  'auth/loginUser',
+  async (
+    {email, password}: {email: string; password: string},
+    {rejectWithValue},
+  ) => {
+    try {
+      const userCredential = await auth().signInWithEmailAndPassword(
+        email,
+        password,
+      );
+      const user = userCredential.user;
+
+      return {username: user.displayName || '', email: user.email}; // Handle email properly
+    } catch (error: any) {
+      return rejectWithValue(error.message); // Handle error
+    }
+  },
 );
 
 // Async sign-out action
 export const signOutUser = createAsyncThunk(
   'auth/signOutUser',
-  async (_, { rejectWithValue }) => {
+  async (_, {rejectWithValue}) => {
     try {
       await auth().signOut();
       return null; // Return null to reset user data in the state
     } catch (error: any) {
       return rejectWithValue(error.message); // Handle error
     }
-  }
+  },
 );
 
 const authSlice = createSlice({
   name: 'auth',
   initialState,
-  reducers: {},
-  extraReducers: (builder) => {
+  reducers: {setUser: (state, action: PayloadAction<any>) => {
+    state.user = action.payload; // Update user data in the state
+  },
+  logout: (state) => {
+    state.user = null; // Clear user data on logout
+  },},
+  extraReducers: builder => {
     builder
-      .addCase(signUpUser.pending, (state) => {
+      // Register user case
+      .addCase(registerUser.pending, state => {
+        state.isLoading = true;
+        state.error = null;
+      })
+      .addCase(registerUser.fulfilled, (state, action) => {
+        state.isLoading = false;
+        state.user = action.payload;
+      })
+      .addCase(registerUser.rejected, (state, action) => {
+        state.isLoading = false;
+        state.error = action.payload as string;
+      })
+
+      // Sign-up user case
+      .addCase(signUpUser.pending, state => {
         state.isLoading = true;
         state.error = null;
       })
@@ -75,23 +155,27 @@ const authSlice = createSlice({
         state.isLoading = false;
         state.error = action.payload as string;
       })
-      .addCase(loginUser.pending, (state) => { // Update to loginUser
+
+      // Login user case
+      .addCase(loginUser.pending, state => {
         state.isLoading = true;
         state.error = null;
       })
-      .addCase(loginUser.fulfilled, (state, action) => { // Update to loginUser
+      .addCase(loginUser.fulfilled, (state, action) => {
         state.isLoading = false;
         state.user = action.payload;
       })
-      .addCase(loginUser.rejected, (state, action) => { // Update to loginUser
+      .addCase(loginUser.rejected, (state, action) => {
         state.isLoading = false;
         state.error = action.payload as string;
       })
-      .addCase(signOutUser.pending, (state) => {
+
+      // Sign-out user case
+      .addCase(signOutUser.pending, state => {
         state.isLoading = true;
         state.error = null;
       })
-      .addCase(signOutUser.fulfilled, (state) => {
+      .addCase(signOutUser.fulfilled, state => {
         state.isLoading = false;
         state.user = null; // Reset user data after sign-out
       })
@@ -104,7 +188,6 @@ const authSlice = createSlice({
 
 export const selectAuthState = (state: RootState) => state.auth;
 export default authSlice.reducer;
-
 
 // import {createSlice, createAsyncThunk} from '@reduxjs/toolkit';
 // import auth from '@react-native-firebase/auth';

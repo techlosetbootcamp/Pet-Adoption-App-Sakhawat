@@ -29,7 +29,6 @@ const Login = () => {
   const { isLoading, error, user } = useSelector((state: any) => state.auth); // Access state from authSlice
 
   // Handle login process
-  console.log('loginUser 1')
   const handleLogin = async () => {
     if (!email || !password) {
       return;

@@ -12,49 +12,14 @@ import Donate from '../screens/donate/Donate';
 import AddPet from '../screens/addpet/AddPet';
 import Message from '../screens/message/Message';
 import Search from '../screens/search/Search';
+import logout from '../screens/auth/logout';
 
 const Drawer = createDrawerNavigator();
 
 const DrawerNavigator: React.FC<{ onLogout: () => void }> = ({ onLogout }) => {
   const navigation = useNavigation<NavigationProp<RootStackParamList>>();
 
-  const handleLogout = () => {
-    const currentUser = auth().currentUser;
-
-    if (!currentUser) {
-      Alert.alert(
-        'Not Signed In',
-        'No user is currently signed in.',
-        [{ text: 'OK' }],
-        { cancelable: false }
-      );
-      return; // Exit the logout function if no user is signed in
-    }
-
-    Alert.alert(
-      'Logout',
-      'Are you sure you want to log out?',
-      [
-        { text: 'Cancel', style: 'cancel' },
-        {
-          text: 'Log out',
-          onPress: () => {
-            auth()
-              .signOut()
-              .then(() => {
-                // Trigger the logout callback passed from AppNavigator
-                onLogout();
-                console.log('User logged out');
-              })
-              .catch((error) => {
-                console.error('Logout Error:', error);
-              });
-          },
-        },
-      ],
-      { cancelable: false }
-    );
-  };
+  
 
   return (
     <Drawer.Navigator initialRouteName="Tabs">
@@ -73,20 +38,9 @@ const DrawerNavigator: React.FC<{ onLogout: () => void }> = ({ onLogout }) => {
       <Drawer.Screen name="Favorites" component={Favorites} options={{ title: 'Favorites' }} />
       <Drawer.Screen name="Message" component={Message} options={{ title: 'Message' }} />
       <Drawer.Screen name="Profile" component={Profile} options={{ title: 'Profile' }} />
+      <Drawer.Screen name="Logout" component={logout} options={{ title: 'Logout' }} />
 
-      {/* Add a custom logout button */}
-      <Drawer.Screen
-        name="Logout"
-        options={{ drawerLabel: () => null }} // Hide the default label, since we are handling it with a custom component
-      >
-        {() => (
-          <View style={styles.logoutContainer}>
-            <TouchableOpacity onPress={handleLogout} style={styles.logoutButton}>
-              <Text style={styles.logoutText}>Logout</Text>
-            </TouchableOpacity>
-          </View>
-        )}
-      </Drawer.Screen>
+      
     </Drawer.Navigator>
   );
 };
