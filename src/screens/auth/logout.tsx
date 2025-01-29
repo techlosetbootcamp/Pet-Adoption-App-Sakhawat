@@ -3,13 +3,16 @@ import React from 'react';
 import Button from '../../components/buttons/Buttons'; // Import the Button component
 import auth from '@react-native-firebase/auth'; // Firebase Auth for logging out
 import { useNavigation, CommonActions } from '@react-navigation/native'; // To navigate to the login screen
+import { useAppDispatch } from '../../hooks/useSelector';
 
 export default function Logout() {
-  const navigation = useNavigation(); // Use the navigation hook to navigate
+  const navigation = useNavigation();
+  const dispatch = useAppDispatch() // Use the navigation hook to navigate
 
   const handleLogout = async () => {
     try {
       await auth().signOut(); // Sign out the current user from Firebase
+      dispatch({ type: 'auth/logout' }); // Dispatch the logout action
       console.log('User logged out successfully.');
 
       // Navigate to the login screen after logout

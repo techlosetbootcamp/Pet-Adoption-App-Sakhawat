@@ -1,9 +1,9 @@
 import React from 'react';
-import { createDrawerNavigator } from '@react-navigation/drawer';
-import { View, TouchableOpacity, Text, StyleSheet, Alert } from 'react-native';
+import {createDrawerNavigator} from '@react-navigation/drawer';
+import {View, TouchableOpacity, Text, StyleSheet, Alert} from 'react-native';
 import auth from '@react-native-firebase/auth';
-import { useNavigation, NavigationProp } from '@react-navigation/native';
-import { RootStackParamList } from './RootStackParamList'; // Ensure this path is correct
+import {useNavigation, NavigationProp} from '@react-navigation/native';
+import {RootStackParamList} from './RootStackParamList'; // Ensure this path is correct
 import TabNavigator from './TabNavigator'; // Ensure this path is correct
 import Adopt from '../screens/atopt/Adopt';
 import Favorites from '../screens/favorites/Favorites';
@@ -16,10 +16,8 @@ import logout from '../screens/auth/logout';
 
 const Drawer = createDrawerNavigator();
 
-const DrawerNavigator: React.FC<{ onLogout: () => void }> = ({ onLogout }) => {
+const DrawerNavigator: React.FC = () => {
   const navigation = useNavigation<NavigationProp<RootStackParamList>>();
-
-  
 
   return (
     <Drawer.Navigator initialRouteName="Tabs">
@@ -31,16 +29,46 @@ const DrawerNavigator: React.FC<{ onLogout: () => void }> = ({ onLogout }) => {
           headerShadowVisible: false,
         }}
       />
-      <Drawer.Screen name="Search" component={Search} options={{ title: 'Search' }} />
-      <Drawer.Screen name="Adopt" component={Adopt} options={{ title: 'Adopt' }} />
-      <Drawer.Screen name="Donate" component={Donate} options={{ title: 'Donate' }} />
-      <Drawer.Screen name="Add Pet" component={AddPet} options={{ title: 'Add Pet' }} />
-      <Drawer.Screen name="Favorites" component={Favorites} options={{ title: 'Favorites' }} />
-      <Drawer.Screen name="Message" component={Message} options={{ title: 'Message' }} />
-      <Drawer.Screen name="Profile" component={Profile} options={{ title: 'Profile' }} />
-      <Drawer.Screen name="Logout" component={logout} options={{ title: 'Logout' }} />
-
-      
+      <Drawer.Screen
+        name="Search"
+        component={Search}
+        options={{title: 'Search'}}
+      />
+      <Drawer.Screen
+        name="Adopt"
+        component={Adopt}
+        options={{title: 'Adopt'}}
+      />
+      <Drawer.Screen
+        name="Donate"
+        component={Donate}
+        options={{title: 'Donate'}}
+      />
+      <Drawer.Screen
+        name="Add Pet"
+        component={AddPet}
+        options={{title: 'Add Pet'}}
+      />
+      <Drawer.Screen
+        name="Favorites"
+        component={Favorites}
+        options={{title: 'Favorites'}}
+      />
+      <Drawer.Screen
+        name="Message"
+        component={Message}
+        options={{title: 'Message'}}
+      />
+      <Drawer.Screen
+        name="Profile"
+        component={Profile}
+        options={{title: 'Profile'}}
+      />
+      <Drawer.Screen
+        name="Logout"
+        component={logout}
+        options={{title: 'Logout'}}
+      />
     </Drawer.Navigator>
   );
 };
