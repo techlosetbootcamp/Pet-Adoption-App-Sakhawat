@@ -17,14 +17,15 @@ import { configureStore } from '@reduxjs/toolkit';
 import authReducer from '../redux/slices/authSlice';
 import petDonationReducer from '../redux/slices/petDonationSlice';  // Import pet donation slice
 import petDetailsReducer from '../redux/slices/petDetailsSlice';  // Import pet details slice
+import userReducer from '../redux/slices/userSlice';  // Import pet details slice
 
 
 export const store = configureStore({
   reducer: {
     auth: authReducer,
     petDonation: petDonationReducer,  // Add pet donation reducer here
-    petDetails: petDetailsReducer, // Add it here
-
+    petDetails: petDetailsReducer,
+    user: userReducer // Add it here
   },
 });
 

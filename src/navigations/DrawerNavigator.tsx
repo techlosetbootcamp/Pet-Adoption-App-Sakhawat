@@ -12,7 +12,10 @@ import Donate from '../screens/donate/Donate';
 import AddPet from '../screens/addpet/AddPet';
 import Message from '../screens/message/Message';
 import Search from '../screens/search/Search';
+import UpdatePassword from '../screens/password/PasswordUpdate';
+
 import logout from '../screens/auth/logout';
+import Mydonation from '../screens/myDonation/Mydonation';
 
 const Drawer = createDrawerNavigator();
 
@@ -64,6 +67,17 @@ const DrawerNavigator: React.FC = () => {
         component={Profile}
         options={{title: 'Profile'}}
       />
+  <Drawer.Screen
+        name="Update Password"
+        component={UpdatePassword}
+        options={{title: 'Update Password'}}
+      />
+<Drawer.Screen
+        name="My Donations"
+        component={Mydonation}
+        options={{title: 'My Donations'}}
+      />
+
       <Drawer.Screen
         name="Logout"
         component={logout}

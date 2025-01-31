@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import {createNativeStackNavigator} from '@react-navigation/native-stack';
 import {NavigationContainer} from '@react-navigation/native';
 import DrawerNavigator from './DrawerNavigator'; // Ensure this path is correct
@@ -7,7 +7,8 @@ import Home from '../screens/home/Home'; // Ensure this path is correct
 import RecoverPassword from '../screens/auth/RecoverPassword'; // Ensure this path is correct
 import SignUp from '../screens/auth/SignUp'; // Ensure this path is correct
 import PetDetails from '../screens/details/PetDetails'; // Import PetDetails here
-import { useAppSelector } from '../hooks/useSelector';
+import { useAppDispatch, useAppSelector } from '../hooks/useSelector';
+import { fetchCurrentUser } from '../redux/slices/authSlice';
 
 export type RootStackParamList = {
   MainApp: undefined;
@@ -22,6 +23,12 @@ export type RootStackParamList = {
 const Stack = createNativeStackNavigator<RootStackParamList>();
 
 const AppNavigator: React.FC = () => {
+  const dispatch = useAppDispatch();
+  
+  useEffect(() => {
+    dispatch(fetchCurrentUser());
+  }, [dispatch]);
+
   const {user} = useAppSelector(store => store.auth) // Manage login state here
 
   return (
@@ -30,6 +37,7 @@ const AppNavigator: React.FC = () => {
         {user?.email ? (
           <>
             <Stack.Screen name="MainApp" component={DrawerNavigator} />
+            <Stack.Screen name="PetDetails" component={PetDetails} />
           </>
         ) : (
           <>

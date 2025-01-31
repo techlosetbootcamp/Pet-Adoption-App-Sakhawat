@@ -1,33 +1,61 @@
-import { createSlice, PayloadAction } from '@reduxjs/toolkit';
+import { createSlice, PayloadAction, createAsyncThunk } from '@reduxjs/toolkit';
+import { launchImageLibrary } from 'react-native-image-picker';
+
+interface User {
+  username: string;
+  email: string;
+  photoURL: string | null;
+  password?: string; // Add the password property
+}
 
 interface UserState {
-  name: string;
-  email: string;
-  loggedIn: boolean;
+  user: User | null;
 }
 
 const initialState: UserState = {
-  name: '',
-  email: '',
-  loggedIn: false,
+  user: null,
 };
+export const selectPhoto = createAsyncThunk(
+  'user/selectPhoto',
+  async (_, { rejectWithValue }) => {
+    try {
+      const result = await launchImageLibrary({ mediaType: 'photo' });
+      if (result.assets && result.assets.length > 0) {
+        return result.assets[0].uri; // Return the selected image URI
+      } else {
+        throw new Error('No image selected');
+      }
+    } catch (error: any) {
+      return rejectWithValue(error.message || 'Failed to select image.');
+    }
+  }
+);
+
 
 const userSlice = createSlice({
   name: 'user',
   initialState,
   reducers: {
-    login: (state, action: PayloadAction<{ name: string; email: string }>) => {
-      state.name = action.payload.name;
-      state.email = action.payload.email;
-      state.loggedIn = true;
+    
+    // Sets the entire user object (e.g., when logging in)
+    setUser: (state, action: PayloadAction<User | null>) => {
+      state.user = action.payload;
     },
-    logout: (state) => {
-      state.name = '';
-      state.email = '';
-      state.loggedIn = false;
+
+    // Updates specific user fields dynamically
+    updateUser: (state, action: PayloadAction<Partial<User>>) => {
+      if (state.user) {
+        state.user = { ...state.user, ...action.payload };
+      }
+    },
+
+    updateUserPassword: (state: UserState, action: PayloadAction<string>) => {
+      if (state.user) {
+        state.user.password = action.payload; // Update password in store (or any other user-related updates)
+      }
     },
   },
 });
 
-export const { login, logout } = userSlice.actions;
+export const { setUser, updateUser,updateUserPassword } = userSlice.actions;
 export default userSlice.reducer;

@@ -15,6 +15,21 @@ const initialState: AuthState = {
   user: null,
 };
 
+export const fetchCurrentUser = createAsyncThunk(
+  'auth/fetchCurrentUser',
+  async (_, { rejectWithValue }) => {
+    try {
+      const user = auth().currentUser;
+      if (user) {
+        return { username: user.displayName || '', email: user.email };
+      }
+      return null;
+    } catch (error: any) {
+      return rejectWithValue(error?.message || 'Failed to fetch current user.');
+    }
+  }
+);
+
 // Async register action
 export const registerUser = createAsyncThunk(
   'auth/registerUser',
@@ -82,11 +97,29 @@ export const loginUser = createAsyncThunk(
   'auth/loginUser',
   async ({ email, password }: { email: string; password: string }, { rejectWithValue }) => {
     try {
+      // Sign in the user with Firebase Authentication
       const userCredential = await auth().signInWithEmailAndPassword(email, password);
       const user = userCredential.user;
 
-      return { username: user.displayName || '', email: user.email };
+      // Store the user data in Firestore under the 'users' collection
+      const userId = user.uid; // Get user UID
+      await firestore()
+        .collection('users') // Access the 'users' collection
+        .doc(userId) // Use the user UID as the document ID
+        .set({
+          username: user.displayName || '', // Store the display name (if available)
+          email: user.email || '', // Store the email address
+          photoURL: user.photoURL || '', // Store the profile photo URL (if available)
+        }, { merge: true }); // Merge if the document already exists
+
+      // Return the user data for the Redux state
+      return {
+        username: user.displayName || '',
+        email: user.email || '',
+        photoURL: user.photoURL || '',
+      };
     } catch (error: any) {
+      // Return the error message in case of failure
       return rejectWithValue(error?.message || 'Login failed.');
     }
   }
@@ -165,9 +198,22 @@ const authSlice = createSlice({
       .addCase(signOutUser.rejected, (state, action) => {
         state.isLoading = false;
         state.error = action.payload as string;
+      })
+      .addCase(fetchCurrentUser.pending, (state) => {
+        state.isLoading = true;
+        state.error = null;
+      })
+      .addCase(fetchCurrentUser.fulfilled, (state, action) => {
+        state.isLoading = false;
+        state.user = action.payload;
+      })
+      .addCase(fetchCurrentUser.rejected, (state, action) => {
+        state.isLoading = false;
+        state.error = action.payload as string;
       });
+  }
   },
-});
+);
 
 export const selectAuthState = (state: RootState) => state.auth;
 export default authSlice.reducer;

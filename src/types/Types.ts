@@ -11,3 +11,13 @@ export interface PetData {
     image: string | null;
     date: Date;
   }
+  export type fireError = {
+    response?: {
+      data: string;
+    };
+    message: string;
+  };
+  export type ProfileState = {
+    status: 'idle' | 'loading' | 'succeeded' | 'failed';
+    error: string | null;
+  };
