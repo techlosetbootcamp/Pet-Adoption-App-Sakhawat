@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, {useState, useEffect} from 'react';
 import {
   View,
   Text,
@@ -18,13 +18,13 @@ import firestore from '@react-native-firebase/firestore';
 import Input from '../../components/input/Input';
 import Button from '../../components/buttons/Buttons';
 import {launchImageLibrary} from 'react-native-image-picker'; // Import Image Picker
-
 interface RootState {
   auth: {
     user: {
       photoURL: string;
       username: string;
       email: string;
+      uid: string;
     } | null;
   };
 }
@@ -33,7 +33,34 @@ export default function Profile() {
   const dispatch = useDispatch();
   const user = useSelector((state: RootState) => state.auth.user);
   const [username, setUsername] = useState(user?.username || '');
-  const [photoURL, setPhotoURL] = useState(user?.photoURL || ''); // State for photo URL
+  const [photoURL, setPhotoURL] = useState(user?.photoURL || '');
+
+  // Sync state with Redux whenever user updates
+
+console.log('user => ', user)
+  useEffect(() => {
+    setUsername(user?.username || '');
+    setPhotoURL(user?.photoURL || '');
+  }, [user]);
+
+  // Real-time Firestore listener
+  useEffect(() => {
+    if (user?.uid) {
+      const unsubscribe = firestore()
+        .collection('users')
+        .doc(user.uid)
+        .onSnapshot((doc) => {
+          if (doc.exists) {
+            const updatedUser = doc.data();
+            if (updatedUser) {
+              dispatch(updateUser(updatedUser));
+            }
+          }
+        });
+
+      return () => unsubscribe();
+    }
+  }, [user?.uid, dispatch]);
 
   if (!user) {
     return (
@@ -44,26 +71,22 @@ export default function Profile() {
   }
 
   const handleUpdateProfile = async () => {
-    const userId = auth().currentUser?.uid;
-
-    if (userId) {
+    const currentUser = auth().currentUser;
+    if (currentUser) {
       try {
-        // 1. Update Firebase Authentication username (optional)
-        await auth().currentUser?.updateProfile({
+        // 1. Update Firebase Auth
+        await currentUser.updateProfile({
           displayName: username,
-          photoURL, // Update photo URL in Firebase Auth
+          photoURL,
         });
 
-        // 2. Update Firestore document with the new username and photo URL
-        await firestore()
-          .collection('users')
-          .doc(userId)
-          .update({
-            username,
-            photoURL, // Update photo URL in Firestore
-          });
+        // 2. Update Firestore
+        await firestore().collection('users').doc(currentUser.uid).update({
+          username,
+          photoURL,
+        });
 
-        // Dispatch action to update Redux state
+        // 3. Dispatch Redux action
         dispatch(updateUser({ username, photoURL }));
 
         console.log('Profile updated successfully!');
@@ -80,25 +103,18 @@ export default function Profile() {
       if (response.didCancel) {
         console.log('User cancelled image picker');
       } else if (response.errorMessage) {
-        console.error('Image picker error: ', response.errorMessage);
+        console.error('Image picker error:', response.errorMessage);
       } else {
         if (response.assets && response.assets.length > 0) {
-          const source = response.assets[0].uri; // Get the image URI
+          const source = response.assets[0].uri;
           if (source) {
-            setPhotoURL(source); // Update photo URL in the local state
-          } else {
-            console.error('Image URI is undefined');
+            setPhotoURL(source);
           }
-        } else {
-          console.error('No assets found in the response');
         }
       }
     });
   };
-
-  console.log(user.photoURL)
-
-  return (
+    return (
     <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
       <KeyboardAvoidingView
         behavior={Platform.OS === 'ios' ? 'padding' : 'height'}

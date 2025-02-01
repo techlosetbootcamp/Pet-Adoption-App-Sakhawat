@@ -99,24 +99,26 @@ export const loginUser = createAsyncThunk(
     try {
       // Sign in the user with Firebase Authentication
       const userCredential = await auth().signInWithEmailAndPassword(email, password);
-      const user = userCredential.user;
-
-      // Store the user data in Firestore under the 'users' collection
-      const userId = user.uid; // Get user UID
-      await firestore()
+      
+      const userId = userCredential.user.uid; // Get user UID from the userCredential
+      
+      // Fetch additional user data from Firestore
+      const userDoc = await firestore()
         .collection('users') // Access the 'users' collection
         .doc(userId) // Use the user UID as the document ID
-        .set({
-          username: user.displayName || '', // Store the display name (if available)
-          email: user.email || '', // Store the email address
-          photoURL: user.photoURL || '', // Store the profile photo URL (if available)
-        }, { merge: true }); // Merge if the document already exists
+        .get();
+      
+      // Check if the user document exists
+      if (!userDoc.exists) {
+        throw new Error('User data not found');
+      }
 
       // Return the user data for the Redux state
       return {
-        username: user.displayName || '',
-        email: user.email || '',
-        photoURL: user.photoURL || '',
+        uid: userCredential.user.uid, // UID for reference
+        username: userDoc.data()?.username || '', // Get displayName if available
+        email: userCredential.user.email || '', // Use the email from userCredential
+        photoURL: userCredential.user.photoURL || '', // Use the photoURL from userCredential
       };
     } catch (error: any) {
       // Return the error message in case of failure
@@ -124,7 +126,6 @@ export const loginUser = createAsyncThunk(
     }
   }
 );
-
 // Async sign-out action
 export const signOutUser = createAsyncThunk('auth/signOutUser', async (_, { rejectWithValue }) => {
   try {

@@ -5,6 +5,8 @@ export type RootStackParamList = {
   SignUp: undefined;
   Home: undefined;
   PetDetails: { petId?: string };
+  MyPetDetails: { petId: string };
+  MyDonations: undefined;
   
 };
 

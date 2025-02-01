@@ -9,6 +9,7 @@ import SignUp from '../screens/auth/SignUp'; // Ensure this path is correct
 import PetDetails from '../screens/details/PetDetails'; // Import PetDetails here
 import { useAppDispatch, useAppSelector } from '../hooks/useSelector';
 import { fetchCurrentUser } from '../redux/slices/authSlice';
+import MyPetDetails from '../screens/details/MyPetDetails';
 
 export type RootStackParamList = {
   MainApp: undefined;
@@ -16,7 +17,9 @@ export type RootStackParamList = {
   RecoverPassword: undefined;
   SignUp: undefined;
   Home: undefined;
-  PetDetails: {petId: string}; // Define `petId` as a string for the PetDetails route
+  PetDetails: {petId: string};
+  MyPetDetails: { petId: string };
+  MyDonations: undefined;
 };
 
 // Create the stack navigator with the type
@@ -38,6 +41,8 @@ const AppNavigator: React.FC = () => {
           <>
             <Stack.Screen name="MainApp" component={DrawerNavigator} />
             <Stack.Screen name="PetDetails" component={PetDetails} />
+            <Stack.Screen name="MyPetDetails" component={MyPetDetails} />
+
           </>
         ) : (
           <>
