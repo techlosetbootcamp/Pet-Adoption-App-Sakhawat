@@ -13,7 +13,6 @@ import AddPet from '../screens/addpet/AddPet';
 import Message from '../screens/message/Message';
 import Search from '../screens/search/Search';
 import UpdatePassword from '../screens/password/PasswordUpdate';
-
 import logout from '../screens/auth/logout';
 import Mydonation from '../screens/myDonation/Mydonation';
 
@@ -35,7 +34,10 @@ const DrawerNavigator: React.FC = () => {
       <Drawer.Screen
         name="Search"
         component={Search}
-        options={{title: 'Search'}}
+        options={{
+          title: 'Search',
+          headerShown: false,
+        }}
       />
       <Drawer.Screen
         name="Adopt"

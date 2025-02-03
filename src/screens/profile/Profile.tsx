@@ -81,10 +81,16 @@ console.log('user => ', user)
         });
 
         // 2. Update Firestore
-        await firestore().collection('users').doc(currentUser.uid).update({
-          username,
-          photoURL,
-        });
+        await firestore()
+        .collection('users')
+        .doc(currentUser?.uid)
+        .set(
+          {
+            username,
+            photoURL,
+          },
+          { merge: true } // Ensures it merges with existing fields
+        );
 
         // 3. Dispatch Redux action
         dispatch(updateUser({ username, photoURL }));

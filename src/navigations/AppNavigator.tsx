@@ -10,6 +10,10 @@ import PetDetails from '../screens/details/PetDetails'; // Import PetDetails her
 import { useAppDispatch, useAppSelector } from '../hooks/useSelector';
 import { fetchCurrentUser } from '../redux/slices/authSlice';
 import MyPetDetails from '../screens/details/MyPetDetails';
+import firebase from '@react-native-firebase/app';
+
+// Make sure Firebase is initialized
+
 
 export type RootStackParamList = {
   MainApp: undefined;
@@ -24,7 +28,11 @@ export type RootStackParamList = {
 
 // Create the stack navigator with the type
 const Stack = createNativeStackNavigator<RootStackParamList>();
-
+// if (!firebase.apps.length) {
+//   firebase.initializeApp();  // No need to pass config if you're using Firebase Android
+// } else {
+//   firebase.app(); // If Firebase is already initialized
+// }
 const AppNavigator: React.FC = () => {
   const dispatch = useAppDispatch();
   
