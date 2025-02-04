@@ -2,6 +2,8 @@ import { useState } from 'react';
 import { getFirestore } from 'firebase/firestore';
 import { collection, getDocs, query, where } from 'firebase/firestore';
 import firestore from '@react-native-firebase/firestore'
+import { useAppDispatch } from './useSelector';
+import { setFilter } from '../redux/slices/filterSlice';
 
 interface Pet {
   id: string;
@@ -16,7 +18,11 @@ export const useSearch = () => {
   const [results, setResults] = useState<Pet[]>([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const disptch = useAppDispatch();
 
+
+
+  
   const searchPets = async (searchText: string, category: string) => {
     setLoading(true);
     setError(null);
@@ -59,5 +65,23 @@ export const useSearch = () => {
     }
   };
 
-  return { results, loading, error, searchPets };
+  const getData = async (category_: string) => {
+    const q = firestore().collection('pets').where('type', '==', category_);
+    const querySnapshot = await q.get();
+    const pets: Pet[] = [];
+    querySnapshot.forEach((doc) => {
+      pets.push({ ...(doc.data() as Pet), id: doc.id });
+    });
+    console.log(pets);
+    return pets;
+  }
+
+  const handleClick = async (_category: string) => {
+    disptch(setFilter(_category));
+    const data = await getData(_category);
+    setResults(data);
+  }
+
+  return { results, loading, error, searchPets, handleClick };
 };
+

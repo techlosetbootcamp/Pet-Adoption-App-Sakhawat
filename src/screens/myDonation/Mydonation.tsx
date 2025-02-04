@@ -79,7 +79,7 @@ export default function MyDonations() {
 
   const handlePetPress = (id: string) => {
     console.log('Card pressed with petId:', id);  // Debugging log
-    navigation.navigate('PetDetails', { petId: id });
+    navigation.navigate('MyPetDetails', { petId: id });
   };
 
   return (

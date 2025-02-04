@@ -13,6 +13,7 @@ const filterSlice = createSlice({
   initialState,
   reducers: {
     setFilter: (state, action: PayloadAction<string>) => {
+      console.log('Setting filter:', action.payload);
       state.category = action.payload;
     },
   },

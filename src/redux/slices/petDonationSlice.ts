@@ -507,6 +507,9 @@ const petDonationSlice = createSlice({
     setSelectedPet: (state, action: PayloadAction<PetData>) => {
       state.selectedPet = action.payload;
     },
+    deletePet: (state, action: PayloadAction<string>) => {
+      state.pets = state.pets.filter(pet => pet.id !== action.payload);
+    },
     clearSelectedPet: (state) => {
       state.selectedPet = undefined;
     },
@@ -541,5 +544,5 @@ const petDonationSlice = createSlice({
   },
 });
 
-export const { setSelectedPet, clearSelectedPet } = petDonationSlice.actions;
+export const { setSelectedPet, clearSelectedPet, deletePet } = petDonationSlice.actions;
 export default petDonationSlice.reducer;
