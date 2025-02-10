@@ -10,7 +10,7 @@ import Favorites from '../screens/favorites/Favorites';
 import Profile from '../screens/profile/Profile';
 import Donate from '../screens/donate/Donate';
 import AddPet from '../screens/addpet/AddPet';
-import Message from '../screens/message/Message';
+import Request from '../screens/request/AdoptionRequest';
 import Search from '../screens/search/Search';
 import UpdatePassword from '../screens/password/PasswordUpdate';
 import logout from '../screens/auth/logout';
@@ -60,9 +60,9 @@ const DrawerNavigator: React.FC = () => {
         options={{title: 'Favorites'}}
       />
       <Drawer.Screen
-        name="Message"
-        component={Message}
-        options={{title: 'Message'}}
+        name="Request"
+        component={Request}
+        options={{title: 'Adoption Request'}}
       />
       <Drawer.Screen
         name="Profile"
