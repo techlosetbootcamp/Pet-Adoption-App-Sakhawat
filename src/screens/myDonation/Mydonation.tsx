@@ -82,6 +82,7 @@ export default function MyDonations() {
     navigation.navigate('MyPetDetails', { petId: id });
   };
 
+  
   return (
     <View style={styles.container}>
       <Text style={styles.title}>My Donations</Text>

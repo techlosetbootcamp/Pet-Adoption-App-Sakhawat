@@ -19,7 +19,7 @@ import petDonationReducer from '../redux/slices/petDonationSlice';  // Import pe
 import petDetailsReducer from '../redux/slices/petDetailsSlice';  // Import pet details slice
 import userReducer from '../redux/slices/userSlice';  // Import pet details slice
 import filterReducer from './slices/filterSlice';  // Import pet details slice
-
+import adoptedPetsReducer from './slices/adoptedPetsSlice';
 
 export const store = configureStore({
   reducer: {
@@ -27,8 +27,8 @@ export const store = configureStore({
     petDonation: petDonationReducer,  // Add pet donation reducer here
     petDetails: petDetailsReducer,
     user: userReducer, // Add it here
-    Filter: filterReducer
-
+    Filter: filterReducer,
+    adoptedPets: adoptedPetsReducer,
   },
 });
 
