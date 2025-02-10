@@ -54,7 +54,7 @@ const Home = () => {
 
   const handleSearch = (searchText: string) => {
     setQuery(searchText);
-    searchPets(searchText, selectedFilter.toLowerCase()); 
+    searchPets(searchText, selectedFilter); // Filter by selected category
   };
 
   

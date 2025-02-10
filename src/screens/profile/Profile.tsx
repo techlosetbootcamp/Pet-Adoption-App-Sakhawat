@@ -21,8 +21,8 @@ export default function Profile() {
   const [photoURL, setPhotoURL] = useState(user?.photoURL || '');
 
   useEffect(() => {
-    setUsername(user?.username || '');
-    setPhotoURL(user?.photoURL || '');
+    setUsername(user.username || '');
+    setPhotoURL(user.photoURL || '');
   }, [user]);
 
   if (!user) {
@@ -60,8 +60,8 @@ export default function Profile() {
           </TouchableOpacity>
 
           {/* Input Fields */}
-          <Input label="Username" value={user.username} editable={true} onChangeText={setUsername} />
-          <Input label="Email" value={user.email || ''} editable={false} onChangeText={() => {}} />
+          <Input label="Username" value={username} onChangeText={text => setUsername(text)} />
+          <Input label="Email" value={user.email || ''} onChangeText={() => {}} />
 
           {/* Update Profile Button */}
           <Button title="Update Profile" onPress={onUpdateProfile} />
