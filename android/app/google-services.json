@@ -14,6 +14,14 @@
       },
       "oauth_client": [
         {
+          "client_id": "666327222636-9hioesqgjlnchlu58kgkbv1cpkelln1n.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.petadoption",
+            "certificate_hash": "9c9bba664e1cbb42ca3a5fdf148e6ed5ee56bf56"
+          }
+        },
+        {
           "client_id": "666327222636-vohlklmn79m2ugvmls9h7vqtn4ugdaaa.apps.googleusercontent.com",
           "client_type": 3
         }
