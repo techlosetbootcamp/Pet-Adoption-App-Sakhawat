@@ -3,25 +3,45 @@ import auth from '@react-native-firebase/auth';
 import firestore from '@react-native-firebase/firestore';
 import { RootState } from '../store';
 
+// User Interface
+export interface User {
+  uid: string;
+  username: string;
+  email: string | null; // Allow null values
+  photoURL: string | null;
+  favorites: string[];
+}
+
+
+// Auth State Interface
 interface AuthState {
   isLoading: boolean;
   error: string | null;
-  user: { username: string; email: string | null } | null;
+  user: User | null;
 }
 
+// Initial State
 const initialState: AuthState = {
   isLoading: false,
   error: null,
   user: null,
 };
 
-export const fetchCurrentUser = createAsyncThunk(
-  'auth/fetchCurrentUser',
+// Async function to fetch user data
+export const fetchUserData = createAsyncThunk(
+  'auth/fetchUserData',
   async (_, { rejectWithValue }) => {
     try {
       const user = auth().currentUser;
       if (user) {
-        return { username: user.displayName || '', email: user.email };
+        const userDoc = await firestore().collection('users').doc(user.uid).get();
+        return {
+          uid: user.uid,
+          username: userDoc.data()?.username || '',
+          email: user.email,
+          photoURL: user.photoURL || null,
+          favorites: userDoc.data()?.favorites || [],
+        };
       }
       return null;
     } catch (error: any) {
@@ -47,11 +67,12 @@ export const registerUser = createAsyncThunk(
         await firestore().collection('users').doc(user.uid).set({
           username: username,
           email: email.toLowerCase(),
+          favorites: [],
         });
 
         console.log('User registered successfully!', { username, email: user.email });
 
-        return { username, email: user.email };
+        return { uid: user.uid, username, email: user.email, photoURL: null, favorites: [] };
       } else {
         throw new Error('User creation failed.');
       }
@@ -61,71 +82,33 @@ export const registerUser = createAsyncThunk(
   }
 );
 
-// Async sign-up action
-export const signUpUser = createAsyncThunk(
-  'auth/signUpUser',
-  async (
-    { username, email, password }: { username: string; email: string; password: string },
-    { rejectWithValue }
-  ) => {
-    try {
-      const userCredential = await auth().createUserWithEmailAndPassword(email, password);
-      const user = userCredential.user;
-
-      if (user) {
-        await user.updateProfile({ displayName: username });
-
-        await firestore().collection('users').doc(user.uid).set({
-          username: username,
-          email: email.toLowerCase(),
-        });
-
-        console.log('User registered and stored in Firestore:', { username, email: user.email });
-
-        return { username, email: user.email };
-      } else {
-        throw new Error('User sign-up failed.');
-      }
-    } catch (error: any) {
-      return rejectWithValue(error?.message || 'Sign-up failed.');
-    }
-  }
-);
-
 // Async login action
 export const loginUser = createAsyncThunk(
   'auth/loginUser',
   async ({ email, password }: { email: string; password: string }, { rejectWithValue }) => {
     try {
-      // Sign in the user with Firebase Authentication
       const userCredential = await auth().signInWithEmailAndPassword(email, password);
-      
-      const userId = userCredential.user.uid; // Get user UID from the userCredential
-      
-      // Fetch additional user data from Firestore
-      const userDoc = await firestore()
-        .collection('users') // Access the 'users' collection
-        .doc(userId) // Use the user UID as the document ID
-        .get();
-      
-      // Check if the user document exists
+      const userId = userCredential.user.uid;
+
+      const userDoc = await firestore().collection('users').doc(userId).get();
+
       if (!userDoc.exists) {
         throw new Error('User data not found');
       }
 
-      // Return the user data for the Redux state
       return {
-        uid: userCredential.user.uid, // UID for reference
-        username: userDoc.data()?.username || '', // Get displayName if available
-        email: userCredential.user.email || '', // Use the email from userCredential
-        photoURL: userCredential.user.photoURL || '', // Use the photoURL from userCredential
+        uid: userCredential.user.uid,
+        username: userDoc.data()?.username || '',
+        email: userCredential.user.email || '',
+        photoURL: userCredential.user.photoURL || '',
+        favorites: userDoc.data()?.favorites || [],
       };
     } catch (error: any) {
-      // Return the error message in case of failure
       return rejectWithValue(error?.message || 'Login failed.');
     }
   }
 );
+
 // Async sign-out action
 export const signOutUser = createAsyncThunk('auth/signOutUser', async (_, { rejectWithValue }) => {
   try {
@@ -136,12 +119,18 @@ export const signOutUser = createAsyncThunk('auth/signOutUser', async (_, { reje
   }
 });
 
+// Auth Slice
 const authSlice = createSlice({
   name: 'auth',
   initialState,
   reducers: {
-    setUser: (state, action: PayloadAction<any>) => {
+    setUser: (state, action: PayloadAction<User | null>) => {
       state.user = action.payload;
+    },
+    updateUser: (state, action: PayloadAction<Partial<User>>) => {
+      if (state.user) {
+        state.user = { ...state.user, ...action.payload };
+      }
     },
     logout: (state) => {
       state.user = null;
@@ -158,19 +147,6 @@ const authSlice = createSlice({
         state.user = action.payload;
       })
       .addCase(registerUser.rejected, (state, action) => {
-        state.isLoading = false;
-        state.error = action.payload as string;
-      })
-
-      .addCase(signUpUser.pending, (state) => {
-        state.isLoading = true;
-        state.error = null;
-      })
-      .addCase(signUpUser.fulfilled, (state, action) => {
-        state.isLoading = false;
-        state.user = action.payload;
-      })
-      .addCase(signUpUser.rejected, (state, action) => {
         state.isLoading = false;
         state.error = action.payload as string;
       })
@@ -200,24 +176,26 @@ const authSlice = createSlice({
         state.isLoading = false;
         state.error = action.payload as string;
       })
-      .addCase(fetchCurrentUser.pending, (state) => {
+
+      .addCase(fetchUserData.pending, (state) => {
         state.isLoading = true;
         state.error = null;
       })
-      .addCase(fetchCurrentUser.fulfilled, (state, action) => {
+      .addCase(fetchUserData.fulfilled, (state, action) => {
         state.isLoading = false;
         state.user = action.payload;
       })
-      .addCase(fetchCurrentUser.rejected, (state, action) => {
+      .addCase(fetchUserData.rejected, (state, action) => {
         state.isLoading = false;
         state.error = action.payload as string;
       });
-  }
   },
-);
+});
 
+export const { setUser, updateUser, logout } = authSlice.actions;
 export const selectAuthState = (state: RootState) => state.auth;
 export default authSlice.reducer;
+
 
 
 // import {createSlice, createAsyncThunk} from '@reduxjs/toolkit';

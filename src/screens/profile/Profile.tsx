@@ -14,16 +14,35 @@ import {
 import useUser from '../../hooks/useUser';
 import Input from '../../components/input/Input';
 import Button from '../../components/buttons/Buttons';
+import { fetchUserData } from '../../redux/slices/authSlice';
+import { useDispatch, useSelector } from "react-redux";
+import { AppDispatch, RootState } from '../../redux/store';
 
 export default function Profile() {
-  const { user, handleUpdateProfile, handleImageSelect } = useUser();
-  const [username, setUsername] = useState(user?.username || '');
-  const [photoURL, setPhotoURL] = useState(user?.photoURL || '');
+  const dispatch = useDispatch<AppDispatch>();
+  const user = useSelector((state: RootState) => state.auth.user);
+  const { handleUpdateProfile, handleImageSelect } = useUser();
 
+  // State to store username and photoURL
+  const [username, setUsername] = useState('');
+  const [photoURL, setPhotoURL] = useState('');
+
+  // Fetch user data when component mounts
   useEffect(() => {
-    setUsername(user.username || '');
-    setPhotoURL(user.photoURL || '');
+    dispatch(fetchUserData());
+  }, [dispatch]);
+
+  // Update username and photoURL when user data changes
+  useEffect(() => {
+    if (user) {
+      setUsername(user.username || '');
+      setPhotoURL(user.photoURL || '');
+    }
   }, [user]);
+
+  const onUpdateProfile = () => {
+    handleUpdateProfile(username, photoURL);
+  };
 
   if (!user) {
     return (
@@ -32,10 +51,6 @@ export default function Profile() {
       </View>
     );
   }
-
-  const onUpdateProfile = () => {
-    handleUpdateProfile(username, photoURL);
-  };
 
   return (
     <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
@@ -61,7 +76,7 @@ export default function Profile() {
 
           {/* Input Fields */}
           <Input label="Username" value={username} onChangeText={text => setUsername(text)} />
-          <Input label="Email" value={user.email || ''} onChangeText={() => {}} />
+          <Input label="Email" value={user.email || ''} editable={false} onChangeText={text => setUsername(text)} />
 
           {/* Update Profile Button */}
           <Button title="Update Profile" onPress={onUpdateProfile} />

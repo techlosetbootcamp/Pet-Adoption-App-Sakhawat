@@ -60,73 +60,54 @@
 // export const { setUser, updateUser,updateUserPassword } = userSlice.actions;
 // export default userSlice.reducer;
 
-import { createSlice, PayloadAction, createAsyncThunk } from '@reduxjs/toolkit';
-import { getAuth } from 'firebase/auth';
-import { getFirestore, doc, getDoc } from 'firebase/firestore';
+// import { createSlice, PayloadAction, createAsyncThunk } from '@reduxjs/toolkit';
+// import { fetchUserData } from './authSlice';
 
-export interface User {
-  uid: string; // Ensure UID is included for Firestore document retrieval
-  username: string;
-  email: string;
-  photoURL: string | null;
-  favorites: string[];
-}
-
-
-interface UserState {
-  user: User | null;
-}
-
-const initialState: UserState = {
-  user: null,
-};
-
-export const fetchUserData = createAsyncThunk(
-  'users/fetchUserData',
-  async (_, { rejectWithValue }) => {
-    try {
-      const auth = getAuth();
-      const currentUser = auth.currentUser;
-
-      if (!currentUser) {
-        throw new Error('No authenticated user found');
-      }
-
-      const firestore = getFirestore();
-      const userDoc = await getDoc(doc(firestore, 'users', currentUser.uid));
-
-      if (!userDoc.exists()) {
-        throw new Error('User document does not exist');
-      }
-
-      return { uid: currentUser.uid, ...userDoc.data() } as User;
-    } catch (error: any) {
-      return rejectWithValue(error.message || 'Failed to fetch user data.');
-    }
-  }
-);
+// export interface User {
+//   uid: string; // Ensure UID is included for Firestore document retrieval
+//   username: string;
+//   email: string;
+//   photoURL: string | null;
+//   favorites: string[];
+// }
 
 
-const userSlice = createSlice({
-  name: 'user',
-  initialState,
-  reducers: {
-    setUser: (state, action: PayloadAction<User | null>) => {
-      state.user = action.payload;
-    },
-    updateUser: (state, action: PayloadAction<Partial<User>>) => {
-      if (state.user) {
-        state.user = { ...state.user, ...action.payload };
-      }
-    },
-  },
-  extraReducers: (builder) => {
-    builder.addCase(fetchUserData.fulfilled, (state, action) => {
-      state.user = action.payload as User;
-    });
-  },
-});
+// interface UserState {
+//   user: User | null;
+// }
 
-export const { setUser, updateUser } = userSlice.actions;
+// const initialState: UserState = {
+//   user: {
+//     uid: "",
+//     username: "",
+//     email: "",
+//     photoURL: "",
+//     favorites: [],
+//   },
+// };
 
-export default userSlice.reducer;
+
+
+// const userSlice = createSlice({
+//   name: 'user',
+//   initialState,
+//   reducers: {
+//     setUser: (state, action: PayloadAction<User | null>) => {
+//       state.user = action.payload;
+//     },
+//     updateUser: (state, action: PayloadAction<Partial<User>>) => {
+//       if (state.user) {
+//         state.user = { ...state.user, ...action.payload };
+//       }
+//     },
+//   },
+//   extraReducers: (builder) => {
+//     builder.addCase(fetchUserData.fulfilled, (state, action) => {
+//       state.user = action.payload as User;
+//     });
+//   },
+// });
+
+// export const { setUser, updateUser } = userSlice.actions;
+
+// export default userSlice.reducer;

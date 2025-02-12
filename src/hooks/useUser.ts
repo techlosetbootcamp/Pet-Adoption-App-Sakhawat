@@ -1,12 +1,12 @@
 import { useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import type { AppDispatch } from '../redux/store';
-import { updateUser, setUser } from '../redux/slices/userSlice';
+import { updateUser, setUser } from '../redux/slices/authSlice';
 import { launchImageLibrary } from 'react-native-image-picker';
 import RNFS from 'react-native-fs';
 import auth from '@react-native-firebase/auth';
 import firestore from '@react-native-firebase/firestore';
-import { User } from '../redux/slices/userSlice';
+import { User } from '../redux/slices/authSlice';
 
 const useUser = () => {
   const dispatch: AppDispatch = useDispatch();

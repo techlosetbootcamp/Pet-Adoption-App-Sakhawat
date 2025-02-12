@@ -8,7 +8,7 @@ import RecoverPassword from '../screens/auth/RecoverPassword'; // Ensure this pa
 import SignUp from '../screens/auth/SignUp'; // Ensure this path is correct
 import PetDetails from '../screens/details/PetDetails'; // Import PetDetails here
 import { useAppDispatch, useAppSelector } from '../hooks/useSelector';
-import { fetchCurrentUser } from '../redux/slices/authSlice';
+import { fetchUserData } from '../redux/slices/authSlice';
 import MyPetDetails from '../screens/details/MyPetDetails';
 import firebase from '@react-native-firebase/app';
 
@@ -37,7 +37,7 @@ const AppNavigator: React.FC = () => {
   const dispatch = useAppDispatch();
   
   useEffect(() => {
-    dispatch(fetchCurrentUser());
+    dispatch(fetchUserData());
   }, [dispatch]);
 
   const {user} = useAppSelector(store => store.auth) // Manage login state here

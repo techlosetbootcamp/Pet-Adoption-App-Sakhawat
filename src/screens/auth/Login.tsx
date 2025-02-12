@@ -8,7 +8,7 @@ import { loginUser } from '../../redux/slices/authSlice'; // Import the action f
 import Input from '../../components/input/Input';
 import Buttons from '../../components/buttons/Buttons';
 import { AppDispatch } from '../../redux/store';  // Import AppDispatch from store
-
+// import { signInWithGoogle } from '../../redux/slices/authSlice';
 
 
 type RootStackParamList = {
@@ -17,6 +17,7 @@ type RootStackParamList = {
   RecoverPassword: undefined;
   SignUp: undefined;
 };
+
 
 const Login = () => {
   const navigation = useNavigation<NativeStackNavigationProp<RootStackParamList, 'Login'>>();
@@ -124,6 +125,23 @@ const Login = () => {
               fontSize: 18,
             }}
           />
+          <Buttons
+  title="Sign in with Google"
+  onPress={()=> console.log('Run...')}
+  isLoading={isLoading}
+  buttonStyle={{
+    backgroundColor: '#DB4437', // Google's color
+    width: 200,
+    marginTop: 20,
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+  }}
+  textStyle={{
+    color: '#FFF',
+    fontSize: 18,
+  }}
+/>
         </ScrollView>
       </TouchableWithoutFeedback>
     </KeyboardAvoidingView>
@@ -185,3 +203,50 @@ const styles = StyleSheet.create({
 
 export default Login;
 
+
+
+
+// //export const signInWithGoogle = createAsyncThunk(
+//   'auth/signInWithGoogle',
+//   async (_, { rejectWithValue }) => {
+//     try {
+//       await GoogleSignin.hasPlayServices({ showPlayServicesUpdateDialog: true });
+//       await GoogleSignin.signOut();
+      
+//       const signInResponse = await GoogleSignin.signIn();
+//       const idToken = signInResponse?.data?.idToken;
+      
+//       if (!idToken) {
+//         throw new Error('Google Sign-In failed: idToken is null.');
+//       }
+      
+//       const googleCredential = auth.GoogleAuthProvider.credential(idToken);
+//       const response = await auth().signInWithCredential(googleCredential);
+//       const { uid, email, displayName, photoURL } = response.user;
+      
+//       const userDocRef = firestore().collection('users').doc(uid);
+//       const userDocSnapshot = await userDocRef.get();
+      
+//       let userData: User;
+      
+//       if (userDocSnapshot.exists) {
+//         const firestoreData = userDocSnapshot.data();
+//         userData = {
+//           uid,
+//           email: email || firestoreData?.email || null,
+//           username: displayName || firestoreData?.username || null,
+//           photoURL: photoURL || firestoreData?.photoURL || null,
+//           favorites: firestoreData?.favorites || [],
+//         };
+//       } else {
+//         userData = { uid, email, username: displayName, photoURL, favorites: [] };
+//         await userDocRef.set({ ...userData, lastLogin: firestore.FieldValue.serverTimestamp() });
+//       }
+      
+//       return userData;
+//     } catch (err: any) {
+//       return rejectWithValue(err.message || 'Google Sign-In failed.');
+//     }
+//   }
+// );
+// //  
