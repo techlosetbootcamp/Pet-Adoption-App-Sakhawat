@@ -126,8 +126,6 @@ export const loginUser = createAsyncThunk(
     }
   }
 );
-
-// **Google Sign-in Authentication**
 // Async sign-out action
 export const signOutUser = createAsyncThunk('auth/signOutUser', async (_, { rejectWithValue }) => {
   try {
@@ -143,10 +141,7 @@ const authSlice = createSlice({
   initialState,
   reducers: {
     setUser: (state, action: PayloadAction<any>) => {
-      state.user = {
-        username: action.payload.username,
-        email: action.payload.email,
-      };
+      state.user = action.payload;
     },
     logout: (state) => {
       state.user = null;
@@ -186,10 +181,7 @@ const authSlice = createSlice({
       })
       .addCase(loginUser.fulfilled, (state, action) => {
         state.isLoading = false;
-        state.user = {
-          username: action.payload.username,
-          email: action.payload.email,
-        };
+        state.user = action.payload;
       })
       .addCase(loginUser.rejected, (state, action) => {
         state.isLoading = false;
@@ -219,12 +211,10 @@ const authSlice = createSlice({
       .addCase(fetchCurrentUser.rejected, (state, action) => {
         state.isLoading = false;
         state.error = action.payload as string;
-      })
-
-    
-    },
-  });
-
+      });
+  }
+  },
+);
 
 export const selectAuthState = (state: RootState) => state.auth;
 export default authSlice.reducer;
