@@ -4,12 +4,13 @@ import { useNavigation } from '@react-navigation/native';
 import { useDispatch, useSelector } from 'react-redux'; // Use Redux hooks
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import CheckBox from '@react-native-community/checkbox';
-import { loginUser } from '../../redux/slices/authSlice'; // Import the action from authSlice
+import { loginUser, onGoogleButtonPress } from '../../redux/slices/authSlice'; // Import the action from authSlice
 import Input from '../../components/input/Input';
 import Buttons from '../../components/buttons/Buttons';
 import { AppDispatch } from '../../redux/store';  // Import AppDispatch from store
 // import { signInWithGoogle } from '../../redux/slices/authSlice';
-
+import { GoogleSignin } from '@react-native-google-signin/google-signin';
+import auth from '@react-native-firebase/auth';
 
 type RootStackParamList = {
   MainApp: undefined;
@@ -17,6 +18,11 @@ type RootStackParamList = {
   RecoverPassword: undefined;
   SignUp: undefined;
 };
+
+GoogleSignin.configure({
+  webClientId: '666327222636-vohlklmn79m2ugvmls9h7vqtn4ugdaaa.apps.googleusercontent.com',
+});
+
 
 
 const Login = () => {
@@ -127,7 +133,7 @@ const Login = () => {
           />
           <Buttons
   title="Sign in with Google"
-  onPress={()=> console.log('Run...')}
+  onPress={() => onGoogleButtonPress().then(() => console.log('Signed in with Google!'))}
   isLoading={isLoading}
   buttonStyle={{
     backgroundColor: '#DB4437', // Google's color

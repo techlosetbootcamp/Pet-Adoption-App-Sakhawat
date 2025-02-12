@@ -1,20 +1,25 @@
 import { createSlice, createAsyncThunk, PayloadAction } from '@reduxjs/toolkit';
 import auth from '@react-native-firebase/auth';
 import firestore from '@react-native-firebase/firestore';
-import { RootState } from '../store';
+import { AppDispatch, RootState } from '../store';
+import { GoogleSignin } from '@react-native-google-signin/google-signin';
 
 // User Interface
 export interface User {
   uid: string;
   username: string;
-  email: string | null; // Allow null values
+  email: string | null;
   photoURL: string | null;
   favorites: string[];
 }
-
+export interface SignUpPayload {
+  username: string;
+  email: string;
+  password: string;
+}
 
 // Auth State Interface
-interface AuthState {
+export interface AuthState {
   isLoading: boolean;
   error: string | null;
   user: User | null;
@@ -26,6 +31,108 @@ const initialState: AuthState = {
   error: null,
   user: null,
 };
+
+export const onGoogleButtonPress = async () => {
+  try {
+    await GoogleSignin.hasPlayServices({ showPlayServicesUpdateDialog: true });
+
+    // Sign out first to prevent cached account issues
+    await GoogleSignin.signOut();
+
+    const signInResponse = await GoogleSignin.signIn();
+    const idToken = signInResponse.data?.idToken; // ✅ Correct way to access idToken
+
+    if (!idToken) {
+      throw new Error('Google Sign-In failed: idToken is null.');
+    }
+
+    const googleCredential = auth.GoogleAuthProvider.credential(idToken);
+    const authResponse = await auth().signInWithCredential(googleCredential);
+    const { uid, email, displayName, photoURL } = authResponse.user;
+
+    // ✅ Ensure user is authenticated before proceeding
+    if (!auth().currentUser) {
+      throw new Error('User authentication failed.');
+    }
+
+    // Check if the user exists in Firestore
+    const userDocRef = firestore().collection('users').doc(uid);
+    const userSnapshot = await userDocRef.get();
+
+    let userData = {
+      uid,
+      username: displayName || 'Unknown User',
+      email: email || '',
+      photoURL: photoURL || null,
+      favorites: [],
+    };
+
+    if (!userSnapshot.exists) {
+      // Create a new user document if it doesn't exist
+      await userDocRef.set(userData);
+    } else {
+      // Fetch existing user data
+      userData = userSnapshot.data() as typeof userData;
+    }
+
+    // ✅ Dispatch the user to Redux store to update the authentication state
+
+    return userData;
+  } catch (error) {
+    console.error('Google Sign-In Error:', error);
+    throw error;
+  }
+};
+
+// export async function onGoogleButtonPress() {
+//   try {
+//     // Check Google Play services
+//     await GoogleSignin.hasPlayServices({ showPlayServicesUpdateDialog: true });
+
+//     // Sign in the user
+//     const signInResult = await GoogleSignin.signIn();
+//     console.log('Google Sign-In Result:', signInResult);
+
+//     // Extract idToken
+//     const idToken = signInResult.data?.idToken; // ✅ Fix: Remove .data
+
+//     if (!idToken) {
+//       throw new Error('No ID token found');
+//     }
+
+//     // Create a Google credential
+//     const googleCredential = auth.GoogleAuthProvider.credential(idToken);
+
+//     // Sign in the user with Firebase Auth
+//     const userCredential = await auth().signInWithCredential(googleCredential);
+//     const user = userCredential.user; // ✅ Firebase authenticated user
+
+//     console.log('Firebase User:', user);
+
+//     // Save user data to Firestore
+//     await firestore().collection('users').doc(user.uid).set(
+//       {
+//         uid: user.uid,
+//         username: user.displayName || 'Unknown',
+//         email: user.email || '',
+//         photoURL: user.photoURL || '',
+//         createdAt: firestore.FieldValue.serverTimestamp(), // Add timestamp
+//       },
+//       { merge: true } // ✅ Avoid overwriting existing data
+//     );
+
+//     console.log('User data saved to Firestore');
+
+//     return user;
+//   } catch (error) {
+//     console.error('Google Sign-In Error:', error);
+//     throw error;
+//   }
+// }
+
+
+
+
 
 // Async function to fetch user data
 export const fetchUserData = createAsyncThunk(
@@ -135,6 +242,9 @@ const authSlice = createSlice({
     logout: (state) => {
       state.user = null;
     },
+    signUpUser: (state, action: PayloadAction<AuthState['user']>) => {
+      state.user = action.payload;
+    },
   },
   extraReducers: (builder) => {
     builder
@@ -192,7 +302,7 @@ const authSlice = createSlice({
   },
 });
 
-export const { setUser, updateUser, logout } = authSlice.actions;
+export const { setUser, updateUser, logout, signUpUser } = authSlice.actions;
 export const selectAuthState = (state: RootState) => state.auth;
 export default authSlice.reducer;
 

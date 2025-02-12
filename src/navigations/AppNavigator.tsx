@@ -50,7 +50,6 @@ const AppNavigator: React.FC = () => {
             <Stack.Screen name="MainApp" component={DrawerNavigator} />
             <Stack.Screen name="PetDetails" component={PetDetails} />
             <Stack.Screen name="MyPetDetails" component={MyPetDetails} />
-
           </>
         ) : (
           <>
@@ -59,6 +58,7 @@ const AppNavigator: React.FC = () => {
             <Stack.Screen name="RecoverPassword" component={RecoverPassword} />
           </>
         )}
+        
       </Stack.Navigator>
     </NavigationContainer>
   );
