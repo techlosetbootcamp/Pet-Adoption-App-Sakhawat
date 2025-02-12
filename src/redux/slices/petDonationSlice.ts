@@ -19,7 +19,8 @@ export interface Pet {
   weight?: number;
   Vaccinated?: boolean;
   userName?: string; // User who added the pet
-  date?: string; // Stored as a string in ISO format
+  date?: string; 
+  photoURL:string// Stored as a string in ISO format
 }
 
 interface PetData extends Pet {}

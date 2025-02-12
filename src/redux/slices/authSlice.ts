@@ -35,8 +35,6 @@ const initialState: AuthState = {
 export const onGoogleButtonPress = async () => {
   try {
     await GoogleSignin.hasPlayServices({ showPlayServicesUpdateDialog: true });
-
-    // Sign out first to prevent cached account issues
     await GoogleSignin.signOut();
 
     const signInResponse = await GoogleSignin.signIn();

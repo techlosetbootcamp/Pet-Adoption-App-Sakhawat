@@ -1,15 +1,29 @@
-import React, { useState } from 'react';
-import { View, Text, StyleSheet, KeyboardAvoidingView, ScrollView, Platform, Keyboard, TouchableWithoutFeedback } from 'react-native';
-import { useNavigation } from '@react-navigation/native';
-import { useDispatch, useSelector } from 'react-redux'; // Use Redux hooks
-import { NativeStackNavigationProp } from '@react-navigation/native-stack';
+import React, {useState} from 'react';
+import {
+  View,
+  Text,
+  StyleSheet,
+  KeyboardAvoidingView,
+  ScrollView,
+  Platform,
+  Keyboard,
+  TouchableWithoutFeedback,
+  ActivityIndicator,
+} from 'react-native';
+import {useNavigation} from '@react-navigation/native';
+import {useDispatch, useSelector} from 'react-redux'; // Use Redux hooks
+import {NativeStackNavigationProp} from '@react-navigation/native-stack';
 import CheckBox from '@react-native-community/checkbox';
-import { loginUser, onGoogleButtonPress } from '../../redux/slices/authSlice'; // Import the action from authSlice
+import {
+  loginUser,
+  onGoogleButtonPress,
+  setUser,
+} from '../../redux/slices/authSlice'; // Import the action from authSlice
 import Input from '../../components/input/Input';
 import Buttons from '../../components/buttons/Buttons';
-import { AppDispatch } from '../../redux/store';  // Import AppDispatch from store
+import {AppDispatch} from '../../redux/store'; // Import AppDispatch from store
 // import { signInWithGoogle } from '../../redux/slices/authSlice';
-import { GoogleSignin } from '@react-native-google-signin/google-signin';
+import {GoogleSignin} from '@react-native-google-signin/google-signin';
 import auth from '@react-native-firebase/auth';
 
 type RootStackParamList = {
@@ -20,35 +34,36 @@ type RootStackParamList = {
 };
 
 GoogleSignin.configure({
-  webClientId: '666327222636-vohlklmn79m2ugvmls9h7vqtn4ugdaaa.apps.googleusercontent.com',
+  webClientId:
+    '666327222636-vohlklmn79m2ugvmls9h7vqtn4ugdaaa.apps.googleusercontent.com',
 });
 
-
-
 const Login = () => {
-  const navigation = useNavigation<NativeStackNavigationProp<RootStackParamList, 'Login'>>();
-  const dispatch = useDispatch<AppDispatch>();  // Type dispatch with AppDispatch
+  const navigation =
+    useNavigation<NativeStackNavigationProp<RootStackParamList, 'Login'>>();
+  const dispatch = useDispatch<AppDispatch>(); // Type dispatch with AppDispatch
 
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [isChecked, setIsChecked] = useState(false);
+  const [googleLoader, setGoogleLoader] = useState(false);
 
-  const { isLoading, error, user } = useSelector((state: any) => state.auth); // Access state from authSlice
+  const {isLoading, error, user} = useSelector((state: any) => state.auth); // Access state from authSlice
 
   // Handle login process
   const handleLogin = async () => {
     if (!email || !password) {
       return;
     }
-    
-    console.log('loginUser 2')
+
+    console.log('loginUser 2');
     // if (!isChecked) {
     //   return;
     // }
 
     // Dispatch the login action
-    console.log('loginUser 3')
-    await dispatch(loginUser({ email, password }));
+    console.log('loginUser 3');
+    await dispatch(loginUser({email, password}));
   };
 
   // Navigate to Forgot Password
@@ -63,7 +78,7 @@ const Login = () => {
 
   // Handle checkbox toggle
   const handleCheckBox = () => {
-    setIsChecked((prevState) => !prevState);
+    setIsChecked(prevState => !prevState);
   };
 
   // Navigate to MainApp if user is authenticated
@@ -71,20 +86,48 @@ const Login = () => {
     navigation.navigate('MainApp');
   }
 
+  const GooglePress = async () => {
+    try {
+      setGoogleLoader(true);
+      const user = await onGoogleButtonPress();
+      dispatch(setUser(user));
+    } catch (error) {
+      console.error(error);
+    } finally {
+      setGoogleLoader(false);
+    }
+  };
+
   return (
-    <KeyboardAvoidingView style={styles.container} behavior={Platform.OS === 'ios' ? 'padding' : undefined}>
+    <KeyboardAvoidingView
+      style={styles.container}
+      behavior={Platform.OS === 'ios' ? 'padding' : undefined}>
       <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
-        <ScrollView contentContainerStyle={styles.scrollContainer} keyboardShouldPersistTaps="handled">
+        <ScrollView
+          contentContainerStyle={styles.scrollContainer}
+          keyboardShouldPersistTaps="handled">
           <Text style={styles.title}>Login</Text>
 
           {/* Email Input */}
-          <Input label="Email" value={email} onChangeText={setEmail} keyboardType="email-address" />
+          <Input
+            label="Email"
+            value={email}
+            onChangeText={setEmail}
+            keyboardType="email-address"
+          />
 
           {/* Password Input */}
-          <Input label="Password" value={password} onChangeText={setPassword} secureTextEntry />
+          <Input
+            label="Password"
+            value={password}
+            onChangeText={setPassword}
+            secureTextEntry
+          />
 
           {/* Forgot Password */}
-          <Text style={styles.forgotPasswordText} onPress={handleForgotPassword}>
+          <Text
+            style={styles.forgotPasswordText}
+            onPress={handleForgotPassword}>
             Forgot Password?
           </Text>
 
@@ -132,22 +175,22 @@ const Login = () => {
             }}
           />
           <Buttons
-  title="Sign in with Google"
-  onPress={() => onGoogleButtonPress().then(() => console.log('Signed in with Google!'))}
-  isLoading={isLoading}
-  buttonStyle={{
-    backgroundColor: '#DB4437', // Google's color
-    width: 200,
-    marginTop: 20,
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'center',
-  }}
-  textStyle={{
-    color: '#FFF',
-    fontSize: 18,
-  }}
-/>
+            title={googleLoader ? 'Loading...' : 'Sign in with Google'}
+            onPress={GooglePress}
+            isLoading={isLoading}
+            buttonStyle={{
+              backgroundColor: '#DB4437', // Google's color
+              width: 200,
+              marginTop: 20,
+              flexDirection: 'row',
+              alignItems: 'center',
+              justifyContent: 'center',
+            }}
+            textStyle={{
+              color: '#FFF',
+              fontSize: 18,
+            }}
+          />
         </ScrollView>
       </TouchableWithoutFeedback>
     </KeyboardAvoidingView>
@@ -209,32 +252,29 @@ const styles = StyleSheet.create({
 
 export default Login;
 
-
-
-
 // //export const signInWithGoogle = createAsyncThunk(
 //   'auth/signInWithGoogle',
 //   async (_, { rejectWithValue }) => {
 //     try {
 //       await GoogleSignin.hasPlayServices({ showPlayServicesUpdateDialog: true });
 //       await GoogleSignin.signOut();
-      
+
 //       const signInResponse = await GoogleSignin.signIn();
 //       const idToken = signInResponse?.data?.idToken;
-      
+
 //       if (!idToken) {
 //         throw new Error('Google Sign-In failed: idToken is null.');
 //       }
-      
+
 //       const googleCredential = auth.GoogleAuthProvider.credential(idToken);
 //       const response = await auth().signInWithCredential(googleCredential);
 //       const { uid, email, displayName, photoURL } = response.user;
-      
+
 //       const userDocRef = firestore().collection('users').doc(uid);
 //       const userDocSnapshot = await userDocRef.get();
-      
+
 //       let userData: User;
-      
+
 //       if (userDocSnapshot.exists) {
 //         const firestoreData = userDocSnapshot.data();
 //         userData = {
@@ -248,11 +288,11 @@ export default Login;
 //         userData = { uid, email, username: displayName, photoURL, favorites: [] };
 //         await userDocRef.set({ ...userData, lastLogin: firestore.FieldValue.serverTimestamp() });
 //       }
-      
+
 //       return userData;
 //     } catch (err: any) {
 //       return rejectWithValue(err.message || 'Google Sign-In failed.');
 //     }
 //   }
 // );
-// //  
+// //
