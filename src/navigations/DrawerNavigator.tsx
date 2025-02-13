@@ -15,14 +15,14 @@ import Search from '../screens/search/Search';
 import UpdatePassword from '../screens/password/PasswordUpdate';
 import logout from '../screens/auth/logout';
 import Mydonation from '../screens/myDonation/Mydonation';
-
+import Header from '../components/header/Header';
 const Drawer = createDrawerNavigator();
 
 const DrawerNavigator: React.FC = () => {
   const navigation = useNavigation<NavigationProp<RootStackParamList>>();
 
   return (
-    <Drawer.Navigator initialRouteName="Tabs">
+    <Drawer.Navigator screenOptions={{header:()=><Header />}} initialRouteName="Tabs">
       <Drawer.Screen
         name="Tabs"
         component={TabNavigator}

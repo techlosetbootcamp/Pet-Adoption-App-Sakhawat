@@ -1,19 +1,20 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 export interface Pet {
-    id: string;
-    name: string;
-    breed: string;
-    age: number;
-    amount: number;
-    location: string;
-    image: string;
-    type: string;
-    gender?: string;
-    description?: string;
-    weight?: number;
-    Vaccinated?: boolean;
-    userName: string;
-  }
+  id: string;
+  name: string;
+  breed: string;
+  age: number;
+  amount: number;
+  location: string;
+  image: string;
+  type: string;
+  gender?: string;
+  description?: string;
+  weight?: number;
+  Vaccinated?: boolean;
+  userName: string;  // Keep if needed
+  userId: string;    // Ensure correct casing
+}
 
 
 interface PetDetailsState {

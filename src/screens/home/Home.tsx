@@ -86,9 +86,10 @@ const Home = () => {
   );
 
   return (
+    
     <KeyboardAvoidingView
-      style={styles.container}
-      behavior={Platform.OS === 'ios' ? 'padding' : undefined}
+    style={styles.container}
+    behavior={Platform.OS === 'ios' ? 'padding' : undefined}
     >
       <ScrollView>
         <View style={styles.title}>
