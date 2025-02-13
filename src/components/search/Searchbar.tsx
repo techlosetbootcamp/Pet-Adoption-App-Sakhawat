@@ -1,6 +1,8 @@
 import React, { useState } from 'react';
 import { StyleSheet, TextInput, View, TouchableOpacity } from 'react-native';
-import Icon from 'react-native-vector-icons/Ionicons';
+import Ionicon from 'react-native-vector-icons/Ionicons';
+import FontAwesome from 'react-native-vector-icons/FontAwesome'; // ✅ Import FontAwesome
+import { red } from 'react-native-reanimated/lib/typescript/Colors';
 
 interface SearchProps {
   onSearch: (searchText: string) => void;
@@ -23,7 +25,8 @@ const Search: React.FC<SearchProps> = ({ onSearch }) => {
         onChangeText={setSearchText}
       />
       <TouchableOpacity style={styles.button} onPress={handleSearch}>
-        <Icon name="arrow-forward-circle-outline" size={24} color="white" />
+<Ionicon name="search" size={25} color={'white'} />
+
       </TouchableOpacity>
     </View>
   );
@@ -31,6 +34,7 @@ const Search: React.FC<SearchProps> = ({ onSearch }) => {
 
 const styles = StyleSheet.create({
   container: {
+    position: 'relative',
     top: -120,
     flexDirection: 'row',
     alignItems: 'center',
@@ -40,7 +44,7 @@ const styles = StyleSheet.create({
     paddingVertical: 10,
     shadowColor: '#000',
     shadowOpacity: 0.1,
-    shadowRadius: 5,
+    shadowRadius: 8,
     elevation: 3,
   },
   icon: {
@@ -49,16 +53,20 @@ const styles = StyleSheet.create({
   input: {
     flex: 1,
     fontSize: 16,
-    color: '#333',
-    left:14,
-
+    color: '#33',
+    left:4,
   },
   button: {
-    backgroundColor: '#007bff',
-    borderRadius: 50,
-    padding: 5,
-    alignItems: 'center',
+    position: 'absolute',
+    right: 0,
+    top: 23,
+    transform: [{ translateY: -25 }],
+    backgroundColor: 'black',
+    borderRadius: 20,
+        alignItems: 'center',
     justifyContent: 'center',
+    width: 80,
+    height: 70,
   },
 });
 

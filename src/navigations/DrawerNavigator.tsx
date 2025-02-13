@@ -22,7 +22,7 @@ const DrawerNavigator: React.FC = () => {
   const navigation = useNavigation<NavigationProp<RootStackParamList>>();
 
   return (
-    <Drawer.Navigator screenOptions={{header:()=><Header />}} initialRouteName="Tabs">
+    <Drawer.Navigator screenOptions={{headerShown:false}} initialRouteName="Tabs">
       <Drawer.Screen
         name="Tabs"
         component={TabNavigator}
@@ -31,14 +31,14 @@ const DrawerNavigator: React.FC = () => {
           headerShadowVisible: false,
         }}
       />
-      <Drawer.Screen
-        name="Search"
-        component={Search}
-        options={{
-          title: 'Search',
-          headerShown: false,
-        }}
-      />
+     <Drawer.Screen
+  name="Search"
+  component={Search}
+  options={{
+    title: 'Search',
+    headerShown: false,
+  }}
+/>
       <Drawer.Screen
         name="Adopt"
         component={Adopt}

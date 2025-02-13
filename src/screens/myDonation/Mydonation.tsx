@@ -102,21 +102,14 @@ export default function MyDonations() {
               <Text style={styles.name}>{item.name}</Text>
               <Text style={styles.details}>Age {item.age} Months</Text>
               <View style={styles.locationContainer}>
-                <Ionicons name="location-outline-black" size={14} color="red" />
                 <Text style={styles.details}>{item.location}</Text>
+                <Ionicons name="location-outline" size={14} color="red" />
               </View>
               <Text style={styles.details}>{item.gender}</Text>
             </View>
-            {/* Info Icon */}
-            <Ionicons
-              name="information-circle-outline"
-              size={20}
-              color="blue"
-              style={{ marginRight: 10 }}
-            />
-            {/* Delete Icon */}
+           
             <TouchableOpacity onPress={() => handleDeletePet(item.id)}>
-              <Ionicons name="trash-outline-" size={20} color="black" />
+        <Ionicons name="trash-outline" size={30} color="red" />
             </TouchableOpacity>
           </TouchableOpacity>
         )}

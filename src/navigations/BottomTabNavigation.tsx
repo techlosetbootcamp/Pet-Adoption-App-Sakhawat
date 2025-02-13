@@ -2,9 +2,8 @@ import React from 'react';
 import { View, Text, StyleSheet } from 'react-native';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { NavigationContainer } from '@react-navigation/native';
-import Ionicons from 'react-native-vector-icons/Ionicons';
-import FontAwesome from 'react-native-vector-icons/FontAwesome';
-
+import Ionicons from 'react-native-vector-icons/Ionicons'; // ✅ Correct Import
+import FontAwesome from 'react-native-vector-icons/FontAwesome'; // ✅ Import FontAwesome
 import Favorites from '../screens/favorites/Favorites';
 import Profile from '../screens/profile/Profile';
 import Search from '../screens/search/Search';
@@ -26,12 +25,16 @@ export default function App() {
             let iconName;
 
             if (route.name === 'Home') {
+              iconName = focused ? 'home' : 'home-outline';
               return <FontAwesome name="home" size={size} color={color} />;
             } else if (route.name === 'Search') {
+              iconName = focused ? 'search' : 'search-outline';
               return <Ionicons name="search" size={size} color={color} />;
             } else if (route.name === 'Favorites') {
+              iconName = focused ? 'heart' : 'heart-outline';
               return <Ionicons name="heart" size={size} color={color} />;
             } else if (route.name === 'Profile') {
+              iconName = focused ? 'user' : 'user-o';
               return <FontAwesome name="user" size={size} color={color} />;
             }
           },
@@ -52,6 +55,7 @@ const styles = StyleSheet.create({
     height: 60,
     backgroundColor: '#000',
     borderTopWidth: 0,
+    borderRadius: 70,
   },
   tabLabel: {
     fontSize: 12,

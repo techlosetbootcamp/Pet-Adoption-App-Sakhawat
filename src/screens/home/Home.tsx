@@ -18,6 +18,7 @@ import { useNavigation } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { RootStackParamList } from '../../navigations/RootStackParamList';
 import { useSearch } from '../../hooks/useSearch';
+import Header from '../../components/header/Header';
 
 const filters = ['All', 'Dog', 'Cat', 'Bunny', 'Bird', 'Turtle'];
 
@@ -91,6 +92,7 @@ const Home = () => {
     style={styles.container}
     behavior={Platform.OS === 'ios' ? 'padding' : undefined}
     >
+      <Header />
       <ScrollView>
         <View style={styles.title}>
           <Text style={styles.newText1}>Find an</Text>
