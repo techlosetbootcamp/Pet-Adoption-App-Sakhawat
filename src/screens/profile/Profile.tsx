@@ -11,7 +11,7 @@ import {
   Platform,
   StyleSheet,
 } from 'react-native';
-import useUser from '../../hooks/useUser';
+import useProfile from '../../hooks/useProfile';
 import Input from '../../components/input/Input';
 import Button from '../../components/buttons/Buttons';
 import { fetchUserData } from '../../redux/slices/authSlice';
@@ -21,7 +21,7 @@ import { AppDispatch, RootState } from '../../redux/store';
 export default function Profile() {
   const dispatch = useDispatch<AppDispatch>();
   const user = useSelector((state: RootState) => state.auth.user);
-  const { handleUpdateProfile, handleImageSelect } = useUser();
+  const { handleUpdateProfile, handleImageSelect } = useProfile();
 
   // State to store username and photoURL
   const [username, setUsername] = useState('');

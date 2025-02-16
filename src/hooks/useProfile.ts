@@ -8,7 +8,7 @@ import auth from '@react-native-firebase/auth';
 import firestore from '@react-native-firebase/firestore';
 import { User } from '../redux/slices/authSlice';
 
-const useUser = () => {
+const useProfile = () => {
   const dispatch: AppDispatch = useDispatch();
   const user = useSelector((state: any) => state.user.user);
 
@@ -74,4 +74,4 @@ const useUser = () => {
   return { user, handleUpdateProfile, handleImageSelect };
 };
 
-export default useUser;
+export default useProfile;

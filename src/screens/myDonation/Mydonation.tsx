@@ -1,18 +1,12 @@
-import React, { useEffect, useState } from 'react';
-import {
-  View,
-  Text,
-  FlatList,
-  Image,
-  TouchableOpacity,
-  StyleSheet,
-} from 'react-native';
+import React from 'react';
+import { View, Text, FlatList, Image, TouchableOpacity, StyleSheet } from 'react-native';
 import Ionicons from 'react-native-vector-icons/Ionicons';
-import firestore from '@react-native-firebase/firestore';
 import { useSelector } from 'react-redux';
 import { useNavigation } from '@react-navigation/native';
 import { StackNavigationProp } from '@react-navigation/stack';
 import { RootStackParamList } from '../../navigations/AppNavigator';
+import useUserPets from '../../hooks/useUserPet'; // Adjust the path as needed
+import firestore from '@react-native-firebase/firestore';
 
 interface RootState {
   auth: {
@@ -22,52 +16,12 @@ interface RootState {
   };
 }
 
-interface Pet {
-  id: string;
-  name: string;
-  age: string;
-  location: string;
-  gender: string;
-  image?: string;
-  userId: string;
-}
-
 type MyDonationsNavigationProp = StackNavigationProp<RootStackParamList, 'MyDonations'>;
 
 export default function MyDonations() {
   const user = useSelector((state: RootState) => state.auth.user);
-  const [pets, setPets] = useState<Pet[]>([]);
-  const [loading, setLoading] = useState(true);
   const navigation = useNavigation<MyDonationsNavigationProp>();
-
-  useEffect(() => {
-    if (!user?.uid) return;
-
-    console.log('Fetching pets in real-time for user:', user.uid);
-
-    const unsubscribe = firestore()
-      .collection('pets')
-      .where('userId', '==', user.uid)
-      .onSnapshot(
-        (querySnapshot) => {
-          console.log('Fetched from Firestore. Docs count:', querySnapshot.size);
-
-          const petsData: Pet[] = querySnapshot.docs.map((doc) => ({
-            id: doc.id,
-            ...doc.data(),
-          })) as Pet[];
-
-          setPets(petsData);
-          setLoading(false);
-        },
-        (error) => {
-          console.error('Error fetching Firestore data:', error);
-          setLoading(false);
-        }
-      );
-
-    return () => unsubscribe();
-  }, [user?.uid]);
+  const { pets, loading } = useUserPets(user?.uid || null);
 
   const handleDeletePet = async (id: string) => {
     try {
@@ -78,26 +32,24 @@ export default function MyDonations() {
   };
 
   const handlePetPress = (id: string) => {
-    console.log('Card pressed with petId:', id);  // Debugging log
     navigation.navigate('MyPetDetails', { petId: id });
   };
 
-  
   return (
     <View style={styles.container}>
       <Text style={styles.title}>My Donations</Text>
+              <Ionicons name="add" size={30} style={styles.headerIcon} />
+      
       <FlatList
         data={pets}
         keyExtractor={(item) => item.id}
         renderItem={({ item }) => (
           <TouchableOpacity onPress={() => handlePetPress(item.id)} style={styles.card}>
-            {/* Image or Placeholder */}
             {item.image ? (
               <Image source={{ uri: item.image }} style={styles.image} />
             ) : (
               <View style={styles.imagePlaceholder} />
             )}
-            {/* Info Container */}
             <View style={styles.infoContainer}>
               <Text style={styles.name}>{item.name}</Text>
               <Text style={styles.details}>Age {item.age} Months</Text>
@@ -107,9 +59,8 @@ export default function MyDonations() {
               </View>
               <Text style={styles.details}>{item.gender}</Text>
             </View>
-           
             <TouchableOpacity onPress={() => handleDeletePet(item.id)}>
-        <Ionicons name="trash-outline" size={30} color="red" />
+              <Ionicons name="trash" size={25} color="black" style={styles.trashIcon} />
             </TouchableOpacity>
           </TouchableOpacity>
         )}
@@ -144,11 +95,14 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.1,
     shadowRadius: 5,
     elevation: 3,
+    height:130,
+    top:35,
   },
   image: {
-    width: 80,
-    height: 80,
+    width: 170,
+    height: 170,
     borderRadius: 10,
+    left:-10,
   },
   imagePlaceholder: {
     width: 80,
@@ -178,4 +132,12 @@ const styles = StyleSheet.create({
     color: '#888',
     marginTop: 20,
   },
+  headerIcon: {
+    position: 'absolute',
+    right: 10,
+    top:20,
+  },
+  trashIcon:{top:33,
+
+  }
 });

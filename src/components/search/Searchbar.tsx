@@ -35,10 +35,10 @@ const Search: React.FC<SearchProps> = ({ onSearch }) => {
 const styles = StyleSheet.create({
   container: {
     position: 'relative',
-    top: -120,
+    top: -100,
     flexDirection: 'row',
     alignItems: 'center',
-    backgroundColor: '#FFFFFF',
+    backgroundColor: '#F2F3FA',
     borderRadius: 30,
     paddingHorizontal: 15,
     paddingVertical: 10,

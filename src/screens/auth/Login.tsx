@@ -22,9 +22,9 @@ import {
 import Input from '../../components/input/Input';
 import Buttons from '../../components/buttons/Buttons';
 import {AppDispatch} from '../../redux/store'; // Import AppDispatch from store
-// import { signInWithGoogle } from '../../redux/slices/authSlice';
 import {GoogleSignin} from '@react-native-google-signin/google-signin';
-import auth from '@react-native-firebase/auth';
+import { GOOGLE_CLIENT_ID } from '@env';
+
 
 type RootStackParamList = {
   MainApp: undefined;
@@ -35,7 +35,7 @@ type RootStackParamList = {
 
 GoogleSignin.configure({
   webClientId:
-    '666327222636-vohlklmn79m2ugvmls9h7vqtn4ugdaaa.apps.googleusercontent.com',
+  GOOGLE_CLIENT_ID,
 });
 
 const Login = () => {
