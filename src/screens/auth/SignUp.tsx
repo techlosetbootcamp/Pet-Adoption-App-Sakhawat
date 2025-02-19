@@ -1,45 +1,22 @@
-import React, { useState } from 'react';
+// SignUp.tsx
+import React from 'react';
 import { View, Text, StyleSheet, KeyboardAvoidingView, ScrollView, Platform, Keyboard, TouchableWithoutFeedback } from 'react-native';
-import { useNavigation } from '@react-navigation/native'; 
 import Input from '../../components/input/Input';
 import Buttons from '../../components/buttons/Buttons';
-import { NativeStackNavigationProp } from '@react-navigation/native-stack';
-import { RootStackParamList } from '../../navigations/AppNavigator';
-import { useDispatch } from 'react-redux';
-import { registerUser } from '../../redux/slices/authSlice'; // ✅ Use registerUser instead
-import { AppDispatch } from '../../redux/store';
+import useSignUp from '../../hooks/useSignUp'; // Import the custom hook
 
 const SignUp = () => {
-  const navigation = useNavigation<NativeStackNavigationProp<RootStackParamList>>();
-  const dispatch = useDispatch<AppDispatch>();
-
-  const [username, setUsername] = useState('');
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
-  const [errorMessage, setErrorMessage] = useState('');
-
-  // Handle Sign Up
-  const handleSignUp = async () => {
-    if (!username || !email || !password) {
-      setErrorMessage('Please fill all fields.');
-      return;
-    }
-
-    try {
-      // ✅ Dispatch registerUser instead of signUpUser
-      const resultAction = await dispatch(registerUser({ username, email, password }));
-      
-      if (registerUser.fulfilled.match(resultAction)) {
-        navigation.navigate('Login'); 
-      } else {      }
-    } catch (error) {
-      setErrorMessage('Failed to sign up. Please try again.');
-    }
-  };
-
-  const handleLoginRedirect = () => {
-    navigation.navigate('Login');
-  };
+  const {
+    username,
+    email,
+    password,
+    errorMessage,
+    setUsername,
+    setEmail,
+    setPassword,
+    handleSignUp,
+    handleLoginRedirect,
+  } = useSignUp(); // Use the custom hook
 
   return (
     <KeyboardAvoidingView style={styles.container} behavior={Platform.OS === 'ios' ? 'padding' : undefined}>

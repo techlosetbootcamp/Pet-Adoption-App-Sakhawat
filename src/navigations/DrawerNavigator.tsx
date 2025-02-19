@@ -133,7 +133,7 @@ const CustomDrawerContent: React.FC<DrawerContentComponentProps> = (props) => {
       [
         { text: 'Cancel', style: 'cancel' },
         {
-          text: 'Logout',
+          text: 'Log Out',
           style: 'destructive',
           onPress: async () => {
             try {
@@ -167,7 +167,7 @@ const CustomDrawerContent: React.FC<DrawerContentComponentProps> = (props) => {
 
       <View style={styles.logoutContainer}>
         <DrawerItem
-          label="Logout"
+          label="Log Out"
           onPress={handleLogout}
           labelStyle={styles.logoutLabel}
         />

@@ -4,15 +4,8 @@ import { collection, getDocs, query, where } from 'firebase/firestore';
 import firestore from '@react-native-firebase/firestore'
 import { useAppDispatch } from './useSelector';
 import { setFilter } from '../redux/slices/filterSlice';
+import { Pet } from '../types/pets';
 
-interface Pet {
-  id: string;
-  name: string;
-  breed: string;
-  age: number;
-  location: string;
-  image: string;
-}
 
 export const useSearch = () => {
   const [results, setResults] = useState<Pet[]>([]);

@@ -11,6 +11,7 @@ interface Pet {
   userId: string;
 }
 
+
 const useUserPets = (userId: string | null) => {
   const [pets, setPets] = useState<Pet[]>([]);
   const [loading, setLoading] = useState(true);

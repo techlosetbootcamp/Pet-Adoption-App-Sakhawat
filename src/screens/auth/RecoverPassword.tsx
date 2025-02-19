@@ -1,16 +1,11 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { View, Text, StyleSheet, KeyboardAvoidingView, ScrollView, Platform, Keyboard, TouchableWithoutFeedback } from 'react-native';
-import Input from '../../components/input/Input'; // Assuming you have the Input component
-import Buttons from '../../components/buttons/Buttons'; // Assuming you have the Buttons component
+import Input from '../../components/input/Input'; 
+import Buttons from '../../components/buttons/Buttons'; 
+import useRecoverPassword from '../../hooks/useRecoverPassword'; // Import custom hook
 
 const RecoverPassword = () => {
-  const [email, setEmail] = useState('');
-
-  const handleRecoverPassword = () => {
-    if (email) {
-    } else {
-    }
-  };
+  const { email, setEmail, handleRecoverPassword } = useRecoverPassword(); // Use the hook
 
   return (
     <KeyboardAvoidingView style={styles.container} behavior={Platform.OS === 'ios' ? 'padding' : undefined}>
@@ -29,7 +24,7 @@ const RecoverPassword = () => {
 
           {/* Description Text */}
           <Text style={styles.descriptionText}>
-            Put your email above to get recovery URL
+            Put your email above to get a recovery URL.
           </Text>
 
           {/* Recover Button */}
@@ -65,10 +60,8 @@ const styles = StyleSheet.create({
   title: {
     fontSize: 36,
     fontWeight: '800',
-    textAlign: 'left',
     fontFamily: 'Montserrat',
     alignSelf: 'flex-start',
-    marginLeft: 0,
   },
   descriptionText: {
     fontFamily: 'Montserrat',
@@ -81,12 +74,13 @@ const styles = StyleSheet.create({
   title1: {
     fontSize: 36,
     fontWeight: '800',
-    textAlign: 'left',
     fontFamily: 'Montserrat',
     marginBottom: 30,
     alignSelf: 'flex-start',
-    
   },
 });
 
 export default RecoverPassword;
+
+
+// react-native check box

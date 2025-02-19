@@ -11,6 +11,7 @@ export interface User {
   email: string | null;
   photoURL: string | null;
   favorites: string[];
+  
 }
 export interface SignUpPayload {
   username: string;
