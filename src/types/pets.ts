@@ -6,20 +6,18 @@ export type Pet = {
   age: number; // Age of the pet in months or years
   amount: number; // Price or adoption fee for the pet
   location: string; // Location of the pet (e.g., city, state)
-  image: string; // URL or path to the pet's image
+  image: string;
+   // URL or path to the pet's image
   type: string; // Type of pet (e.g., Dog, Cat, Bird)
   gender?: string; // Optional: Gender of the pet (e.g., Male, Female)
   description?: string; // Optional: Description of the pet
   weight?: number; // Optional: Weight of the pet in kilograms or pounds
   vaccinated?: boolean; // Optional: Whether the pet is vaccinated
-  userName?: string; // Optional: Name of the user who owns or listed the pet
+  userName?: string;
+  userId:string; // Optional: Name of the user who owns or listed the pet
 };
 
 // Define a type for the list of pets
-export type PetList = Pet[];
 
 // Define a type for the filters (e.g., All, Dog, Cat)
-export type PetFilter = string;
 
-// Define a type for the pet filters list
-export type PetFilters = PetFilter[];

@@ -1,8 +1,9 @@
 import { useSelector } from 'react-redux';
 import { RootState } from '../redux/store';
+import { useAppSelector } from './useSelector';
 
 const useHeader = () => {
-  const user = useSelector((state: RootState) => state.user.user);
+  const user = useAppSelector((state) => state.auth.user);
 
   return {
     username: user?.username || 'Guest',

@@ -2,18 +2,22 @@ import { configureStore } from '@reduxjs/toolkit';
 import authReducer from '../redux/slices/authSlice';
 import petDonationReducer from '../redux/slices/petDonationSlice';
 import petDetailsReducer from '../redux/slices/petDetailsSlice';
-import userReducer from '../redux/slices/authSlice';
 import filterReducer from './slices/filterSlice';
-import adoptedPetsReducer from './slices/adoptedPetsSlice';
+// import adoptedPetsReducer from './slices/adoptedPetsSlice';
+import adoptedPetReducer from './slices/adoptedPetSlice';
+import favoritesReducer from "./slices/favoritesSlice"; // ✅ Import the new slice
 
 export const store = configureStore({
   reducer: {
     auth: authReducer,
     petDonation: petDonationReducer,
     petDetails: petDetailsReducer,
-    user: userReducer,
     Filter: filterReducer,
-    adoptedPets: adoptedPetsReducer,
+    // adoptedPets: adoptedPetsReducer,
+    adoptedPet: adoptedPetReducer,
+    favorites: favoritesReducer, // ✅ Register it here
+    // ✅ Add it here
+
   },
   middleware: getDefaultMiddleware =>
     getDefaultMiddleware({
@@ -21,7 +25,8 @@ export const store = configureStore({
     }),
 });
 
-export default store;
 
 export type RootState = ReturnType<typeof store.getState>;
+
 export type AppDispatch = typeof store.dispatch;
+export default store;

@@ -14,7 +14,6 @@ const useFavorites = () => {
     const userId = auth().currentUser?.uid;
     if (!userId) return;
 
-    // Real-time listener for user favorites
     const unsubscribe = firestore()
       .collection('users')
       .doc(userId)

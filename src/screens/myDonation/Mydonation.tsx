@@ -5,7 +5,7 @@ import { useSelector } from 'react-redux';
 import { useNavigation } from '@react-navigation/native';
 import { StackNavigationProp } from '@react-navigation/stack';
 import { RootStackParamList } from '../../navigations/AppNavigator';
-import useUserPets from '../../hooks/useUserPet'; // Adjust the path as needed
+import useMyDonation from '../../hooks/useMyDonations'; // Adjust the path as needed
 import firestore from '@react-native-firebase/firestore';
 
 interface RootState {
@@ -21,7 +21,7 @@ type MyDonationsNavigationProp = StackNavigationProp<RootStackParamList, 'MyDona
 export default function MyDonations() {
   const user = useSelector((state: RootState) => state.auth.user);
   const navigation = useNavigation<MyDonationsNavigationProp>();
-  const { pets, loading } = useUserPets(user?.uid || null);
+  const { pets, loading } = useMyDonation();
 
   const handleDeletePet = async (id: string) => {
     try {

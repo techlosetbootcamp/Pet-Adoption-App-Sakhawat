@@ -3,32 +3,13 @@ import firestore from '@react-native-firebase/firestore';
 import auth from '@react-native-firebase/auth';
 import { launchImageLibrary } from 'react-native-image-picker';
 import RNFS from 'react-native-fs';
+import { Pet } from '../../types/pets';
 
-// Define the type for pet data
-export interface Pet {
-  id: string;
-  name: string;
-  breed: string;
-  age: number;
-  amount: number;
-  location: string;
-  image: string; // Now storing as a Base64 string
-  type: string;
-  gender?: string;
-  description?: string;
-  weight?: number;
-  Vaccinated?: boolean;
-  userName?: string; // User who added the pet
-  date?: string; 
-  photoURL:string// Stored as a string in ISO format
-}
-
-interface PetData extends Pet {}
 
 interface PetDonationState {
   status: 'idle' | 'loading' | 'succeeded' | 'failed';
-  pets: PetData[];
-  selectedPet?: PetData;
+  pets: Pet[];
+  selectedPet?: Pet;
   error: string | null;
 }
 
@@ -112,7 +93,7 @@ export const selectPhoto = createAsyncThunk(
 
 // Thunk to add a new pet to Firestore
 export const addPet = createAsyncThunk<
-  PetData,
+  Pet,
   Omit<Pet, 'id'>,
   { rejectValue: string }
 >(
@@ -133,7 +114,7 @@ export const addPet = createAsyncThunk<
       };
 
       const docRef = await firestore().collection('pets').add(petWithUser);
-      const addedPet = { id: docRef.id, ...petWithUser } as PetData;
+      const addedPet = { id: docRef.id, ...petWithUser } as Pet;
 
       return addedPet;
     } catch (error: any) {
@@ -146,7 +127,7 @@ const petDonationSlice = createSlice({
   name: 'petDonation',
   initialState,
   reducers: {
-    setSelectedPet: (state, action: PayloadAction<PetData>) => {
+    setSelectedPet: (state, action: PayloadAction<Pet>) => {
       state.selectedPet = action.payload;
     },
     deletePet: (state, action: PayloadAction<string>) => {

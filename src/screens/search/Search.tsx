@@ -15,15 +15,16 @@ import {RootState} from '../../redux/store';
 import {useNavigation, NavigationProp} from '@react-navigation/native'; // Import useNavigation and NavigationProp
 import {RootStackParamList} from '../../navigations/RootStackParamList'; // Import RootStackParamList
 import Ionicons from 'react-native-vector-icons/Ionicons';
+import { useAppSelector } from '../../hooks/useSelector';
 const filters = ['Dog', 'Cat', 'Bunny', 'Bird', 'Turtle'];
 
 export default function SearchScreen() {
   const [query, setQuery] = useState('');
   const {results, loading, error, searchPets, handleClick} = useSearch();
-  const selectedFilter = useSelector(
-    (state: RootState) => state.Filter.category,
+  const selectedFilter = useAppSelector(
+    (state) => state.Filter.category,
   );
-   const userFavorites = useSelector((state: RootState) => state.user.user?.favorites);
+   const userFavorites = useSelector((state: RootState) => state.auth.user?.favorites);
     const [isFavorite, setIsFavorite] = useState(false);
   
   const navigation = useNavigation<NavigationProp<RootStackParamList>>(); // Initialize navigation with type

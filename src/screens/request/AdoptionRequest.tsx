@@ -1,10 +1,10 @@
 import React from 'react';
 import { View, Text, FlatList, StyleSheet, Image, TouchableOpacity, ActivityIndicator, Linking } from 'react-native';
 import Ionicons from 'react-native-vector-icons/Ionicons';
-import useAdoptionRequests from '../../hooks/useAdoptionRequests';
+import { useFetchAdoptionRequests } from '../../hooks/useAdoptionRequests';
 
 export default function AdoptionRequest() {
-  const { requests, loading, error } = useAdoptionRequests(); // Call the hook here
+  const { requests, loading, error } = useFetchAdoptionRequests(); // ✅ Corrected function call
 
   if (loading) {
     return (
@@ -46,6 +46,7 @@ export default function AdoptionRequest() {
                   {item.petName} • {item.petType}
                 </Text>
                 <Text style={styles.email}>{item.adopterEmail}</Text>
+                
                 <View style={styles.row}>
                   <Ionicons name="location-outline" size={16} color="red" />
                 </View>
@@ -57,7 +58,7 @@ export default function AdoptionRequest() {
             </TouchableOpacity>
           </View>
         )}
-      />
+      />,
     </View>
   );
 }

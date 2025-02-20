@@ -7,37 +7,33 @@ import {
   TouchableOpacity,
   Image,
 } from 'react-native';
-import { useSelector, useDispatch } from 'react-redux';
-import { RootState, store } from '../../redux/store';
 import { toggleFavorite } from '../../redux/slices/favoritesSlice';
 import { useNavigation, useRoute } from '@react-navigation/native';
-import { adoptPet } from '../../redux/slices/adoptedPetsSlice';
+import { adoptedPet } from '../../redux/slices/adoptedPetSlice';
 import { RouteProp } from '@react-navigation/native';
 import { RootStackParamList } from '../../navigations/RootStackParamList';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import firestore from '@react-native-firebase/firestore';
 import auth from '@react-native-firebase/auth';
 import useUserDetails from '../../hooks/usePetDetails'; // Import the custom hook
+import { useAppDispatch, useAppSelector } from '../../hooks/useSelector';
+
 
 type PetDetailsRouteProp = RouteProp<RootStackParamList, 'PetDetails'>;
-
 const PetDetails = () => {
   const route = useRoute<PetDetailsRouteProp>();
   const { petId } = route.params;
-  const dispatch = useDispatch<typeof store.dispatch>();
+  const dispatch = useAppDispatch();
 
-  const selectedPet = useSelector((state: RootState) =>
-    state.petDonation.pets.find(pet => pet.id === petId),
+  const selectedPet = useAppSelector((state) =>
+    state.petDonation.pets.find((pet) => pet.id === petId)
   );
 
-  const userFavorites = useSelector((state: RootState) => state.user.user?.favorites);
+  const userFavorites = useAppSelector((state) => state.auth.user?.favorites);
   const [isFavorite, setIsFavorite] = useState(false);
 
-  // Use the custom hook to fetch user details
-  const { user: owner, loading: ownerLoading, error: ownerError } = useUserDetails(selectedPet?.id || '');
-
-  const navigation = useNavigation();
-
+  // Use the custom hook to fetch user details (pass userId instead of petId)
+const { user: owner, loading: ownerLoading, error: ownerError } = useUserDetails(selectedPet?.userId);
 
   useEffect(() => {
     if (userFavorites && petId) {
@@ -52,14 +48,13 @@ const PetDetails = () => {
       </View>
     );
   }
-
    const handleAdoptNowPress = async () => {
     const user = auth().currentUser;
     
     if (user && selectedPet) {
       const userId = user.uid;
   
-      dispatch(adoptPet(selectedPet.id));
+      dispatch(adoptedPet(selectedPet.id));
   
       try {
         const petRef = firestore().collection('pets').doc(selectedPet.id);
@@ -94,6 +89,7 @@ const PetDetails = () => {
       console.error('Error updating favorites in Firebase: ', error);
     }
   };
+  const navigation = useNavigation();
 
   const handleFavoritePress = (_petId: string) => {
     const userId = auth().currentUser;
@@ -136,7 +132,7 @@ console.log(owner)
           </View>
           <View style={styles.infoBox}>
             <Text style={styles.infoLabel}>Vaccine</Text>
-            <Text>{selectedPet.Vaccinated ? 'Yes' : 'No'}</Text>
+            <Text>{selectedPet.vaccinated ? 'Yes' : 'No'}</Text>
           </View>
         </View>
 

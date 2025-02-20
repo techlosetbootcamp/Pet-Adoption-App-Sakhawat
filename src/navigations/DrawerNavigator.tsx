@@ -101,7 +101,6 @@
 import React, { useState } from 'react';
 import { Alert, View, StyleSheet, TouchableOpacity } from 'react-native';
 import { createDrawerNavigator, DrawerContentScrollView, DrawerItemList, DrawerItem, DrawerContentComponentProps } from '@react-navigation/drawer';
-import { RootStackParamList } from './RootStackParamList';
 import TabNavigator from './TabNavigator';
 import Searchbar from '../components/search/Searchbar'; // Ensure correct import path
 import Favorites from '../screens/favorites/Favorites';
@@ -112,42 +111,30 @@ import UpdatePassword from '../screens/password/PasswordUpdate';
 import Mydonation from '../screens/myDonation/Mydonation';
 import auth from '@react-native-firebase/auth';
 import { useDispatch } from 'react-redux';
-import { logout } from '../redux/slices/authSlice';
 import Icon from 'react-native-vector-icons/MaterialIcons'; // Import icon library
+import { signOutUser } from '../redux/slices/authSlice';
+import { AppDispatch } from '../redux/store';
+import { useAppDispatch } from '../hooks/useSelector';
 
 const Drawer = createDrawerNavigator();
 
 const CustomDrawerContent: React.FC<DrawerContentComponentProps> = (props) => {
-  const dispatch = useDispatch();
+  const dispatch = useAppDispatch();
   const [searchQuery, setSearchQuery] = useState('');
 
   const handleSearch = (query: string) => {
     setSearchQuery(query);
     console.log('Search Query:', query);
   };
-
   const handleLogout = async () => {
-    Alert.alert(
-      'Logout',
-      'Are you sure you want to log out?',
-      [
-        { text: 'Cancel', style: 'cancel' },
-        {
-          text: 'Log Out',
-          style: 'destructive',
-          onPress: async () => {
-            try {
-              await auth().signOut();
-              dispatch(logout());
-            } catch (error) {
-              console.error('Logout Error:', error);
-            }
-          }
-        },
-      ]
-    );
+  
+    try {
+      await dispatch(signOutUser()); // ✅ Correct typing
+      console.log("Successfully logged out!");
+    } catch (error) {
+      console.error('Logout Error:', error);
+    }
   };
-
   return (
     <DrawerContentScrollView contentContainerStyle={styles.drawerContent}>
       {/* Cross icon to close the drawer */}

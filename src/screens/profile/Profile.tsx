@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, {useState, useEffect} from 'react';
 import {
   View,
   Text,
@@ -14,23 +14,18 @@ import {
 import useProfile from '../../hooks/useProfile';
 import Input from '../../components/input/Input';
 import Button from '../../components/buttons/Buttons';
-import { fetchUserData } from '../../redux/slices/authSlice';
-import { useDispatch, useSelector } from "react-redux";
-import { AppDispatch, RootState } from '../../redux/store';
+import {AppDispatch, RootState} from '../../redux/store';
+import firestore from '@react-native-firebase/firestore';
+import {updateProfile} from '../../redux/slices/authSlice';
+import {useAppDispatch} from '../../hooks/useSelector';
 
 export default function Profile() {
-  const dispatch = useDispatch<AppDispatch>();
-  const user = useSelector((state: RootState) => state.auth.user);
-  const { handleUpdateProfile, handleImageSelect } = useProfile();
+  const {user, handleUpdateProfile, handleImageSelect} = useProfile();
+  const dispatch = useAppDispatch();
 
   // State to store username and photoURL
   const [username, setUsername] = useState('');
   const [photoURL, setPhotoURL] = useState('');
-
-  // Fetch user data when component mounts
-  useEffect(() => {
-    dispatch(fetchUserData());
-  }, [dispatch]);
 
   // Update username and photoURL when user data changes
   useEffect(() => {
@@ -42,6 +37,21 @@ export default function Profile() {
 
   const onUpdateProfile = () => {
     handleUpdateProfile(username, photoURL);
+  };
+
+  const getImage = async () => {
+    const imageurl = await handleImageSelect();
+    if (imageurl) {
+      setPhotoURL(imageurl);
+    }
+    try {
+      if (user?.username && imageurl) {
+        dispatch(updateProfile({username: user?.username, photoURL: imageurl}));
+      }
+      console.log('imageUrl', imageurl);
+    } catch (error) {
+      console.log('error', error);
+    }
   };
 
   if (!user) {
@@ -66,22 +76,31 @@ export default function Profile() {
           {/* Profile Image */}
           <TouchableOpacity
             style={styles.profileImageContainer}
-            onPress={() => handleImageSelect(setPhotoURL)}>
+            onPress={getImage}>
             {photoURL ? (
-              <Image source={{ uri: photoURL }} style={styles.profileImage} />
+              <Image source={{uri: photoURL}} style={styles.profileImage} />
             ) : (
               <Text style={styles.placeholderText}>+</Text>
             )}
           </TouchableOpacity>
 
           {/* Input Fields */}
-          <Input label="Username" value={username} onChangeText={text => setUsername(text)} />
-          <Input label="Email" value={user.email || ''} editable={false} onChangeText={text => setUsername(text)} />
+          <Input
+            label="Username"
+            value={username}
+            onChangeText={text => setUsername(text)}
+          />
+          <Input
+            label="Email"
+            value={user.email || ''}
+            editable={false}
+            onChangeText={text => setUsername(text)}
+          />
 
           {/* Update Profile Button */}
           <Button title="Update Profile" onPress={onUpdateProfile} />
 
-          <View style={{ height: 30 }} />
+          <View style={{height: 30}} />
         </ScrollView>
       </KeyboardAvoidingView>
     </TouchableWithoutFeedback>

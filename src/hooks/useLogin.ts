@@ -6,10 +6,9 @@ import { AppDispatch } from '../redux/store';
 import { GoogleSignin } from '@react-native-google-signin/google-signin';
 import { RootStackParamList } from '../types/rootStackParamList';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
-import { GOOGLE_CLIENT_ID } from '@env';
-GoogleSignin.configure({
-  webClientId: GOOGLE_CLIENT_ID, // Your webClientId for Google Sign-In
-});
+import { useAppSelector } from './useSelector';
+import { Alert, ToastAndroid } from 'react-native';
+
 
 const useLogin = () => {
   const navigation = useNavigation<NativeStackNavigationProp<RootStackParamList>>(); // Navigation typing
@@ -20,7 +19,7 @@ const useLogin = () => {
   const [isChecked, setIsChecked] = useState(false);
   const [googleLoader, setGoogleLoader] = useState(false);
 
-  const { isLoading, error, user } = useSelector((state: any) => state.auth); // Fetch state from redux
+  const { isLoading, error, user } = useAppSelector((state) => state.auth); // Fetch state from redux
 
   // Handle email/password login
   const handleLogin = async () => {
@@ -51,6 +50,7 @@ const useLogin = () => {
     try {
       setGoogleLoader(true);
       const user = await onGoogleButtonPress(); // Handles Google login
+      ToastAndroid.show("Google Login clicked", ToastAndroid.LONG)
       dispatch(setUser(user)); // Store the logged-in user in Redux
     } catch (error) {
       console.error(error);
