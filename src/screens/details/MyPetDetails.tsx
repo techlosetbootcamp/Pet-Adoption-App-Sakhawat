@@ -95,7 +95,7 @@ const PetDetails = () => {
           </View>
           <View style={styles.infoBox}>
             <Text style={styles.infoLabel}>Vaccine</Text>
-            <Text>{selectedPet.Vaccinated ? 'Yes' : 'No'}</Text>
+            <Text>{selectedPet.vaccinated ? 'Yes' : 'No'}</Text>
             
           </View>
         </View>

@@ -3,12 +3,21 @@ import { View, Text, StyleSheet, KeyboardAvoidingView, ScrollView, Platform, Key
 import Input from '../../components/input/Input'; 
 import Buttons from '../../components/buttons/Buttons'; 
 import useRecoverPassword from '../../hooks/useRecoverPassword'; // Import custom hook
+import Ionicons from 'react-native-vector-icons/Ionicons';
+import { useNavigation } from '@react-navigation/native'; // Import navigation
+import { TouchableOpacity } from 'react-native'; // Import TouchableOpacity
 
 const RecoverPassword = () => {
   const { email, setEmail, handleRecoverPassword } = useRecoverPassword(); // Use the hook
+  const navigation = useNavigation(); // Get navigation object
 
   return (
     <KeyboardAvoidingView style={styles.container} behavior={Platform.OS === 'ios' ? 'padding' : undefined}>
+
+<TouchableOpacity onPress={() => navigation.goBack()}>
+  <Ionicons name="arrow-back" size={30} style={styles.backIcon} />
+</TouchableOpacity>
+      
       <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
         <ScrollView contentContainerStyle={styles.scrollContainer} keyboardShouldPersistTaps="handled">
           <Text style={styles.title}>Recover</Text>
@@ -63,6 +72,11 @@ const styles = StyleSheet.create({
     fontFamily: 'Montserrat',
     alignSelf: 'flex-start',
   },
+  backIcon: { top: 20, left: 20 ,
+    color:"black"
+    
+  },
+
   descriptionText: {
     fontFamily: 'Montserrat',
     fontSize: 14,

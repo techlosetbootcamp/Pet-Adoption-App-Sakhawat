@@ -11,106 +11,160 @@ import { toggleFavorite } from '../../redux/slices/favoritesSlice';
 import { useNavigation, useRoute } from '@react-navigation/native';
 import { adoptedPet } from '../../redux/slices/adoptedPetSlice';
 import { RouteProp } from '@react-navigation/native';
-import { RootStackParamList } from '../../navigations/RootStackParamList';
+import { RootStackParamList } from '../../types/rootStackParamList';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import firestore from '@react-native-firebase/firestore';
 import auth from '@react-native-firebase/auth';
-import useUserDetails from '../../hooks/usePetDetails'; // Import the custom hook
+import useUserDetails from '../../hooks/usePetDetails';
 import { useAppDispatch, useAppSelector } from '../../hooks/useSelector';
-
+import { Pet } from '../../types/pets';
+import { AdoptionRequest } from '../../types/adoptionRequest';
 
 type PetDetailsRouteProp = RouteProp<RootStackParamList, 'PetDetails'>;
+
 const PetDetails = () => {
   const route = useRoute<PetDetailsRouteProp>();
   const { petId } = route.params;
   const dispatch = useAppDispatch();
+  const navigation = useNavigation();
 
-  const selectedPet = useAppSelector((state) =>
-    state.petDonation.pets.find((pet) => pet.id === petId)
-  );
-
-  const userFavorites = useAppSelector((state) => state.auth.user?.favorites);
+  const [selectedPet, setSelectedPet] = useState<Pet | null>(null);
   const [isFavorite, setIsFavorite] = useState(false);
 
-  // Use the custom hook to fetch user details (pass userId instead of petId)
-const { user: owner, loading: ownerLoading, error: ownerError } = useUserDetails(selectedPet?.userId);
+  
+  useEffect(() => {
+    const user = auth().currentUser;
+    console.log("Current user:", user);
+  }, []);
 
   useEffect(() => {
-    if (userFavorites && petId) {
-      setIsFavorite(userFavorites.includes(petId));
-    }
+    const fetchPetDetails = async () => {
+      try {
+        console.error("No petId found in route params!");
+
+        const petDoc = await firestore().collection('pets').doc(petId).get();
+        if (petDoc.exists) {
+          console.log("Fetched pet details:", petDoc.data());
+
+          setSelectedPet(petDoc.data() as Pet);
+        }
+      } catch (error) {
+        console.error('Error fetching pet details:', error);
+      }
+    };
+    fetchPetDetails();
+  }, [petId]);
+
+  const userFavorites = useAppSelector((state) => state.auth.user?.favorites || []);
+
+  useEffect(() => {
+    setIsFavorite(userFavorites.includes(petId));
   }, [userFavorites, petId]);
+
+  const userId = selectedPet?.userId ?? '';
+  const { user: owner } = useUserDetails(userId);
+  
+  
+  
+  const handleAdoptNowPress = async () => {
+    const user = auth().currentUser;
+  
+    if (!user) {
+      return;
+    }
+  
+    try {
+      const petRef = firestore().collection('pets').doc(petId);
+
+      // Check if the pet exists
+      const petSnapshot = await petRef.get();
+      if (!petSnapshot.exists) {
+        return;
+      }
+      
+      const petData = petSnapshot.data(); // Now, petData is guaranteed to exist
+      
+      if (!petData) {
+        return;
+      }
+      
+      
+      // Update Firestore: Add user UID to adoptedBy array
+      await petRef.update({
+        adoptedBy: petData.adoptedBy ? firestore.FieldValue.arrayUnion(user.uid) : [user.uid],
+        adoptionDate: new Date().toISOString(),
+      });
+      console.log("✅ Firestore update successful!");
+  
+      // Dispatch Redux action
+      const adoptionRequest: AdoptionRequest = {
+        adopterName: user.displayName || 'Unknown',
+        adopterImage: user.photoURL || '',
+        adopterEmail: user.email || 'No Email',
+        adopterLocation: 'Unknown',
+        petName: petData.name,
+        petType: petData.type,
+        adoptionDate: new Date().toISOString(),
+      };
+  
+      console.log("📦 Dispatching adoption request:", adoptionRequest);
+      dispatch(adoptedPet(adoptionRequest));
+  
+      // Update local state
+      setSelectedPet((prev) =>
+        prev ? { ...prev, adoptedBy: [...(prev.adoptedBy || []), user.uid] } : null
+      );
+  
+      console.log("🎉 Adoption successful!");
+    } catch (error) {
+      console.error("❌ Error updating adoption in Firestore:", error);
+    }
+  };
+  
+  
+  const handleFavoritePress = async () => {
+    const user = auth().currentUser;
+    if (!user) return;
+  
+    const userRef = firestore().collection('users').doc(user.uid);
+    try {
+      if (isFavorite) {
+        // Remove petId from favorites
+        await userRef.update({
+          favorites: firestore.FieldValue.arrayRemove(petId),
+        });
+      } else {
+        // Add petId to favorites
+        await userRef.update({
+          favorites: firestore.FieldValue.arrayUnion(petId),
+        });
+      }
+  
+      // Dispatch Redux action
+      dispatch(toggleFavorite(petId));
+      setIsFavorite((prev) => !prev);
+    } catch (error) {
+      console.error('Error updating favorites in Firestore:', error);
+    }
+  };
 
   if (!selectedPet) {
     return (
       <View style={styles.container}>
-        <Text>No pet selected or loading...</Text>
+        <Text>Loading pet details...</Text>
       </View>
     );
   }
-   const handleAdoptNowPress = async () => {
-    const user = auth().currentUser;
-    
-    if (user && selectedPet) {
-      const userId = user.uid;
-  
-      dispatch(adoptedPet(selectedPet.id));
-  
-      try {
-        const petRef = firestore().collection('pets').doc(selectedPet.id);
-        await petRef.update({
-          adoptedBy: firestore.FieldValue.arrayUnion(userId),
-        });
-        console.log(`User ${userId} adopted pet ${selectedPet.name}`);      } catch (error) {
-        console.error('Error updating adoption in Firestore:', error);
-      }
-    }
-  };
+  console.log("🔍 Received petId:", petId);
 
-  const updateFavoritesInFirebase = async (petId: string, userId: string) => {
-    try {
-      const userRef = firestore().collection('users').doc(userId);
-      const userDoc = await userRef.get();
 
-      if (userDoc.exists) {
-        const currentFavorites = userDoc.data()?.favorites || [];
-        let updatedFavorites;
-
-        if (currentFavorites.includes(petId)) {
-          updatedFavorites = currentFavorites.filter((id: string) => id !== petId);
-        } else {
-          updatedFavorites = [...currentFavorites, petId];
-        }
-
-        await userRef.update({ favorites: updatedFavorites });
-        console.log('Favorites updated in Firebase');
-      }
-    } catch (error) {
-      console.error('Error updating favorites in Firebase: ', error);
-    }
-  };
-  const navigation = useNavigation();
-
-  const handleFavoritePress = (_petId: string) => {
-    const userId = auth().currentUser;
-    if (_petId && userId?.uid) {
-      dispatch(toggleFavorite(_petId));
-      setIsFavorite(!isFavorite);
-      updateFavoritesInFirebase(_petId, userId.uid);
-    }
-  };
-console.log(owner)
   return (
     <ScrollView contentContainerStyle={styles.container}>
-<TouchableOpacity onPress={() => navigation.goBack()}>
-  <Ionicons name="arrow-back" size={30} color="#FFFFFF" style={styles.backIcon} />
-</TouchableOpacity>
-<TouchableOpacity style={styles.favoriteIcon} onPress={() => handleFavoritePress(selectedPet.id)}>
-        <Ionicons
-          name={isFavorite ? 'heart' : 'heart-outline'}
-          size={30}
-          color={isFavorite ? 'red' : 'black'}
-        />
+      <TouchableOpacity onPress={() => navigation.goBack()}>
+        <Ionicons name="arrow-back" size={30} color="#FFFFFF" style={styles.backIcon} />
+      </TouchableOpacity>
+      <TouchableOpacity style={styles.favoriteIcon} onPress={handleFavoritePress}>
+        <Ionicons name={isFavorite ? 'heart' : 'heart-outline'} size={30} color={isFavorite ? 'red' : 'black'} />
       </TouchableOpacity>
       <View style={styles.petCard}>
         <Text style={styles.petName}>{selectedPet.name}</Text>
@@ -137,19 +191,17 @@ console.log(owner)
         </View>
 
         <View style={styles.ownerInfo}>
-          {owner?.photoURL && (
-            <Image source={{ uri: owner.photoURL }} style={styles.ownerImage} />
-          )}
+          {owner?.photoURL && <Image source={{ uri: owner.photoURL }} style={styles.ownerImage} />}
           <Text style={styles.ownerName}>{owner?.username || 'Unknown User'}</Text>
           <Text style={styles.ownerRole}>Owner</Text>
         </View>
 
         <Text style={styles.description}>{selectedPet.description}</Text>
-<Text style={styles.location}>{selectedPet.location}<Ionicons name="location-outline" size={14} color="red" /></Text>
+        <Text style={styles.location}>
+          {selectedPet.location} <Ionicons name="location-outline" size={14} color="red" />
+        </Text>
 
-        <TouchableOpacity
-          style={styles.adoptButton}
-          onPress={handleAdoptNowPress}>
+        <TouchableOpacity style={styles.adoptButton} onPress={handleAdoptNowPress}>
           <Text style={styles.adoptButtonText}>Adopt Now</Text>
         </TouchableOpacity>
       </View>
@@ -165,25 +217,23 @@ const styles = StyleSheet.create({
     height: 450,
     width: '100%',
     bottom: 0,
-    borderTopLeftRadius: 40, // Keeps top-left rounded
-    borderTopRightRadius: 40, // Keeps top-right rounded
-    borderBottomLeftRadius: 0, // Removes bottom-left radius
-    borderBottomRightRadius: 0, // Removes bottom-right radius
+    borderTopLeftRadius: 40,
+    borderTopRightRadius: 40,
     padding: 20,
     shadowColor: '#000',
     shadowOpacity: 0.1,
     shadowRadius: 10,
-},
-  petName: { fontSize: 28, fontWeight: 'bold',top:30, },
+  },
+  petName: { fontSize: 28, fontWeight: 'bold', top: 30 },
   price: {
     fontSize: 30,
     color: '#ff9800',
     fontWeight: 'bold',
-    alignSelf: 'flex-end',  // Moves it to the end of its container
-    textAlign: 'right',  // Align text to the right
-    marginLeft: 'auto',  // Pushes it to the right
-  },  
-  type: { fontSize: 20, color: '#666', left:5, },
+    alignSelf: 'flex-end',
+    textAlign: 'right',
+    marginLeft: 'auto',
+  },
+  type: { fontSize: 20, color: '#666', left: 5 },
   infoContainer: { flexDirection: 'row', flexWrap: 'wrap', marginBottom: 15 },
   infoBox: {
     backgroundColor: '#fdebd0',
@@ -193,25 +243,19 @@ const styles = StyleSheet.create({
     flex: 1,
     alignItems: 'center',
   },
-  infoLabel: { fontSize: 12, fontWeight: 'bold', marginBottom: 3, color: '#ff9800', },
+  infoLabel: { fontSize: 12, fontWeight: 'bold', marginBottom: 3, color: '#ff9800' },
   ownerInfo: { flexDirection: 'row', alignItems: 'center', marginBottom: 10 },
-  ownerName: { fontSize: 16,top:-10, fontWeight: 'bold' },
-  ownerRole: { fontSize: 14, color: '#888', left:-80,top:10, },
+  ownerName: { fontSize: 16, top: -10, fontWeight: 'bold' },
+  ownerRole: { fontSize: 14, color: '#888', left: -80, top: 10 },
   description: { fontSize: 18, color: '#555', marginBottom: 20 },
-  ownerImage: {
-    width: 40,
-    height: 40,
-    borderRadius: 20,
-    marginRight: 10,
-    
-  },
+  ownerImage: { width: 40, height: 40, borderRadius: 20, marginRight: 10 },
   location: {
     top: 220,
-    alignSelf: 'flex-end', // Moves it to the right
-    textAlign: 'right', // Ensures text aligns to the right
-    right: 20, // Pushes it to the far right
+    alignSelf: 'flex-end',
+    textAlign: 'right',
+    right: 20,
     position: 'absolute',
-    fontSize:20, // Ensures it stays in the right position
+    fontSize: 20,
   },
   adoptButton: {
     backgroundColor: '#111',
@@ -225,11 +269,7 @@ const styles = StyleSheet.create({
   },
   favoriteIcon: { position: 'absolute', top: 20, right: 20, zIndex: 1 },
   adoptButtonText: { color: '#fff', fontSize: 18, fontWeight: 'bold' },
-  backIcon:{
-top:20,
-left:20,
-  }
+  backIcon: { top: 20, left: 20 },
 });
 
 export default PetDetails;
- 

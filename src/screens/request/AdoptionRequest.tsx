@@ -2,6 +2,7 @@ import React from 'react';
 import { View, Text, FlatList, StyleSheet, Image, TouchableOpacity, ActivityIndicator, Linking } from 'react-native';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import { useFetchAdoptionRequests } from '../../hooks/useAdoptionRequests';
+import Buttons from '../../components/buttons/Buttons';
 
 export default function AdoptionRequest() {
   const { requests, loading, error } = useFetchAdoptionRequests(); // ✅ Corrected function call
@@ -53,9 +54,15 @@ export default function AdoptionRequest() {
                 <Text style={styles.date}>{item.adoptionDate}</Text>
               </View>
             </View>
-            <TouchableOpacity style={styles.contactButton} onPress={() => handleEmailPress(item.adopterEmail)}>
-              <Text style={styles.contactText}>Contact</Text>
-            </TouchableOpacity>
+            <Buttons
+  title="Contact"
+  onPress={() => handleEmailPress(item.adopterEmail)}
+  textStyle={styles.contactText}
+  buttonStyle={{
+    height: "30%",
+    width: "100%",
+  }}
+/>
           </View>
         )}
       />,
@@ -82,12 +89,5 @@ const styles = StyleSheet.create({
   email: { fontSize: 12, color: '#888', marginTop: 5 },
   location: { fontSize: 12, color: '#666', marginLeft: 5 },
   date: { fontSize: 12, color: '#999', marginTop: 5 },
-  contactButton: {
-    backgroundColor: '#111',
-    padding: 10,
-    borderRadius: 10,
-    alignItems: 'center',
-    marginTop: 10,
-  },
   contactText: { color: '#fff', fontSize: 16, fontWeight: 'bold' },
 });

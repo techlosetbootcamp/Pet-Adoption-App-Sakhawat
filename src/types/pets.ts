@@ -14,7 +14,10 @@ export type Pet = {
   weight?: number; // Optional: Weight of the pet in kilograms or pounds
   vaccinated?: boolean; // Optional: Whether the pet is vaccinated
   userName?: string;
-  userId:string; // Optional: Name of the user who owns or listed the pet
+  userId:string;
+  user:string;
+  adoptedBy?: string[];  // ✅ Add this line
+  // Optional: Name of the user who owns or listed the pet
 };
 
 // Define a type for the list of pets

@@ -1,11 +1,36 @@
-import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
+import { createSlice, createAsyncThunk, PayloadAction } from '@reduxjs/toolkit';
 import firestore from '@react-native-firebase/firestore';
-import { RootState } from '../store'; // Import RootState to access current user from Redux
+import { RootState } from '../store';
 
 interface AdoptionRequestsState {
-  requests: any[];
+  requests: AdoptionRequest[];
   loading: boolean;
   error: string | null;
+}
+
+interface AdoptionRequest {
+  adopterName: string;
+  adopterImage: string;
+  adopterEmail: string;
+  adopterLocation: string;
+  petName: string;
+  petType: string;
+  adoptionDate: string;
+}
+
+interface Pet {
+  name: string;
+  type: string;
+  userId: string;
+  adoptedBy?: string[];
+  adoptionDate?: string;
+}
+
+interface User {
+  username?: string;
+  photoURL?: string;
+  email?: string;
+  location?: string;
 }
 
 const initialState: AdoptionRequestsState = {
@@ -18,7 +43,6 @@ export const fetchAdoptionRequests = createAsyncThunk(
   'adoptionRequests/fetchAdoptionRequests',
   async (_, { getState, rejectWithValue }) => {
     try {
-      // ✅ Get the current logged-in user from Redux
       const state = getState() as RootState;
       const currentUser = state.auth.user;
 
@@ -26,33 +50,37 @@ export const fetchAdoptionRequests = createAsyncThunk(
         return rejectWithValue('User not authenticated.');
       }
 
-      const petsSnapshot = await firestore().collection('pets').get();
-      const requestsData: any[] = [];
+      // ✅ Fetch only pets owned by the current user
+      const petsSnapshot = await firestore()
+        .collection('pets')
+        .where('userId', '==', currentUser.uid)
+        .get();
+
+      const requestsData: AdoptionRequest[] = [];
 
       for (const petDoc of petsSnapshot.docs) {
-        const petData = petDoc.data();
+        const petData = petDoc.data() as Pet;
 
-        // ✅ Check if the current user is the owner of the pet
-        if (petData.userId === currentUser.uid) {
-          if (petData.adoptedBy && petData.adoptedBy.length > 0) {
-            for (const adopterId of petData.adoptedBy) {
-              const adopterDoc = await firestore().collection('users').doc(adopterId).get();
-              if (adopterDoc.exists) {
-                const adopterData = adopterDoc.data();
-                requestsData.push({
-                  adopterName: adopterData?.username || 'Unknown',
-                  adopterImage: adopterData?.photoURL || 'Unknown',
-                  adopterEmail: adopterData?.email || 'No Email',
-                  adopterLocation: adopterData?.location || 'Unknown',
-                  petName: petData.name,
-                  petType: petData.type,
-                  adoptionDate: petData.adoptionDate || 'Unknown',
-                });
-              }
+        if (petData.adoptedBy && petData.adoptedBy.length > 0) {
+          for (const adopterId of petData.adoptedBy) {
+            const adopterDoc = await firestore().collection('users').doc(adopterId).get();
+
+            if (adopterDoc.exists) {
+              const adopterData = adopterDoc.data() as User;
+              requestsData.push({
+                adopterName: adopterData.username || 'Unknown',
+                adopterImage: adopterData.photoURL || '',
+                adopterEmail: adopterData.email || 'No Email',
+                adopterLocation: adopterData.location || 'Unknown',
+                petName: petData.name,
+                petType: petData.type,
+                adoptionDate: petData.adoptionDate || 'Unknown',
+              });
             }
           }
         }
       }
+
       return requestsData;
     } catch (error) {
       console.error('Error fetching adoption requests:', error);
@@ -65,7 +93,7 @@ const adoptedPetSlice = createSlice({
   name: 'adoptedPets',
   initialState,
   reducers: {
-    adoptedPet: (state, action) => {
+    adoptedPet: (state, action: PayloadAction<AdoptionRequest>) => {
       state.requests.push(action.payload);
     },
   },
@@ -86,6 +114,6 @@ const adoptedPetSlice = createSlice({
   },
 });
 
-export const { adoptedPet } = adoptedPetSlice.actions;
+export const { adoptedPet} = adoptedPetSlice.actions;
 
 export default adoptedPetSlice.reducer;

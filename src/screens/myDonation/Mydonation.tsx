@@ -88,7 +88,7 @@ const styles = StyleSheet.create({
     backgroundColor: '#fff',
     padding: 15,
     borderRadius: 10,
-    marginBottom: 10,
+    marginBottom: 60,
     alignItems: 'center',
     justifyContent: 'space-between',
     shadowColor: '#000',
@@ -97,6 +97,7 @@ const styles = StyleSheet.create({
     elevation: 3,
     height:130,
     top:35,
+    
   },
   image: {
     width: 170,

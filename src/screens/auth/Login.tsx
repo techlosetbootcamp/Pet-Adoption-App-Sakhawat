@@ -1,9 +1,18 @@
-// Login.js
 import React from 'react';
-import { View, Text, StyleSheet, KeyboardAvoidingView, ScrollView, Platform, Keyboard, TouchableWithoutFeedback } from 'react-native';
+import { 
+  View, 
+  Text, 
+  StyleSheet, 
+  KeyboardAvoidingView, 
+  ScrollView, 
+  Platform, 
+  Keyboard, 
+  TouchableWithoutFeedback 
+} from 'react-native';
 import Input from '../../components/input/Input'; 
 import Buttons from '../../components/buttons/Buttons'; 
 import useLogin from '../../hooks/useLogin'; // Import custom hook
+import CheckBox from 'react-native-check-box';
 
 const Login = () => {
   const {
@@ -16,16 +25,22 @@ const Login = () => {
     handleLogin,
     handleForgotPassword,
     handleSignUp,
-    handleCheckBox,
+    handleCheckBox, // Use this function to toggle checkbox
     GooglePress,
     isLoading,
     error,
   } = useLogin(); // Use custom hook
 
   return (
-    <KeyboardAvoidingView style={styles.container} behavior={Platform.OS === 'ios' ? 'padding' : undefined}>
+    <KeyboardAvoidingView 
+      style={styles.container} 
+      behavior={Platform.OS === 'ios' ? 'padding' : undefined}
+    >
       <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
-        <ScrollView contentContainerStyle={styles.scrollContainer} keyboardShouldPersistTaps="handled">
+        <ScrollView 
+          contentContainerStyle={styles.scrollContainer} 
+          keyboardShouldPersistTaps="handled"
+        >
           <Text style={styles.title}>Login</Text>
 
           {/* Email Input */}
@@ -49,8 +64,14 @@ const Login = () => {
             Forgot Password?
           </Text>
 
-          {/* Checkbox and Text */}
+          {/* Checkbox and Terms Agreement */}
           <View style={styles.checkboxContainer}>
+            <CheckBox
+              isChecked={isChecked}
+              onClick={handleCheckBox} // Toggle checkbox state
+              checkBoxColor="    color: '#333',
+ "
+            />
             <Text style={styles.checkboxText}>
               I agree to the{' '}
               <Text style={styles.linkText}>Terms of Service</Text> and{' '}
@@ -139,11 +160,13 @@ const styles = StyleSheet.create({
   checkboxText: {
     fontSize: 14,
     color: '#333',
-    fontFamily: 'Montserrat',
+     fontFamily: 'Montserrat',
     flexShrink: 1,
+    marginLeft: 8, // Add spacing between checkbox and text
   },
   linkText: {
     textDecorationLine: 'underline',
+    color: '#333',
   },
   errorText: {
     color: 'red',
@@ -154,4 +177,3 @@ const styles = StyleSheet.create({
 });
 
 export default Login;
-

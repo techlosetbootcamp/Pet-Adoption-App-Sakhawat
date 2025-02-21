@@ -4,6 +4,7 @@ import Ionicons from 'react-native-vector-icons/Ionicons';
 import { useNavigation, NavigationProp } from '@react-navigation/native';
 import { RootStackParamList } from '../../navigations/RootStackParamList';
 import useFavorites from '../../hooks/useFavorite';
+import Card from '../../components/cards/Card';
 
 const FavoritesScreen = () => {
   const navigation = useNavigation<NavigationProp<RootStackParamList>>();
@@ -14,7 +15,7 @@ const FavoritesScreen = () => {
   };
 
   const renderItem = ({ item }: { item: any }) => (
-    <TouchableOpacity onPress={() => handleNavigate(item)} style={styles.card}>
+    <Card onPress={() => handleNavigate(item)}>
       <Image source={{ uri: item.image }} style={styles.petImage} />
       <View style={styles.infoContainer}>
                    <Text style={styles.petName}>{item.name}</Text>
@@ -24,7 +25,7 @@ const FavoritesScreen = () => {
       
                  </View>
       <Ionicons name="heart" size={20} color="red" style={styles.heartIcon} />
-    </TouchableOpacity>
+    </Card>
   );
 
   return (
@@ -63,20 +64,7 @@ const styles = StyleSheet.create({
     right: 10,
   },
 
-  card: {
-    flexDirection: 'row',
-    backgroundColor: '#fff',
-    padding: 15,
-    borderRadius: 10,
-    marginVertical: 8,
-    shadowColor: '#000',
-    shadowOpacity: 0.4,
-    shadowRadius: 10,
-    elevation: 5,
-    height: 130,
-    width: '100%',
-    top:30,
-  },
+  
 
   petImage: {
     width: 190,

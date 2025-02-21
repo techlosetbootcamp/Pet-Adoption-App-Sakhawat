@@ -21,3 +21,4 @@ export interface PetData {
     status: 'idle' | 'loading' | 'succeeded' | 'failed';
     error: string | null;
   };
+
