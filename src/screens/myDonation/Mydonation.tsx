@@ -4,8 +4,8 @@ import Ionicons from 'react-native-vector-icons/Ionicons';
 import { useSelector } from 'react-redux';
 import { useNavigation } from '@react-navigation/native';
 import { StackNavigationProp } from '@react-navigation/stack';
-import { RootStackParamList } from '../../navigations/AppNavigator';
-import useMyDonation from '../../hooks/useMyDonations'; // Adjust the path as needed
+import { RootStackParamList } from '../../types/rootStackParamList';
+import useMyDonation from '../../hooks/useMyDonations'; 
 import firestore from '@react-native-firebase/firestore';
 
 interface RootState {

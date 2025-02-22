@@ -26,12 +26,11 @@ const useFavorites = () => {
         console.error('Error fetching real-time favorites:', error);
       });
 
-    dispatch(fetchPets()); // Ensure we have the latest pet list
+    dispatch(fetchPets()); 
 
-    return () => unsubscribe(); // Cleanup listener on unmount
+    return () => unsubscribe(); 
   }, [dispatch]);
 
-  // Filter pets based on real-time favorite IDs
   const favoritePets = allPets.filter((pet) => favoritePetIds.includes(pet.id));
 
   return favoritePets;

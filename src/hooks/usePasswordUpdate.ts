@@ -24,7 +24,6 @@ const usePasswordUpdate = () => {
         return;
       }
 
-      // Reauthenticate user with their current password
       const credential = auth.EmailAuthProvider.credential(
         user.email,
         currentPassword
@@ -32,17 +31,17 @@ const usePasswordUpdate = () => {
 
       await user.reauthenticateWithCredential(credential);
 
-      // Update password in Firebase Authentication
       await user.updatePassword(newPassword);
 
-      console.log('Password updated successfully!');
       setError('');
       setCurrentPassword('');
       setNewPassword('');
       setConfirmNewPassword('');
-    } catch (err: any) {
-      console.error('Error updating password:', err);
-      setError(err.message || 'Failed to update password. Please try again.');
+    } catch (err) {
+      if(err instanceof Error) {
+        console.error('Error updating password:', err);
+        setError(err.message || 'Failed to update password. Please try again.');
+      }
     } finally {
       setLoading(false);
     }

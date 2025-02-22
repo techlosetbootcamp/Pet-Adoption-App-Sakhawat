@@ -8,12 +8,12 @@ import {
   TouchableOpacity,
   Image,
 } from 'react-native';
-import Search from '../../components/search/Searchbar'; // Ensure correct path
+import Search from '../../components/search/Searchbar';
 import {useSearch} from '../../hooks/useSearch';
 import {useDispatch, useSelector} from 'react-redux';
 import {RootState} from '../../redux/store';
-import {useNavigation, NavigationProp} from '@react-navigation/native'; // Import useNavigation and NavigationProp
-import {RootStackParamList} from '../../navigations/RootStackParamList'; // Import RootStackParamList
+import {useNavigation, NavigationProp} from '@react-navigation/native'; 
+import {RootStackParamList} from '../../types/rootStackParamList';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import { useAppSelector } from '../../hooks/useSelector';
 import Card from '../../components/cards/Card';
@@ -28,13 +28,13 @@ export default function SearchScreen() {
    const userFavorites = useSelector((state: RootState) => state.auth.user?.favorites);
     const [isFavorite, setIsFavorite] = useState(false);
   
-  const navigation = useNavigation<NavigationProp<RootStackParamList>>(); // Initialize navigation with type
+  const navigation = useNavigation<NavigationProp<RootStackParamList>>(); 
 
 
   
   const handleSearch = (searchText: string) => {
     -setQuery(searchText);
-    searchPets(searchText, selectedFilter); // Filter by selected category
+    searchPets(searchText, selectedFilter); 
   };
   
 
@@ -63,7 +63,6 @@ export default function SearchScreen() {
         ))}
       </View>
 
-      {/* Display Results */}
       {loading && <ActivityIndicator size="large" color="#0000ff" />}
       {error && <Text style={styles.errorText}>{error}</Text>}
 
@@ -77,13 +76,12 @@ export default function SearchScreen() {
           
           
           <Card
-          onPress={() => navigation.navigate('PetDetails', {petId: item.id})} // Navigate to PetDetails
+          onPress={() => navigation.navigate('PetDetails', {petId: item.id})} 
           >
          <View style={styles.petImage}>
         <Image source={{ uri: item.image }} style={styles.petImage} />
       </View>
 
-            {/* Pet Info */}
             <View style={styles.infoContainer}>
               <Text style={styles.petName}>{item.name}</Text>
               <Text>Age {item.age} Months</Text>

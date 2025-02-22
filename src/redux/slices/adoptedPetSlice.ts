@@ -1,6 +1,10 @@
 import { createSlice, createAsyncThunk, PayloadAction } from '@reduxjs/toolkit';
 import firestore from '@react-native-firebase/firestore';
 import { RootState } from '../store';
+import { AdoptionRequest } from '../../types/adoptionRequest';
+import { Pet } from '../../types/pets';
+import { User } from '../../types/user';
+
 
 interface AdoptionRequestsState {
   requests: AdoptionRequest[];
@@ -8,30 +12,6 @@ interface AdoptionRequestsState {
   error: string | null;
 }
 
-interface AdoptionRequest {
-  adopterName: string;
-  adopterImage: string;
-  adopterEmail: string;
-  adopterLocation: string;
-  petName: string;
-  petType: string;
-  adoptionDate: string;
-}
-
-interface Pet {
-  name: string;
-  type: string;
-  userId: string;
-  adoptedBy?: string[];
-  adoptionDate?: string;
-}
-
-interface User {
-  username?: string;
-  photoURL?: string;
-  email?: string;
-  location?: string;
-}
 
 const initialState: AdoptionRequestsState = {
   requests: [],
@@ -50,7 +30,6 @@ export const fetchAdoptionRequests = createAsyncThunk(
         return rejectWithValue('User not authenticated.');
       }
 
-      // ✅ Fetch only pets owned by the current user
       const petsSnapshot = await firestore()
         .collection('pets')
         .where('userId', '==', currentUser.uid)

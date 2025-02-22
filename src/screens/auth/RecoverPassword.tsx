@@ -1,15 +1,15 @@
 import React from 'react';
-import { View, Text, StyleSheet, KeyboardAvoidingView, ScrollView, Platform, Keyboard, TouchableWithoutFeedback } from 'react-native';
+import {  Text, StyleSheet, KeyboardAvoidingView, ScrollView, Platform, Keyboard, TouchableWithoutFeedback } from 'react-native';
 import Input from '../../components/input/Input'; 
 import Buttons from '../../components/buttons/Buttons'; 
-import useRecoverPassword from '../../hooks/useRecoverPassword'; // Import custom hook
+import useRecoverPassword from '../../hooks/useRecoverPassword'; 
 import Ionicons from 'react-native-vector-icons/Ionicons';
-import { useNavigation } from '@react-navigation/native'; // Import navigation
-import { TouchableOpacity } from 'react-native'; // Import TouchableOpacity
+import { useNavigation } from '@react-navigation/native';
+import { TouchableOpacity } from 'react-native';
 
 const RecoverPassword = () => {
-  const { email, setEmail, handleRecoverPassword } = useRecoverPassword(); // Use the hook
-  const navigation = useNavigation(); // Get navigation object
+  const { email, setEmail, handleRecoverPassword } = useRecoverPassword(); 
+  const navigation = useNavigation();
 
   return (
     <KeyboardAvoidingView style={styles.container} behavior={Platform.OS === 'ios' ? 'padding' : undefined}>
@@ -23,7 +23,6 @@ const RecoverPassword = () => {
           <Text style={styles.title}>Recover</Text>
           <Text style={styles.title1}>Password</Text>
 
-          {/* Email Input */}
           <Input
             label="Email"
             value={email}
@@ -31,12 +30,10 @@ const RecoverPassword = () => {
             keyboardType="email-address"
           />
 
-          {/* Description Text */}
           <Text style={styles.descriptionText}>
             Put your email above to get a recovery URL.
           </Text>
 
-          {/* Recover Button */}
           <Buttons
             title="Recover"
             onPress={handleRecoverPassword}
@@ -97,4 +94,3 @@ const styles = StyleSheet.create({
 export default RecoverPassword;
 
 
-// react-native check box

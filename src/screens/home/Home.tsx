@@ -32,7 +32,7 @@ const Home = () => {
     handleNavigateToDetails,
   } = useHome();
 
-  const renderPet = ({item}: {item: Pet}) => (
+  const RenderPet = ({item}: {item: Pet}) => (
     <TouchableOpacity onPress={() => handleNavigateToDetails(item)}>
       <PetCard>
         <View style={styles.petDetails}>
@@ -46,7 +46,6 @@ const Home = () => {
   );
 
   const user = useAppSelector(store => store.auth.user);
-  console.log(user);
 
   return (
     <KeyboardAvoidingView
@@ -62,7 +61,6 @@ const Home = () => {
         <View style={styles.search}>
           <Search onSearch={handleSearch} />
         </View>
-        {/* Circular Image Section */}
         <View style={styles.imageContainer}>
           <Image source={images.dog} style={styles.circularImage} />
           <Image source={images.cat} style={styles.circularImage} />
@@ -70,7 +68,6 @@ const Home = () => {
           <Image source={images.bird} style={styles.circularImage} />
           <Image source={images.turtles} style={styles.circularImage} />
         </View>
-        {/* Filter Section */}
         <FlatList
           data={filters}
           horizontal
@@ -95,9 +92,7 @@ const Home = () => {
           )}
         />
 
-        {/* Search Bar */}
 
-        {/* Pet List */}
         <View style={styles.forYouSection}>
           <Text style={styles.sectionTitle}>For You</Text>
           {status === 'loading' ? (
@@ -105,12 +100,11 @@ const Home = () => {
           ) : error ? (
             <Text>Error: {error}</Text>
           ) : (
-            <ScrollView style={styles.petListContainer}>
+            <ScrollView>
               <FlatList
                 data={filteredPets}
                 keyExtractor={item => item.id}
-                renderItem={renderPet}
-                scrollEnabled={false} // Disable FlatList's scrolling
+                renderItem={RenderPet}
               />
             </ScrollView>
           )}
@@ -174,12 +168,9 @@ const styles = StyleSheet.create({
   selectedFilterText: {
     color: '#fff',
   },
-  petListContainer: {
-    maxHeight: 400, // Adjust this value based on how much space you want for pets list
-  },
   forYouSection: {
     marginTop: 30,
-    marginBottom: 20, // Added margin to avoid clipping at the bottom
+    marginBottom: 20, 
   },
   imageContainer: {
     flexDirection: 'row',

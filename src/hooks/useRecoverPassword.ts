@@ -1,7 +1,6 @@
-// useRecoverPassword.js
 import { useState } from 'react';
 import { Alert } from 'react-native';
-import auth from '@react-native-firebase/auth'; // Correct import for Firebase Auth
+import auth from '@react-native-firebase/auth'; 
 
 const useRecoverPassword = () => {
   const [email, setEmail] = useState('');

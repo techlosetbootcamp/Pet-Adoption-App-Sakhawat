@@ -7,14 +7,13 @@ import {
   Image,
   Alert,
 } from 'react-native';
-import { useSelector, useDispatch } from 'react-redux';
-import { RootState, store } from '../../redux/store';
 import { useRoute, useNavigation } from '@react-navigation/native';
 import { RouteProp } from '@react-navigation/native';
-import { RootStackParamList } from '../../navigations/RootStackParamList';
+import { RootStackParamList } from '../../types/rootStackParamList';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import firestore from '@react-native-firebase/firestore';
 import useUserDetails from '../../hooks/usePetDetails';
+import { useAppDispatch, useAppSelector } from '../../hooks/useSelector';
 
 type PetDetailsRouteProp = RouteProp<RootStackParamList, 'PetDetails'>;
 
@@ -22,9 +21,9 @@ const PetDetails = () => {
   const route = useRoute<PetDetailsRouteProp>();
   const navigation = useNavigation();
   const { petId } = route.params;
-  const dispatch = useDispatch<typeof store.dispatch>();
+  const dispatch = useAppDispatch();
 
-  const selectedPet = useSelector((state: RootState) =>
+  const selectedPet = useAppSelector((state) =>
     state.petDonation.pets.find(pet => pet.id === petId),
   );
 
@@ -123,10 +122,8 @@ const styles = StyleSheet.create({
     height: 450,
     width: '100%',
     bottom: 0,
-    borderTopLeftRadius: 40, // Keeps top-left rounded
-    borderTopRightRadius: 40, // Keeps top-right rounded
-    borderBottomLeftRadius: 0, // Removes bottom-left radius
-    borderBottomRightRadius: 0, // Removes bottom-right radius
+    borderTopLeftRadius: 40,
+    borderTopRightRadius: 40, 
     padding: 20,
     shadowColor: '#000',
     shadowOpacity: 0.1,
@@ -137,9 +134,9 @@ const styles = StyleSheet.create({
     fontSize: 30,
     color: '#ff9800',
     fontWeight: 'bold',
-    alignSelf: 'flex-end',  // Moves it to the end of its container
-    textAlign: 'right',  // Align text to the right
-    marginLeft: 'auto',  // Pushes it to the right
+    alignSelf: 'flex-end',
+    textAlign: 'right',  
+    marginLeft: 'auto', 
   },
     type: { fontSize: 20, color: '#666', left:5, },
   infoContainer: { flexDirection: 'row', flexWrap: 'wrap', marginBottom: 15 },
@@ -166,11 +163,11 @@ const styles = StyleSheet.create({
   },
   location: {
     top: 220,
-    alignSelf: 'flex-end', // Moves it to the right
-    textAlign: 'right', // Ensures text aligns to the right
-    right: 20, // Pushes it to the far right
+    alignSelf: 'flex-end',
+    textAlign: 'right', 
+    right: 20, 
     position: 'absolute',
-    fontSize:20, // Ensures it stays in the right position
+    fontSize:20, 
   },
     deleteIcon: { position: 'absolute', top: 20, right: 20, zIndex: 1 },
   backIcon:{

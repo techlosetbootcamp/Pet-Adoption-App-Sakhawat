@@ -34,7 +34,6 @@ const PetDetails = () => {
   
   useEffect(() => {
     const user = auth().currentUser;
-    console.log("Current user:", user);
   }, []);
 
   useEffect(() => {
@@ -44,7 +43,6 @@ const PetDetails = () => {
 
         const petDoc = await firestore().collection('pets').doc(petId).get();
         if (petDoc.exists) {
-          console.log("Fetched pet details:", petDoc.data());
 
           setSelectedPet(petDoc.data() as Pet);
         }
@@ -82,14 +80,12 @@ const PetDetails = () => {
         return;
       }
       
-      const petData = petSnapshot.data(); // Now, petData is guaranteed to exist
-      
+      const petData = petSnapshot.data(); 
       if (!petData) {
         return;
       }
       
       
-      // Update Firestore: Add user UID to adoptedBy array
       await petRef.update({
         adoptedBy: petData.adoptedBy ? firestore.FieldValue.arrayUnion(user.uid) : [user.uid],
         adoptionDate: new Date().toISOString(),
@@ -107,10 +103,8 @@ const PetDetails = () => {
         adoptionDate: new Date().toISOString(),
       };
   
-      console.log("📦 Dispatching adoption request:", adoptionRequest);
       dispatch(adoptedPet(adoptionRequest));
   
-      // Update local state
       setSelectedPet((prev) =>
         prev ? { ...prev, adoptedBy: [...(prev.adoptedBy || []), user.uid] } : null
       );
@@ -129,18 +123,15 @@ const PetDetails = () => {
     const userRef = firestore().collection('users').doc(user.uid);
     try {
       if (isFavorite) {
-        // Remove petId from favorites
         await userRef.update({
           favorites: firestore.FieldValue.arrayRemove(petId),
         });
       } else {
-        // Add petId to favorites
         await userRef.update({
           favorites: firestore.FieldValue.arrayUnion(petId),
         });
       }
   
-      // Dispatch Redux action
       dispatch(toggleFavorite(petId));
       setIsFavorite((prev) => !prev);
     } catch (error) {
@@ -155,7 +146,6 @@ const PetDetails = () => {
       </View>
     );
   }
-  console.log("🔍 Received petId:", petId);
 
 
   return (

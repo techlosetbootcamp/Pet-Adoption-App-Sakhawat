@@ -16,7 +16,6 @@ interface PetDetailsState {
   error: string | null;
 }
 
-// Initial state
 const initialState: PetDetailsState = {
   selectedPet: null,
   userDetails: null,
@@ -24,7 +23,6 @@ const initialState: PetDetailsState = {
   error: null,
 };
 
-// Async thunk to fetch user details
 export const fetchUserDetails = createAsyncThunk<UserDetails, string, { rejectValue: string }>(
   'petDetails/fetchUserDetails',
   async (userId, { rejectWithValue }) => {
@@ -49,9 +47,9 @@ const petDetailsSlice = createSlice({
   reducers: {
     setSelectedPet: (state, action: PayloadAction<Pet>) => {
       state.selectedPet = action.payload;
-      state.userDetails = null; // Reset user details when a new pet is selected
-      state.loading = false; // Reset loading state
-      state.error = null; // Reset error state
+      state.userDetails = null; 
+      state.loading = false; 
+      state.error = null; 
     },
     clearSelectedPet: (state) => {
       state.selectedPet = null;

@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import { useDispatch } from 'react-redux';
 import type { AppDispatch } from '../redux/store';
-import { updateUser, setUser, fetchUserData, updateProfile } from '../redux/slices/authSlice';
+import {  fetchUserData, updateProfile } from '../redux/slices/authSlice';
 import { launchImageLibrary } from 'react-native-image-picker';
 import RNFS from 'react-native-fs';
 import { useAppSelector } from './useSelector';
@@ -12,7 +12,7 @@ export const useProfile = () => {
   const [localPhoto, setLocalPhoto] = useState(user?.photoURL || '');
 
   useEffect(() => {
-    dispatch(fetchUserData()); // Fetch user details on mount
+    dispatch(fetchUserData());
   }, [dispatch]);
 
   const handleUpdateProfile = (username: string, photoURL: string) => {

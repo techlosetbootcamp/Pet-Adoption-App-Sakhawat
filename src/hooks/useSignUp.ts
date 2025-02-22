@@ -1,7 +1,6 @@
-// useSignUp.ts
 import { useState } from 'react';
 import { useDispatch } from 'react-redux';
-import { registerUser } from '../redux/slices/authSlice'; // Import the action
+import { registerUser } from '../redux/slices/authSlice';
 import { AppDispatch } from '../redux/store';
 import { useNavigation } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
@@ -16,7 +15,6 @@ const useSignUp = () => {
   const [password, setPassword] = useState('');
   const [errorMessage, setErrorMessage] = useState('');
 
-  // Handle Sign Up
   const handleSignUp = async () => {
     if (!username || !email || !password) {
       setErrorMessage('Please fill all fields.');

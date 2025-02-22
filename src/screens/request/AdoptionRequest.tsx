@@ -1,11 +1,10 @@
 import React from 'react';
-import { View, Text, FlatList, StyleSheet, Image, TouchableOpacity, ActivityIndicator, Linking } from 'react-native';
-import Ionicons from 'react-native-vector-icons/Ionicons';
+import { View, Text, FlatList, StyleSheet, Image, ActivityIndicator, Linking } from 'react-native';
 import { useFetchAdoptionRequests } from '../../hooks/useAdoptionRequests';
 import Buttons from '../../components/buttons/Buttons';
 
 export default function AdoptionRequest() {
-  const { requests, loading, error } = useFetchAdoptionRequests(); // ✅ Corrected function call
+  const { requests, loading, error } = useFetchAdoptionRequests(); 
 
   if (loading) {
     return (
@@ -44,15 +43,13 @@ export default function AdoptionRequest() {
               <View>
                 <Text style={styles.name}>{item.adopterName}</Text>
                 <Text style={styles.petInfo}>
-                  {item.petName} • {item.petType}
+                  {item.petName} • {item.petType}  
                 </Text>
                 <Text style={styles.email}>{item.adopterEmail}</Text>
-                
                 <View style={styles.row}>
-                  <Ionicons name="location-outline" size={16} color="red" />
                 </View>
-                <Text style={styles.date}>{item.adoptionDate}</Text>
-              </View>
+                <Text style={styles.date}>{item.adoptionDate.split('T')[0]}</Text>
+                </View>
             </View>
             <Buttons
   title="Contact"

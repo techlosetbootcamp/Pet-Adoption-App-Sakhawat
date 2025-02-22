@@ -4,7 +4,8 @@ import { useAppDispatch, useAppSelector } from './useSelector';
 import { fetchPets, setSelectedPet } from '../redux/slices/petDonationSlice';
 import { useSearch } from './useSearch';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
-import { RootStackParamList } from '../navigations/RootStackParamList';
+import { RootStackParamList } from '../types/rootStackParamList';
+import { Pet } from '../types/pets';
 
 const filters = [ 'Dog', 'Cat', 'Bunny', 'Bird', 'Turtle'];
 
@@ -31,7 +32,7 @@ export const useHome = () => {
     searchPets(query, filter.toLowerCase());
   };
 
-  const handleNavigateToDetails = (pet: any) => {
+  const handleNavigateToDetails = (pet: Pet) => {
     dispatch(setSelectedPet(pet));
     navigation.navigate('PetDetails', { petId: pet.id });
   };

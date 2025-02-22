@@ -1,20 +1,21 @@
 import React from 'react';
-import { View, Text, FlatList, StyleSheet, Image, TouchableOpacity } from 'react-native';
+import { View, Text, FlatList, StyleSheet, Image} from 'react-native';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import { useNavigation, NavigationProp } from '@react-navigation/native';
-import { RootStackParamList } from '../../navigations/RootStackParamList';
+import { RootStackParamList } from '../../types/rootStackParamList';
 import useFavorites from '../../hooks/useFavorite';
 import Card from '../../components/cards/Card';
+import { Pet } from '../../types/pets';
 
 const FavoritesScreen = () => {
   const navigation = useNavigation<NavigationProp<RootStackParamList>>();
   const favoritePets = useFavorites();
 
-  const handleNavigate = (pet: any) => {
-    navigation.navigate('PetDetails', { petId: pet.id }); // Pass pet ID
+  const handleNavigate = (pet:Pet) => {
+    navigation.navigate('PetDetails', { petId: pet.id }); 
   };
 
-  const renderItem = ({ item }: { item: any }) => (
+  const renderItem = ({ item }: { item:Pet }) => (
     <Card onPress={() => handleNavigate(item)}>
       <Image source={{ uri: item.image }} style={styles.petImage} />
       <View style={styles.infoContainer}>

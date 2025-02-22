@@ -14,8 +14,6 @@ import {
 import useProfile from '../../hooks/useProfile';
 import Input from '../../components/input/Input';
 import Button from '../../components/buttons/Buttons';
-import {AppDispatch, RootState} from '../../redux/store';
-import firestore from '@react-native-firebase/firestore';
 import {updateProfile} from '../../redux/slices/authSlice';
 import {useAppDispatch} from '../../hooks/useSelector';
 
@@ -23,11 +21,9 @@ export default function Profile() {
   const {user, handleUpdateProfile, handleImageSelect} = useProfile();
   const dispatch = useAppDispatch();
 
-  // State to store username and photoURL
   const [username, setUsername] = useState('');
   const [photoURL, setPhotoURL] = useState('');
 
-  // Update username and photoURL when user data changes
   useEffect(() => {
     if (user) {
       setUsername(user.username || '');
@@ -48,9 +44,7 @@ export default function Profile() {
       if (user?.username && imageurl) {
         dispatch(updateProfile({username: user?.username, photoURL: imageurl}));
       }
-      console.log('imageUrl', imageurl);
     } catch (error) {
-      console.log('error', error);
     }
   };
 
@@ -84,7 +78,6 @@ export default function Profile() {
             )}
           </TouchableOpacity>
 
-          {/* Input Fields */}
           <Input
             label="Username"
             value={username}
@@ -97,7 +90,6 @@ export default function Profile() {
             onChangeText={text => setUsername(text)}
           />
 
-          {/* Update Profile Button */}
           <Button title="Update Profile" onPress={onUpdateProfile} />
 
           <View style={{height: 30}} />

@@ -7,7 +7,6 @@ import { AppDispatch } from '../redux/store';
 export const useFetchAdoptionRequests = () => {
   const dispatch = useDispatch<AppDispatch>();
 
-  // ✅ Use `useAppSelector` to get current user and requests
   const { requests, loading, error } = useAppSelector((state) => state.adoptedPet);
   const currentUser = useAppSelector((state) => state.auth.user);
 

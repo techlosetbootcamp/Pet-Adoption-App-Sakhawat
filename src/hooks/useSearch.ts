@@ -1,6 +1,4 @@
 import { useState } from 'react';
-import { getFirestore } from 'firebase/firestore';
-import { collection, getDocs, query, where } from 'firebase/firestore';
 import firestore from '@react-native-firebase/firestore'
 import { useAppDispatch } from './useSelector';
 import { setFilter } from '../redux/slices/filterSlice';
@@ -21,29 +19,24 @@ export const useSearch = () => {
     setError(null);
 
     try {
-      // Validate the inputs
       if (!searchText.trim()) {
         setError('Search text cannot be empty');
         return;
       }
   
-      // Firestore query (using the android setup)
       const q = firestore()
         .collection('pets')
         .where('name', '>=', searchText)
         .where('name', '<=', searchText + '\uf8ff')
   
-      // Get the query snapshot
       const snapshot = await q.get();
   
-      // Check if results exist
       if (snapshot.empty) {
         setError('No pets found matching the search criteria.');
         return;
       }
   
       
-      // Process the results and set them to the state
       const resultsData: Pet[] = snapshot.docs.map((doc) => ({
         ...(doc.data() as Pet),
         id: doc.id,
@@ -51,7 +44,7 @@ export const useSearch = () => {
   
       setResults(resultsData);
     } catch (error) {
-      console.error('Firestore fetch error:', error); // Log the actual error to debug
+      console.error('Firestore fetch error:', error); 
       setError('Failed to fetch pets.');
     } finally {
       setLoading(false);
@@ -65,7 +58,6 @@ export const useSearch = () => {
     querySnapshot.forEach((doc) => {
       pets.push({ ...(doc.data() as Pet), id: doc.id });
     });
-    console.log(pets);
     return pets;
   }
 

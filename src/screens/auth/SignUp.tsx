@@ -5,7 +5,7 @@ import {
 } from 'react-native';
 import Input from '../../components/input/Input';
 import Buttons from '../../components/buttons/Buttons';
-import useSignUp from '../../hooks/useSignUp'; // Import the custom hook
+import useSignUp from '../../hooks/useSignUp'; 
 import CheckBox from 'react-native-check-box';
 
 const SignUp = () => {
@@ -19,9 +19,7 @@ const SignUp = () => {
     setPassword,
     handleSignUp,
     handleLoginRedirect,
-  } = useSignUp(); // Use the custom hook
-
-  // ✅ Manage checkbox state
+  } = useSignUp(); 
   const [isChecked, setIsChecked] = useState(false);
 
   return (
@@ -36,12 +34,11 @@ const SignUp = () => {
           <Input label="Email" value={email} onChangeText={setEmail} keyboardType="email-address" />
           <Input label="Password" value={password} onChangeText={setPassword} secureTextEntry />
 
-          {/* ✅ Checkbox and Terms Agreement */}
           <View style={styles.checkboxContainer}>
             <CheckBox
               isChecked={isChecked}
-              onClick={() => setIsChecked(!isChecked)} // Toggle checkbox state
-              checkBoxColor="#333" // Fixed color
+              onClick={() => setIsChecked(!isChecked)} 
+              checkBoxColor="#333" 
             />
             <Text style={styles.checkboxText}>
               I agree to the{' '}
@@ -85,7 +82,7 @@ const styles = StyleSheet.create({
     color: '#333',
     fontFamily: 'Montserrat',
     flexShrink: 1,
-    marginLeft: 8, // Add spacing between checkbox and text
+    marginLeft: 8,
   },
   linkText: {
     textDecorationLine: 'underline',

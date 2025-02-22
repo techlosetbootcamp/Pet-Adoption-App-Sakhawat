@@ -5,7 +5,7 @@ interface FilterState {
 }
 
 const initialState: FilterState = {
-  category: 'Dog', // Default category
+  category: 'Dog', 
 };
 
 const filterSlice = createSlice({
@@ -13,7 +13,6 @@ const filterSlice = createSlice({
   initialState,
   reducers: {
     setFilter: (state, action: PayloadAction<string>) => {
-      console.log('Setting filter:', action.payload);
       state.category = action.payload;
     },
   },

@@ -4,33 +4,23 @@ import firestore from '@react-native-firebase/firestore';
 import {AppDispatch, RootState} from '../store';
 import {GoogleSignin} from '@react-native-google-signin/google-signin';
 import {GOOGLE_CLIENT_ID} from '@env';
-
+import {User} from '../../types/user'
 GoogleSignin.configure({
-  webClientId: GOOGLE_CLIENT_ID, // Your webClientId for Google Sign-In
+  webClientId: GOOGLE_CLIENT_ID, 
 });
 
-// User Interface
-export interface User {
-  uid: string;
-  username: string;
-  email: string | null;
-  photoURL: string | null;
-  favorites: string[];
-}
 export interface SignUpPayload {
   username: string | undefined;
   email: string;
   password: string;
 }
 
-// Auth State Interface
 export interface AuthState {
   isLoading: boolean;
   error: string | null;
   user: User | null;
 }
 
-// Initial State
 const initialState: AuthState = {
   isLoading: false,
   error: null,
@@ -43,8 +33,7 @@ export const onGoogleButtonPress = async () => {
     await GoogleSignin.signOut();
 
     const signInResponse = await GoogleSignin.signIn();
-    const idToken = signInResponse?.data?.idToken; // Correct way to access idToken
-
+    const idToken = signInResponse?.data?.idToken; 
     if (!idToken) {
       throw new Error('Google Sign-In failed: idToken is null.');
     }
@@ -52,7 +41,6 @@ export const onGoogleButtonPress = async () => {
     const googleCredential = auth.GoogleAuthProvider.credential(idToken);
     const authResponse = await auth().signInWithCredential(googleCredential);
     const {uid, email, displayName, photoURL} = authResponse.user;
-    console.log('in sign-google - 6', uid);
 
     if (!auth().currentUser) {
       throw new Error('User authentication failed.');
@@ -91,28 +79,29 @@ export const fetchUserData = createAsyncThunk(
       if (user) {
         const userRef = firestore().collection('users').doc(user.uid);
 
-        // Listen for real-time updates using onSnapshot
         const unsubscribe = userRef.onSnapshot((doc) => {
           if (doc.exists) {
             const userData = {
               uid: user.uid,
               username: doc.data()?.username || '',
               email: user.email,
-              photoURL: doc.data()?.photoURL || null, // Fetching from Firestore
+              photoURL: doc.data()?.photoURL || null,
               favorites: doc.data()?.favorites || [],
             };
 
-            // Dispatch setUser to update Redux store
-            dispatch(setUser(userData));
+            dispatch(setUser(userData as User));
           }
         });
 
-        return () => unsubscribe(); // Cleanup listener when component unmounts
+        return () => unsubscribe(); 
       }
 
       return null;
-    } catch (error: any) {
-      return rejectWithValue(error?.message || 'Failed to fetch current user.');
+    } catch (error) {
+      if (error instanceof Error) {
+        
+        return rejectWithValue(error?.message || 'Failed to fetch current user.');
+      }
     }
   }
 );
@@ -125,18 +114,13 @@ export const updateProfile = createAsyncThunk(
   ) => {
     const currentUser = auth().currentUser;
     if (!currentUser) return rejectWithValue('No user logged in');
-    console.log('CurrentUser', currentUser);
     try {
-      // Update Firebase Auth display name
-      // await currentUser.updateProfile({displayName: username, photoURL});
-
-      // Update Firestore with the new username & photoURL
+      
       await firestore()
         .collection('users')
         .doc(currentUser.uid)
         .set({username, photoURL}, {merge: true});
 
-      // Update Redux store
       return {username, photoURL};
     } catch (error) {
       return rejectWithValue('Failed to update profile');
@@ -144,7 +128,6 @@ export const updateProfile = createAsyncThunk(
   },
 );
 
-// Async register action
 export const registerUser = createAsyncThunk(
   'auth/registerUser',
   async (
@@ -171,10 +154,6 @@ export const registerUser = createAsyncThunk(
           favorites: [],
         });
 
-        console.log('User registered successfully!', {
-          username,
-          email: user.email,
-        });
 
         return {
           uid: user.uid,
@@ -186,13 +165,16 @@ export const registerUser = createAsyncThunk(
       } else {
         throw new Error('User creation failed.');
       }
-    } catch (error: any) {
-      return rejectWithValue(error?.message || 'Registration failed.');
+    } catch (error) {
+      if(error instanceof Error){
+
+        return rejectWithValue(error?.message || 'Registration failed.');
+
+      }
     }
   },
 );
 
-// Async login action
 export const loginUser = createAsyncThunk(
   'auth/loginUser',
   async (
@@ -219,26 +201,30 @@ export const loginUser = createAsyncThunk(
         photoURL: userCredential.user.photoURL || '',
         favorites: userDoc.data()?.favorites || [],
       };
-    } catch (error: any) {
-      return rejectWithValue(error?.message || 'Login failed.');
+    } catch (error) {
+      if(error instanceof Error){
+
+        return rejectWithValue(error?.message || 'Login failed.');
+      }
     }
   },
 );
 
-// Async sign-out action
 export const signOutUser = createAsyncThunk(
   'auth/signOutUser',
   async (_, {rejectWithValue}) => {
     try {
       await auth().signOut();
       return null;
-    } catch (error: any) {
+    } catch (error) {
+      if(error instanceof Error){
+
       return rejectWithValue(error?.message || 'Sign-out failed.');
+      }
     }
   },
 );
 
-// Auth Slice
 const authSlice = createSlice({
   name: 'auth',
   initialState,
@@ -283,7 +269,6 @@ const authSlice = createSlice({
           state.user.photoURL = action.payload.photoURL;
           state.user.username = action.payload.username;
         }
-        console.log(state.user)
         state.isLoading = true;
         state.error = null;
       })

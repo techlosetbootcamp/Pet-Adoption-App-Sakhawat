@@ -1,4 +1,4 @@
-export interface AdoptionRequest {
+export type AdoptionRequest= {
     adopterName: string;
     adopterImage: string;
     adopterEmail: string;

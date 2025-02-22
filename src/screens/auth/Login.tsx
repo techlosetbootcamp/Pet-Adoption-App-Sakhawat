@@ -11,7 +11,7 @@ import {
 } from 'react-native';
 import Input from '../../components/input/Input'; 
 import Buttons from '../../components/buttons/Buttons'; 
-import useLogin from '../../hooks/useLogin'; // Import custom hook
+import useLogin from '../../hooks/useLogin'; 
 import CheckBox from 'react-native-check-box';
 
 const Login = () => {
@@ -25,11 +25,11 @@ const Login = () => {
     handleLogin,
     handleForgotPassword,
     handleSignUp,
-    handleCheckBox, // Use this function to toggle checkbox
+    handleCheckBox, 
     GooglePress,
     isLoading,
     error,
-  } = useLogin(); // Use custom hook
+  } = useLogin(); 
 
   return (
     <KeyboardAvoidingView 
@@ -43,7 +43,6 @@ const Login = () => {
         >
           <Text style={styles.title}>Login</Text>
 
-          {/* Email Input */}
           <Input
             label="Email"
             value={email}
@@ -51,7 +50,6 @@ const Login = () => {
             keyboardType="email-address"
           />
 
-          {/* Password Input */}
           <Input
             label="Password"
             value={password}
@@ -59,16 +57,14 @@ const Login = () => {
             secureTextEntry
           />
 
-          {/* Forgot Password */}
           <Text style={styles.forgotPasswordText} onPress={handleForgotPassword}>
             Forgot Password?
           </Text>
 
-          {/* Checkbox and Terms Agreement */}
           <View style={styles.checkboxContainer}>
             <CheckBox
               isChecked={isChecked}
-              onClick={handleCheckBox} // Toggle checkbox state
+              onClick={handleCheckBox} 
               checkBoxColor="    color: '#333',
  "
             />
@@ -79,10 +75,8 @@ const Login = () => {
             </Text>
           </View>
 
-          {/* Error Message */}
           {error && <Text style={styles.errorText}>{error}</Text>}
 
-          {/* Login Button */}
           <Buttons
             title="Login"
             onPress={handleLogin}
@@ -91,7 +85,6 @@ const Login = () => {
             textStyle={{ color: '#FFF', fontSize: 18 }}
           />
 
-          {/* Sign Up Button */}
           <Buttons
             title="Sign Up"
             onPress={handleSignUp}
@@ -100,19 +93,12 @@ const Login = () => {
             textStyle={{ color: '#101C1D', fontSize: 18 }}
           />
 
-          {/* Google Sign-In Button */}
           <Buttons
             title={googleLoader ? 'Loading...' : 'Sign in with Google'}
             onPress={GooglePress}
             isLoading={isLoading}
-            buttonStyle={{
-              backgroundColor: '#DB4437',
-              width: 200,
-              marginTop: 20,
-              flexDirection: 'row',
-              alignItems: 'center',
-              justifyContent: 'center',
-            }}
+            buttonStyle={{ backgroundColor: '#101C1D', width: 200 }}
+            
             textStyle={{ color: '#FFF', fontSize: 18 }}
           />
         </ScrollView>
@@ -162,7 +148,7 @@ const styles = StyleSheet.create({
     color: '#333',
      fontFamily: 'Montserrat',
     flexShrink: 1,
-    marginLeft: 8, // Add spacing between checkbox and text
+    marginLeft: 8,
   },
   linkText: {
     textDecorationLine: 'underline',

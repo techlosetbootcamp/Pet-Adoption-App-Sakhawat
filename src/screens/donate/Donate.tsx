@@ -1,12 +1,11 @@
 import React, { useState } from 'react';
-import { View, Text, StyleSheet, ScrollView, Image, Alert, TouchableOpacity } from 'react-native';
+import { View, Text, StyleSheet, ScrollView, Image, Alert, TouchableOpacity, ToastAndroid } from 'react-native';
 import { useDispatch, useSelector } from 'react-redux';
 import { addPet, selectPhoto } from '../../redux/slices/petDonationSlice';
 import { AppDispatch, RootState } from '../../redux/store';
 import Input from '../../components/input/Input';
 import Dropdown from '../../components/input/Dropdown';
 import Button from '../../components/buttons/Buttons';
-import  Picker  from '@react-native-picker/picker';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 
 
@@ -18,7 +17,8 @@ const Donate: React.FC = () => {
     type: '',
     breed: '',
     amount: '',
-    vaccinated: '',
+    vaccinated: true,
+    userId:'',
     gender: '',
     weight: '',
     location: '',
@@ -58,18 +58,19 @@ const Donate: React.FC = () => {
         age: Number(pet.age),
         amount: Number(pet.amount),
         weight: Number(pet.weight),
-        image: pet.image || '',
-        photoURL: pet.image || '', // Add this line
+        image: pet.image || '', 
+        userId: pet.userId,
       })).unwrap();
   
-      Alert.alert('Success', 'Pet donated successfully!');
+      ToastAndroid.show('Pet donated successfully!', ToastAndroid.LONG);
       setPet({
         name: '',
         age: '',
         type: '',
         breed: '',
         amount: '',
-        vaccinated: '',
+        userId:'',
+        vaccinated: true,
         gender: '',
         weight: '',
         location: '',
@@ -113,7 +114,6 @@ const Donate: React.FC = () => {
       <Input label="Location" value={pet.location} onChangeText={(value) => handleChange('location', value)} />
       <Input label="Description" value={pet.description} multiline onChangeText={(value) => handleChange('description', value)} />
       
-      {/* Image Upload Box */}
       <TouchableOpacity onPress={handleImagePicker} style={styles.uploadBox}>
         {pet.image ? (
           <Image source={{ uri: pet.image }} style={styles.uploadedImage} />
