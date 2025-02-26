@@ -67,7 +67,6 @@ export default function Profile() {
           showsVerticalScrollIndicator={false}>
           <Text style={styles.title}>Profile Settings</Text>
 
-          {/* Profile Image */}
           <TouchableOpacity
             style={styles.profileImageContainer}
             onPress={getImage}>

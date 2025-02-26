@@ -98,7 +98,7 @@ const Donate: React.FC = () => {
 
       <Dropdown
         label="Vaccinated"
-        selectedValue={pet.vaccinated}
+        selectedValue={pet.vaccinated ? "Yes" : "No"}
         onValueChange={(value) => handleChange('vaccinated', value)}
         options={["Yes", "No"]}
       />

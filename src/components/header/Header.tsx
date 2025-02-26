@@ -5,7 +5,7 @@ import Ionicons from 'react-native-vector-icons/Ionicons';
 import { useNavigation } from '@react-navigation/native';
 import useHeader from '../../hooks/useHeader';
 import { DrawerNavigationProp } from '@react-navigation/drawer';
-import { RootStackParamList } from '../../navigations/RootStackParamList';
+import { RootStackParamList } from '../../types/rootStackParamList';
 
 const Header = () => {
     const navigation = useNavigation<DrawerNavigationProp<RootStackParamList>>();

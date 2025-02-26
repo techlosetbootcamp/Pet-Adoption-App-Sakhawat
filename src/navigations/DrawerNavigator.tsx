@@ -11,9 +11,12 @@ import Request from '../screens/request/AdoptionRequest';
 import UpdatePassword from '../screens/password/PasswordUpdate';
 import Mydonation from '../screens/myDonation/Mydonation';
 import Icon from 'react-native-vector-icons/MaterialIcons'; 
-import { signOutUser } from '../redux/slices/authSlice';
+import { setUser, signOutUser } from '../redux/slices/authSlice';
 import { useAppDispatch } from '../hooks/useSelector';
-
+import auth from '@react-native-firebase/auth';
+import { useNavigation } from '@react-navigation/native';
+import { RootStackParamList } from '../types/rootStackParamList';
+import { StackNavigationProp } from '@react-navigation/stack';
 const Drawer = createDrawerNavigator();
 
 const CustomDrawerContent: React.FC<DrawerContentComponentProps> = (props) => {
@@ -24,13 +27,13 @@ const CustomDrawerContent: React.FC<DrawerContentComponentProps> = (props) => {
     setSearchQuery(query);
   };
   const handleLogout = async () => {
-  
     try {
-      await dispatch(signOutUser()); 
+      await dispatch(signOutUser());
     } catch (error) {
-      console.error('Logout Error:', error);
+      console.error("Logout Error: ", error);
     }
   };
+  
   return (
     <DrawerContentScrollView contentContainerStyle={styles.drawerContent}>
       <TouchableOpacity
@@ -50,7 +53,7 @@ const CustomDrawerContent: React.FC<DrawerContentComponentProps> = (props) => {
       <View style={styles.logoutContainer}>
         <DrawerItem
           label="Log Out"
-          onPress={handleLogout}
+          onPress={handleLogout }
           labelStyle={styles.logoutLabel}
         />
       </View>

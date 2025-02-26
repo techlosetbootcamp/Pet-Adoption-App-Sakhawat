@@ -11,6 +11,7 @@ import {
   TouchableOpacity,
   ScrollView,
   Image,
+  ImageBackground,
 } from 'react-native';
 import Search from '../../components/search/Searchbar';
 import Header from '../../components/header/Header';
@@ -35,12 +36,15 @@ const Home = () => {
   const RenderPet = ({item}: {item: Pet}) => (
     <TouchableOpacity onPress={() => handleNavigateToDetails(item)}>
       <PetCard>
+        <ImageBackground source={{ uri: item.image }} style={styles.petImage}>
         <View style={styles.petDetails}>
           <Text style={styles.petName}>{item.name}</Text>
+
           <Text style={styles.petType}>{item.type}</Text>
           <Text style={styles.petInfo}>Age: {item.age} months</Text>
           <Text style={styles.petprice}> ${item.amount}</Text>
         </View>
+        </ImageBackground>
         </PetCard>
     </TouchableOpacity>
   );
@@ -48,11 +52,80 @@ const Home = () => {
   const user = useAppSelector(store => store.auth.user);
 
   return (
-    <KeyboardAvoidingView
-      style={styles.container}
-      behavior={Platform.OS === 'ios' ? 'padding' : undefined}>
-      <Header />
-      <ScrollView>
+//     <KeyboardAvoidingView
+//       style={styles.container}
+//       behavior={Platform.OS === 'ios' ? 'padding' : undefined}>
+//       <Header />
+//       <ScrollView>
+//         <View style={styles.title}>
+//           <Text style={styles.newText1}>Find an</Text>
+//           <Text style={styles.newText3}> Awesome</Text>
+//           <Text style={styles.newText2}>Pets for You</Text>
+//         </View>
+//         <View style={styles.search}>
+//           <Search onSearch={handleSearch} />
+//         </View>
+//         <View style={styles.imageContainer}>
+//           <Image source={images.dog} style={styles.circularImage} />
+//           <Image source={images.cat} style={styles.circularImage} />
+//           <Image source={images.bunny} style={styles.circularImage} />
+//           <Image source={images.bird} style={styles.circularImage} />
+//           <Image source={images.turtles} style={styles.circularImage} />
+//         </View>
+//         <FlatList
+//           data={filters}
+//           horizontal
+//           showsHorizontalScrollIndicator={false}
+//           keyExtractor={item => item}
+//           contentContainerStyle={styles.filterContainer}
+//           renderItem={({item}) => (
+//             <TouchableOpacity
+//               style={[
+//                 styles.filterButton,
+//                 selectedFilter === item && styles.selectedFilter,
+//               ]}
+//               onPress={() => handleFilterSelect(item)}>
+//               <Text
+//                 style={[
+//                   styles.filterText,
+//                   selectedFilter === item && styles.selectedFilterText,
+//                 ]}>
+//                 {item}
+//               </Text>
+//             </TouchableOpacity>
+//           )}
+//         />
+
+
+//         <View style={styles.forYouSection}>
+//           <Text style={styles.sectionTitle}>For You</Text>
+//           {status === 'loading' ? (
+//             <ActivityIndicator size="large" color="#101C1D" />
+//           ) : error ? (
+//             <Text>Error: {error}</Text>
+//           ) : (
+//             <ScrollView>
+//               <FlatList
+//                 data={filteredPets}
+//                 keyExtractor={item => item.id}
+//                 renderItem={RenderPet}
+//               />
+//             </ScrollView>
+//           )}
+//         </View>
+//       </ScrollView>
+//     </KeyboardAvoidingView>
+//   );
+// };
+
+<KeyboardAvoidingView
+  style={styles.container}
+  behavior={Platform.OS === 'ios' ? 'padding' : undefined}
+>
+  <FlatList
+    ListHeaderComponent={
+      <>
+        <Header />
         <View style={styles.title}>
           <Text style={styles.newText1}>Find an</Text>
           <Text style={styles.newText3}> Awesome</Text>
@@ -74,45 +147,49 @@ const Home = () => {
           showsHorizontalScrollIndicator={false}
           keyExtractor={item => item}
           contentContainerStyle={styles.filterContainer}
-          renderItem={({item}) => (
+          renderItem={({ item }) => (
             <TouchableOpacity
               style={[
                 styles.filterButton,
                 selectedFilter === item && styles.selectedFilter,
               ]}
-              onPress={() => handleFilterSelect(item)}>
+              onPress={() => handleFilterSelect(item)}
+            >
               <Text
                 style={[
                   styles.filterText,
                   selectedFilter === item && styles.selectedFilterText,
-                ]}>
+                ]}
+              >
                 {item}
               </Text>
             </TouchableOpacity>
           )}
         />
-
-
         <View style={styles.forYouSection}>
           <Text style={styles.sectionTitle}>For You</Text>
-          {status === 'loading' ? (
-            <ActivityIndicator size="large" color="#101C1D" />
-          ) : error ? (
-            <Text>Error: {error}</Text>
-          ) : (
-            <ScrollView>
-              <FlatList
-                data={filteredPets}
-                keyExtractor={item => item.id}
-                renderItem={RenderPet}
-              />
-            </ScrollView>
-          )}
         </View>
-      </ScrollView>
-    </KeyboardAvoidingView>
-  );
-};
+      </>
+    }
+    data={filteredPets}
+    keyExtractor={item => item.id}
+    renderItem={RenderPet}
+    ListEmptyComponent={
+      status === 'loading' ? (
+        <ActivityIndicator size="large" color="#101C1D" />
+      ) : error ? (
+        <Text>Error: {error}</Text>
+      ) : (
+        <Text>No pets found</Text>
+      )
+    }
+  />
+</KeyboardAvoidingView>
+);
+} 
+
+
+
 
 const styles = StyleSheet.create({
   container: {
@@ -142,6 +219,11 @@ const styles = StyleSheet.create({
     fontSize: 40,
     fontWeight: '800',
     color: '#101C1D',
+  },
+  petImage: {
+    width: "100%", 
+    borderRadius: 10,
+
   },
   filterContainer: {
     flexDirection: 'row',
@@ -195,6 +277,8 @@ const styles = StyleSheet.create({
   },
   
   petDetails: {
+    backgroundColor: 'rgba(0,0,0,0.3)',
+    
     flex: 1,
   },
   petprice: {
@@ -203,6 +287,8 @@ const styles = StyleSheet.create({
     fontWeight: '700',
     marginBottom: 5,
     left: 15,
+    color: 'white',
+
   },
   petName: {
     fontFamily: 'Montserrat',

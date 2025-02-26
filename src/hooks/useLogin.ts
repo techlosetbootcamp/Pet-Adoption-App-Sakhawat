@@ -5,6 +5,7 @@ import { RootStackParamList } from '../types/rootStackParamList';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { useAppDispatch, useAppSelector } from './useSelector';
 import {  ToastAndroid } from 'react-native';
+import { User } from '../types/user';
 
 
 const useLogin = () => {
@@ -16,7 +17,7 @@ const useLogin = () => {
   const [isChecked, setIsChecked] = useState(false);
   const [googleLoader, setGoogleLoader] = useState(false);
 
-  const { isLoading, error, user } = useAppSelector((state) => state.auth); // Fetch state from redux
+  const { isLoading, error, user } = useAppSelector((state) => state.auth); 
 
   const handleLogin = async () => {
     if (!email || !password) {
@@ -43,7 +44,7 @@ const useLogin = () => {
       setGoogleLoader(true);
       const user = await onGoogleButtonPress(); 
       ToastAndroid.show("Google Login clicked", ToastAndroid.LONG)
-      dispatch(setUser(user));
+      dispatch(setUser(user as User));
     } catch (error) {
       console.error(error);
     } finally {

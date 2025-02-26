@@ -1,7 +1,7 @@
 import {createSlice, createAsyncThunk, PayloadAction} from '@reduxjs/toolkit';
 import auth from '@react-native-firebase/auth';
 import firestore from '@react-native-firebase/firestore';
-import {AppDispatch, RootState} from '../store';
+import { RootState} from '../store';
 import {GoogleSignin} from '@react-native-google-signin/google-signin';
 import {GOOGLE_CLIENT_ID} from '@env';
 import {User} from '../../types/user'
@@ -215,10 +215,8 @@ export const signOutUser = createAsyncThunk(
   async (_, {rejectWithValue}) => {
     try {
       await auth().signOut();
-      return null;
     } catch (error) {
       if(error instanceof Error){
-
       return rejectWithValue(error?.message || 'Sign-out failed.');
       }
     }
@@ -249,7 +247,9 @@ const authSlice = createSlice({
       })
       .addCase(registerUser.fulfilled, (state, action) => {
         state.isLoading = false;
-        state.user = action.payload;
+        if (action.payload) { 
+          state.user = action.payload;
+        }
       })
       .addCase(registerUser.rejected, (state, action) => {
         state.isLoading = false;
@@ -274,7 +274,9 @@ const authSlice = createSlice({
       })
       .addCase(loginUser.fulfilled, (state, action) => {
         state.isLoading = false;
-        state.user = action.payload;
+        if (action.payload) { 
+          state.user = action.payload;
+        }
       })
       .addCase(loginUser.rejected, (state, action) => {
         state.isLoading = false;

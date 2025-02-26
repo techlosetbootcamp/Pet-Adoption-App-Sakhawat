@@ -2,8 +2,8 @@ export type User= {
     uid: string;
     favorites: string[];
     username?: string;
-    photoURL?: string;
-    email?: string;
+    photoURL: string | null;
+    email: string | null;
     location?: string;
   }
   export type userData= {
