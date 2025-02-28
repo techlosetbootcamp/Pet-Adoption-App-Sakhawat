@@ -17,7 +17,13 @@ import auth from '@react-native-firebase/auth';
 import { useNavigation } from '@react-navigation/native';
 import { RootStackParamList } from '../types/rootStackParamList';
 import { StackNavigationProp } from '@react-navigation/stack';
+import PetDetails from '../screens/details/PetDetails';
+import MyPetDetails from '../screens/details/MyPetDetails';
+import { createNativeStackNavigator } from '@react-navigation/native-stack';  
 const Drawer = createDrawerNavigator();
+const Stack = createNativeStackNavigator();
+
+
 
 const CustomDrawerContent: React.FC<DrawerContentComponentProps> = (props) => {
   const dispatch = useAppDispatch();
@@ -32,6 +38,14 @@ const CustomDrawerContent: React.FC<DrawerContentComponentProps> = (props) => {
     } catch (error) {
       console.error("Logout Error: ", error);
     }
+  };
+  const MainStack = () => {
+    return (
+      <Stack.Navigator screenOptions={{ headerShown: false }}>
+        <Stack.Screen name="PetDetails" component={PetDetails} />
+        <Stack.Screen name="MyPetDetails" component={MyPetDetails} />
+      </Stack.Navigator>
+    );
   };
   
   return (
