@@ -4,7 +4,7 @@ import Ionicons from 'react-native-vector-icons/Ionicons';
 import { useNavigation, NavigationProp } from '@react-navigation/native';
 import { RootStackParamList } from '../../types/rootStackParamList';
 import useFavorites from '../../hooks/useFavorite';
-import Card from '../../components/cards/Card';
+import Card from '../../components/card/Card';
 import { Pet } from '../../types/pets';
 
 const FavoritesScreen = () => {

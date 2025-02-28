@@ -1,7 +1,7 @@
 import React from 'react';
 import {  Text, StyleSheet, KeyboardAvoidingView, ScrollView, Platform, Keyboard, TouchableWithoutFeedback } from 'react-native';
 import Input from '../../components/input/Input'; 
-import Buttons from '../../components/buttons/Buttons'; 
+import Buttons from '../../components/button/Buttons'; 
 import useRecoverPassword from '../../hooks/useRecoverPassword'; 
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import { useNavigation } from '@react-navigation/native';

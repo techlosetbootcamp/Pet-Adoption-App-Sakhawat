@@ -8,7 +8,7 @@ import {
   TouchableOpacity,
   Image,
 } from 'react-native';
-import Search from '../../components/search/Searchbar';
+import Search from '../../components/searchbar/Searchbar';
 import {useSearch} from '../../hooks/useSearch';
 import {useDispatch, useSelector} from 'react-redux';
 import {RootState} from '../../redux/store';
@@ -16,7 +16,7 @@ import {useNavigation, NavigationProp} from '@react-navigation/native';
 import {RootStackParamList} from '../../types/rootStackParamList';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import { useAppSelector } from '../../hooks/useSelector';
-import Card from '../../components/cards/Card';
+import Card from '../../components/card/Card';
 const filters = ['Dog', 'Cat', 'Bunny', 'Bird', 'Turtle'];
 
 export default function SearchScreen() {
@@ -105,7 +105,6 @@ const styles = StyleSheet.create({
   },
   filterContainer: {
     flexDirection: 'row',
-    // top: -30,
   },
   filterButton: {
     padding: 15,

@@ -52,7 +52,7 @@ const PetDetails = () => {
             onPress: async () => {
               await firestore().collection('pets').doc(selectedPet.id).delete();
               Alert.alert('Success', 'Pet deleted successfully.');
-              navigation.goBack(); // Navigate back after deletion
+              navigation.goBack(); 
             },
             style: 'destructive',
           },

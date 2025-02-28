@@ -1,7 +1,7 @@
 import React, { useEffect } from 'react';
 import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
-import DrawerNavigator from './DrawerNavigator'; // ✅ Use the DrawerNavigator directly
+import DrawerNavigator from './DrawerNavigator';
 import Login from '../screens/auth/Login';
 import RecoverPassword from '../screens/auth/RecoverPassword'; 
 import SignUp from '../screens/auth/SignUp'; 
@@ -25,12 +25,15 @@ const AppNavigator: React.FC = () => {
   return (
     <NavigationContainer>
       {user?.email ? (
-        <DrawerNavigator /> // ✅ Use the existing DrawerNavigator
+        <DrawerNavigator />
       ) : (
         <Stack.Navigator screenOptions={{ headerShown: false }}>
           <Stack.Screen name="Login" component={Login} />
           <Stack.Screen name="SignUp" component={SignUp} />
           <Stack.Screen name="RecoverPassword" component={RecoverPassword} />
+          {/* Global screens accessible to all users */}
+          <Stack.Screen name="PetDetails" component={PetDetails} />
+          <Stack.Screen name="MyPetDetails" component={MyPetDetails} />
         </Stack.Navigator>
       )}
     </NavigationContainer>

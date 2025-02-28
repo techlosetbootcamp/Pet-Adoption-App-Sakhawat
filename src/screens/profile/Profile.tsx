@@ -13,7 +13,7 @@ import {
 } from 'react-native';
 import useProfile from '../../hooks/useProfile';
 import Input from '../../components/input/Input';
-import Button from '../../components/buttons/Buttons';
+import Button from '../../components/button/Buttons';
 import {updateProfile} from '../../redux/slices/authSlice';
 import {useAppDispatch} from '../../hooks/useSelector';
 

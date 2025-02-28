@@ -212,15 +212,16 @@ export const loginUser = createAsyncThunk(
 
 export const signOutUser = createAsyncThunk(
   'auth/signOutUser',
-  async (_, {rejectWithValue}) => {
+  async (_, { rejectWithValue }) => {
     try {
       await auth().signOut();
+      return null; // Return null to reset user state
     } catch (error) {
-      if(error instanceof Error){
-      return rejectWithValue(error?.message || 'Sign-out failed.');
+      if (error instanceof Error) {
+        return rejectWithValue(error?.message || 'Sign-out failed.');
       }
     }
-  },
+  }
 );
 
 const authSlice = createSlice({

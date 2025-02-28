@@ -1,7 +1,7 @@
 import React from 'react';
 import { View, Text, StyleSheet, ActivityIndicator } from 'react-native';
 import Input from '../../components/input/Input';
-import Button from '../../components/buttons/Buttons';
+import Button from '../../components/button/Buttons';
 import usePasswordUpdate from '../../hooks/usePasswordUpdate';
 
 export default function PasswordUpdate() {

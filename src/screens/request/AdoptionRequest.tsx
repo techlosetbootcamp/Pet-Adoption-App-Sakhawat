@@ -9,7 +9,7 @@ import {
   Linking,
 } from 'react-native';
 import {useFetchAdoptionRequests} from '../../hooks/useAdoptionRequests';
-import Buttons from '../../components/buttons/Buttons';
+import Buttons from '../../components/button/Buttons';
 
 export default function AdoptionRequest() {
   const {requests, loading, error} = useFetchAdoptionRequests();

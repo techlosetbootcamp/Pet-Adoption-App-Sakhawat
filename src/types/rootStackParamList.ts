@@ -4,7 +4,9 @@ export type RootStackParamList = {
   RecoverPassword: undefined;
   SignUp: undefined;
   Home: undefined;
-  PetDetails: {petId: string};
+  PetDetails: { petId: string }; 
   MyPetDetails: { petId: string };
   MyDonations: undefined;
+  Drawer: undefined; 
+
   };

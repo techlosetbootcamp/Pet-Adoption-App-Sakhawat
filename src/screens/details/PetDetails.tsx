@@ -74,7 +74,6 @@ const PetDetails = () => {
     try {
       const petRef = firestore().collection('pets').doc(petId);
 
-      // Check if the pet exists
       const petSnapshot = await petRef.get();
       if (!petSnapshot.exists) {
         return;
@@ -92,7 +91,6 @@ const PetDetails = () => {
       });
       console.log("✅ Firestore update successful!");
   
-      // Dispatch Redux action
       const adoptionRequest: AdoptionRequest = {
         adopterName: user.displayName || 'Unknown',
         adopterImage: user.photoURL || '',

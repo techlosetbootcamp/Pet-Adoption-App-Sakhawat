@@ -9,17 +9,16 @@ import {
   FlatList,
   ActivityIndicator,
   TouchableOpacity,
-  ScrollView,
   Image,
   ImageBackground,
 } from 'react-native';
-import Search from '../../components/search/Searchbar';
+import Search from '../../components/searchbar/Searchbar';
 import Header from '../../components/header/Header';
 import {useHome} from '../../hooks/useHome';
 import {Pet} from '../../types/pets';
 import images from '../../constants/images';
 import {useAppSelector} from '../../hooks/useSelector';
-import PetCard from '../../components/cards/Petcard';
+import PetCard from '../../components/card/Petcard';
 
 const Home = () => {
   const {
@@ -52,71 +51,6 @@ const Home = () => {
   const user = useAppSelector(store => store.auth.user);
 
   return (
-//     <KeyboardAvoidingView
-//       style={styles.container}
-//       behavior={Platform.OS === 'ios' ? 'padding' : undefined}>
-//       <Header />
-//       <ScrollView>
-//         <View style={styles.title}>
-//           <Text style={styles.newText1}>Find an</Text>
-//           <Text style={styles.newText3}> Awesome</Text>
-//           <Text style={styles.newText2}>Pets for You</Text>
-//         </View>
-//         <View style={styles.search}>
-//           <Search onSearch={handleSearch} />
-//         </View>
-//         <View style={styles.imageContainer}>
-//           <Image source={images.dog} style={styles.circularImage} />
-//           <Image source={images.cat} style={styles.circularImage} />
-//           <Image source={images.bunny} style={styles.circularImage} />
-//           <Image source={images.bird} style={styles.circularImage} />
-//           <Image source={images.turtles} style={styles.circularImage} />
-//         </View>
-//         <FlatList
-//           data={filters}
-//           horizontal
-//           showsHorizontalScrollIndicator={false}
-//           keyExtractor={item => item}
-//           contentContainerStyle={styles.filterContainer}
-//           renderItem={({item}) => (
-//             <TouchableOpacity
-//               style={[
-//                 styles.filterButton,
-//                 selectedFilter === item && styles.selectedFilter,
-//               ]}
-//               onPress={() => handleFilterSelect(item)}>
-//               <Text
-//                 style={[
-//                   styles.filterText,
-//                   selectedFilter === item && styles.selectedFilterText,
-//                 ]}>
-//                 {item}
-//               </Text>
-//             </TouchableOpacity>
-//           )}
-//         />
-
-
-//         <View style={styles.forYouSection}>
-//           <Text style={styles.sectionTitle}>For You</Text>
-//           {status === 'loading' ? (
-//             <ActivityIndicator size="large" color="#101C1D" />
-//           ) : error ? (
-//             <Text>Error: {error}</Text>
-//           ) : (
-//             <ScrollView>
-//               <FlatList
-//                 data={filteredPets}
-//                 keyExtractor={item => item.id}
-//                 renderItem={RenderPet}
-//               />
-//             </ScrollView>
-//           )}
-//         </View>
-//       </ScrollView>
-//     </KeyboardAvoidingView>
-//   );
-// };
 
 <KeyboardAvoidingView
   style={styles.container}

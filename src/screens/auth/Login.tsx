@@ -10,7 +10,7 @@ import {
   TouchableWithoutFeedback 
 } from 'react-native';
 import Input from '../../components/input/Input'; 
-import Buttons from '../../components/buttons/Buttons'; 
+import Buttons from '../../components/button/Buttons'; 
 import useLogin from '../../hooks/useLogin'; 
 import CheckBox from 'react-native-check-box';
 

@@ -5,7 +5,7 @@ import { addPet, selectPhoto } from '../../redux/slices/petDonationSlice';
 import { AppDispatch, RootState } from '../../redux/store';
 import Input from '../../components/input/Input';
 import Dropdown from '../../components/input/Dropdown';
-import Button from '../../components/buttons/Buttons';
+import Button from '../../components/button/Buttons';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 
 

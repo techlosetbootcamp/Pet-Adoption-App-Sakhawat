@@ -4,7 +4,7 @@ import {
   Platform, Keyboard, TouchableWithoutFeedback 
 } from 'react-native';
 import Input from '../../components/input/Input';
-import Buttons from '../../components/buttons/Buttons';
+import Buttons from '../../components/button/Buttons';
 import useSignUp from '../../hooks/useSignUp'; 
 import CheckBox from 'react-native-check-box';
 
