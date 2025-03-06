@@ -45,10 +45,11 @@ const styles = StyleSheet.create({
   },
   label: {
     fontSize: 14,
-    fontWeight: '600',
+    fontWeight: 'bold',
     marginBottom: 5,
     color: '#333',
     fontFamily: 'Montserrat',
+    
   },
   input: {
     width: '100%',

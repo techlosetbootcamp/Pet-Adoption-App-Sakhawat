@@ -60,7 +60,6 @@ const PetDetails = () => {
         { cancelable: true }
       );
     } catch (error) {
-      console.error('Error deleting pet:', error);
       Alert.alert('Error', 'Failed to delete pet.');
     }
   };
@@ -138,7 +137,7 @@ const styles = StyleSheet.create({
     textAlign: 'right',  
     marginLeft: 'auto', 
   },
-    type: { fontSize: 20, color: '#666', left:5, },
+    type: { fontSize: 15, color: '#666', top:-15 },
   infoContainer: { flexDirection: 'row', flexWrap: 'wrap', marginBottom: 15 },
   infoBox: {
     backgroundColor: '#fdebd0',
@@ -167,7 +166,7 @@ const styles = StyleSheet.create({
     textAlign: 'right', 
     right: 20, 
     position: 'absolute',
-    fontSize:20, 
+    fontSize:15, 
   },
     deleteIcon: { position: 'absolute', top: 20, right: 20, zIndex: 1 },
   backIcon:{

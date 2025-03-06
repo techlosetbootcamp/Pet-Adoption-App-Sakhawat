@@ -35,7 +35,6 @@ export const useProfile = () => {
         }
       }
     } catch (error) {
-      console.error('Error selecting image:', error);
     }
     return null;
   };

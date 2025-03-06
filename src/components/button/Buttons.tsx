@@ -5,9 +5,9 @@ interface ButtonsProps {
   title: string;
   onPress: () => void;
   isLoading?: boolean;
-  buttonStyle?: ViewStyle; // Custom button styles
-  textStyle?: TextStyle;   // Custom text styles
-  disabled?: boolean;
+  buttonStyle?: ViewStyle; 
+  textStyle?: TextStyle;   
+    disabled?: boolean;
 }
 
 const Buttons: React.FC<ButtonsProps> = ({
@@ -41,14 +41,14 @@ const styles = StyleSheet.create({
   button: {
     backgroundColor: '#101C1D',
     width: 185,
-    height: 79,
+    height: 62,
     borderRadius: 37,
     justifyContent: 'center',
     alignItems: 'center',
     marginTop: 20,
   },
   buttonText: {
-    fontSize: 20,
+    fontSize: 17,
     fontWeight: '700',
     textAlign: 'center',
     fontFamily: 'Montserrat',

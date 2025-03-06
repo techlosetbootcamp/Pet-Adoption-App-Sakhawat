@@ -1,5 +1,5 @@
 import React from 'react';
-import { View, Text, FlatList, StyleSheet, Image} from 'react-native';
+import { View, Text, FlatList, StyleSheet, Image, TouchableOpacity} from 'react-native';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import { useNavigation, NavigationProp } from '@react-navigation/native';
 import { RootStackParamList } from '../../types/rootStackParamList';
@@ -21,7 +21,7 @@ const FavoritesScreen = () => {
       <View style={styles.infoContainer}>
                    <Text style={styles.petName}>{item.name}</Text>
                    <Text>Age {item.age} Months</Text>
-                   <Text>{item.location}<Ionicons name="location-outline" size={14} color="red" /></Text>
+                   <Text>{item.location}   <Ionicons name="location-outline" size={14} color="red" /></Text>
                <Text>{item.gender} </Text>
       
                  </View>
@@ -31,11 +31,14 @@ const FavoritesScreen = () => {
 
   return (
     <View style={styles.container}>
-      <View style={styles.headerContainer}>
-        <Text style={styles.header}>Favorites</Text>
+    <View style={styles.headerContainer}>
+      <Text style={styles.header}>Favorites</Text>
+      <TouchableOpacity onPress={() => navigation.navigate('Home')}>
         <Ionicons name="add" size={30} style={styles.headerIcon} />
-      </View>
-      {favoritePets.length > 0 ? (
+      </TouchableOpacity>
+  </View>
+
+    {favoritePets.length > 0 ? (
         <FlatList
           data={favoritePets}
           keyExtractor={(item) => item.id.toString()}
@@ -49,7 +52,7 @@ const FavoritesScreen = () => {
 };
 
 const styles = StyleSheet.create({
-  container: { flex: 1, backgroundColor: '#fff', padding: 20 },
+  container: { flex: 1, backgroundColor: '#fff', paddingVertical: 20, paddingHorizontal: 10, },
   
   headerContainer: {
     flexDirection: 'row',
@@ -72,7 +75,9 @@ const styles = StyleSheet.create({
     height: 170,
     borderRadius: 10,
     top:-40,
-    left: -5,
+    left: -13,
+    borderWidth: 1,
+    borderColor: '#ddd',
   },
 
   infoContainer: {

@@ -14,7 +14,6 @@ const updateFavoritesInFirebase = async (petId: string) => {
   try {
     const user = getAuth().currentUser;
     if (!user) {
-      console.error('User not logged in');
       return;
     }
 

@@ -79,7 +79,6 @@ const styles = StyleSheet.create({
     fontSize: 14,
     fontWeight: '600',
     textAlign: 'left',
-    marginTop: 10, 
     marginBottom: 20, 
   },
   title1: {

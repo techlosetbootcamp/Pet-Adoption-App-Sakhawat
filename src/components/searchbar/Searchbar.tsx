@@ -16,7 +16,7 @@ const Search: React.FC<SearchProps> = ({ onSearch }) => {
   };
 
   return (
-    <View style={{...styles.container, height:70, zIndex: 20}}>
+    <View style={{...styles.container, height:56, zIndex: 20}}>
       <TextInput
         style={styles.input}
         placeholder="Search for a pet"

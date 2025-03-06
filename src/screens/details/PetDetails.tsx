@@ -39,7 +39,6 @@ const PetDetails = () => {
   useEffect(() => {
     const fetchPetDetails = async () => {
       try {
-        console.error("No petId found in route params!");
 
         const petDoc = await firestore().collection('pets').doc(petId).get();
         if (petDoc.exists) {
@@ -47,7 +46,6 @@ const PetDetails = () => {
           setSelectedPet(petDoc.data() as Pet);
         }
       } catch (error) {
-        console.error('Error fetching pet details:', error);
       }
     };
     fetchPetDetails();
@@ -89,7 +87,6 @@ const PetDetails = () => {
         adoptedBy: petData.adoptedBy ? firestore.FieldValue.arrayUnion(user.uid) : [user.uid],
         adoptionDate: new Date().toISOString(),
       });
-      console.log("✅ Firestore update successful!");
   
       const adoptionRequest: AdoptionRequest = {
         adopterName: user.displayName || 'Unknown',
@@ -107,9 +104,7 @@ const PetDetails = () => {
         prev ? { ...prev, adoptedBy: [...(prev.adoptedBy || []), user.uid] } : null
       );
   
-      console.log("🎉 Adoption successful!");
     } catch (error) {
-      console.error("❌ Error updating adoption in Firestore:", error);
     }
   };
   
@@ -133,7 +128,6 @@ const PetDetails = () => {
       dispatch(toggleFavorite(petId));
       setIsFavorite((prev) => !prev);
     } catch (error) {
-      console.error('Error updating favorites in Firestore:', error);
     }
   };
 
@@ -186,7 +180,7 @@ const PetDetails = () => {
 
         <Text style={styles.description}>{selectedPet.description}</Text>
         <Text style={styles.location}>
-          {selectedPet.location} <Ionicons name="location-outline" size={14} color="red" />
+          {selectedPet.location} <Ionicons name="location-outline" size={20} color="red" />
         </Text>
 
         <TouchableOpacity style={styles.adoptButton} onPress={handleAdoptNowPress}>
@@ -221,7 +215,7 @@ const styles = StyleSheet.create({
     textAlign: 'right',
     marginLeft: 'auto',
   },
-  type: { fontSize: 20, color: '#666', left: 5 },
+  type: { fontSize: 15, color: '#666',  top: -13},
   infoContainer: { flexDirection: 'row', flexWrap: 'wrap', marginBottom: 15 },
   infoBox: {
     backgroundColor: '#fdebd0',
@@ -234,7 +228,7 @@ const styles = StyleSheet.create({
   infoLabel: { fontSize: 12, fontWeight: 'bold', marginBottom: 3, color: '#ff9800' },
   ownerInfo: { flexDirection: 'row', alignItems: 'center', marginBottom: 10 },
   ownerName: { fontSize: 16, top: -10, fontWeight: 'bold' },
-  ownerRole: { fontSize: 14, color: '#888', left: -80, top: 10 },
+  ownerRole: { fontSize: 14, color: '#888', left: -60, top: 10 },
   description: { fontSize: 18, color: '#555', marginBottom: 20 },
   ownerImage: { width: 40, height: 40, borderRadius: 20, marginRight: 10 },
   location: {
@@ -243,7 +237,7 @@ const styles = StyleSheet.create({
     textAlign: 'right',
     right: 20,
     position: 'absolute',
-    fontSize: 20,
+    fontSize: 15,
   },
   adoptButton: {
     backgroundColor: '#111',

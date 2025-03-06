@@ -44,7 +44,6 @@ export const useSearch = () => {
   
       setResults(resultsData);
     } catch (error) {
-      console.error('Firestore fetch error:', error); 
       setError('Failed to fetch pets.');
     } finally {
       setLoading(false);

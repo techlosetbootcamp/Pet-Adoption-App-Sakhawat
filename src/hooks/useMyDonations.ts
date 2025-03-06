@@ -42,7 +42,6 @@ const useMyDonation = () => {
           setLoading(false);
         },
         (error) => {
-          console.error("Error fetching Firestore data:", error);
           setLoading(false);
         }
       );

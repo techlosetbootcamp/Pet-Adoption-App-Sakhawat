@@ -7,6 +7,7 @@ import { StackNavigationProp } from '@react-navigation/stack';
 import { RootStackParamList } from '../../types/rootStackParamList';
 import useMyDonation from '../../hooks/useMyDonations'; 
 import firestore from '@react-native-firebase/firestore';
+import Card from '../../components/card/Card';
 
 interface RootState {
   auth: {
@@ -27,7 +28,6 @@ export default function MyDonations() {
     try {
       await firestore().collection('pets').doc(id).delete();
     } catch (error) {
-      console.error('Error deleting pet:', error);
     }
   };
 
@@ -38,14 +38,19 @@ export default function MyDonations() {
   return (
     <View style={styles.container}>
       <Text style={styles.title}>My Donations</Text>
-              <Ionicons name="add" size={30} style={styles.headerIcon} />
-      
+      <Ionicons 
+      name="add" 
+      size={30} 
+      style={styles.headerIcon} 
+      onPress={() => navigation.navigate("Donate")} 
+    />      
       <FlatList
         data={pets}
         keyExtractor={(item) => item.id}
         renderItem={({ item }) => (
-          <TouchableOpacity onPress={() => handlePetPress(item.id)} style={styles.card}>
-            {item.image ? (
+          <Card
+          onPress={() => navigation.navigate('MyPetDetails', {petId: item.id})} 
+          >            {item.image ? (
               <Image source={{ uri: item.image }} style={styles.image} />
             ) : (
               <View style={styles.imagePlaceholder} />
@@ -54,15 +59,14 @@ export default function MyDonations() {
               <Text style={styles.name}>{item.name}</Text>
               <Text style={styles.details}>Age {item.age} Months</Text>
               <View style={styles.locationContainer}>
-                <Text style={styles.details}>{item.location}</Text>
-                <Ionicons name="location-outline" size={14} color="red" />
+                <Text style={styles.details}>{item.location}   <Ionicons name="location-outline" size={14} color="red" /></Text>
               </View>
               <Text style={styles.details}>{item.gender}</Text>
             </View>
             <TouchableOpacity onPress={() => handleDeletePet(item.id)}>
-              <Ionicons name="trash" size={25} color="black" style={styles.trashIcon} />
+              <Ionicons name="trash" size={20} color="black" style={styles.trashIcon} />
             </TouchableOpacity>
-          </TouchableOpacity>
+          </Card>
         )}
         ListEmptyComponent={
           !loading ? <Text style={styles.noDonations}>No pets found.</Text> : null
@@ -83,27 +87,13 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
     marginBottom: 10,
   },
-  card: {
-    flexDirection: 'row',
-    backgroundColor: '#fff',
-    padding: 15,
-    borderRadius: 10,
-    marginBottom: 60,
-    alignItems: 'center',
-    justifyContent: 'space-between',
-    shadowColor: '#000',
-    shadowOpacity: 0.1,
-    shadowRadius: 5,
-    elevation: 3,
-    height:130,
-    top:35,
-    
-  },
+ 
   image: {
     width: 170,
     height: 170,
     borderRadius: 10,
     left:-10,
+    bottom:40,
   },
   imagePlaceholder: {
     width: 80,
@@ -113,19 +103,20 @@ const styles = StyleSheet.create({
   },
   infoContainer: {
     flex: 1,
-    marginLeft: 15,
+    marginLeft: 10,
+    gap: 5,
+    marginBottom: 10,
   },
   name: {
     fontSize: 18,
     fontWeight: 'bold',
   },
   details: {
-    fontSize: 14,
+    fontSize: 10,
     color: '#666',
   },
   locationContainer: {
     flexDirection: 'row',
-    alignItems: 'center',
   },
   noDonations: {
     textAlign: 'center',
@@ -138,7 +129,8 @@ const styles = StyleSheet.create({
     right: 10,
     top:20,
   },
-  trashIcon:{top:33,
+  trashIcon:{top:73,
+    right: 10,
 
   }
 });

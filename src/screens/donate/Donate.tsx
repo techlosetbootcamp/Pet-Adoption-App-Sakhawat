@@ -6,6 +6,7 @@ import { AppDispatch, RootState } from '../../redux/store';
 import Input from '../../components/input/Input';
 import Dropdown from '../../components/input/Dropdown';
 import Button from '../../components/button/Buttons';
+import { useNavigation } from '@react-navigation/native';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 
 
@@ -81,8 +82,12 @@ const Donate: React.FC = () => {
       Alert.alert('Error', 'Failed to donate pet. Please try again.');
     }
   };
-  return (
-    <ScrollView contentContainerStyle={styles.container}>
+const navigation = useNavigation();
+return (
+  <ScrollView contentContainerStyle={styles.container}>
+    <TouchableOpacity onPress={() => navigation.goBack()}>
+  <Ionicons name="arrow-back" size={30} style={styles.backIcon} />
+</TouchableOpacity>
       <Input label="Pet Name" value={pet.name} onChangeText={(value) => handleChange('name', value)} />
       <Input label="Pet Age" value={pet.age} keyboardType="numeric" onChangeText={(value) => handleChange('age', value)} />
 
@@ -168,6 +173,9 @@ const styles = StyleSheet.create({
     fontSize: 16,
     color: 'black',
     marginTop: 10,
+  },
+  backIcon: {
+    marginBottom: 20,
   },
 });
 

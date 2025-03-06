@@ -23,7 +23,6 @@ const useFavorites = () => {
           setFavoritePetIds(userData?.favorites || []);
         }
       }, (error) => {
-        console.error('Error fetching real-time favorites:', error);
       });
 
     dispatch(fetchPets()); 

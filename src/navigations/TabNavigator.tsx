@@ -5,6 +5,7 @@ import Search from '../screens/search/Search';
 import Favorites from '../screens/favorites/Favorites'; 
 import Profile from '../screens/profile/Profile'; 
 import Icon from 'react-native-vector-icons/Ionicons'; 
+import { StyleSheet, View, TouchableOpacity } from 'react-native';
 
 const Tab = createBottomTabNavigator();
 
@@ -12,6 +13,8 @@ const TabNavigator = () => (
   <Tab.Navigator
     screenOptions={({ route }) => ({
       headerShown: false, 
+      tabBarShowLabel: false, // Hides tab labels
+
       tabBarIcon: ({ focused, color, size }) => {
         let iconName: string = ''; 
 
@@ -24,20 +27,46 @@ const TabNavigator = () => (
         } else if (route.name === 'Profile') {
           iconName = focused ? 'person' : 'person-outline';
         }
-
-        return <Icon name={iconName || 'home'} size={size} color={color} />;
+        return (
+          <View style={[styles.iconContainer, focused && styles.activeTab]}>
+            <Icon name={iconName} size={30} color={color} />
+          </View>
+        );
       },
       tabBarActiveTintColor: 'white',
       tabBarInactiveTintColor: '#aaa',
-      tabBarActiveBackgroundColor: '#000',
-      tabBarLabelStyle: { fontSize: 12, fontWeight: '600' }, 
+      tabBarStyle: styles.tabBar,
+      tabBarButton: (props: any) => (
+        <TouchableOpacity {...props} style={[styles.tabButton, props.accessibilityState?.selected && styles.selectedTab]} />
+      ),
     })}
   >
     <Tab.Screen name="Home" component={Home} />
     <Tab.Screen name="Search" component={Search} />
     <Tab.Screen name="Favorites" component={Favorites} />
-    <Tab.Screen name="Profile" component={Profile} />
-  </Tab.Navigator>
+      <Tab.Screen name="Profile" component={Profile} />
+    </Tab.Navigator>
 );
+
+const styles = StyleSheet.create({
+  tabBar: {
+    height: 60,
+    borderTopWidth: 0,
+  },
+  iconContainer: {
+   
+  },
+  activeTab: {
+  },
+  tabButton: {
+    flex: 1,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  selectedTab: {
+    backgroundColor: '#222', // Darker background for selected tab
+    borderRadius: 25, // Ensures it’s rounded
+  },
+});
 
 export default TabNavigator;

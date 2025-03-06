@@ -46,7 +46,6 @@ const useLogin = () => {
       ToastAndroid.show("Google Login clicked", ToastAndroid.LONG)
       dispatch(setUser(user as User));
     } catch (error) {
-      console.error(error);
     } finally {
       setGoogleLoader(false);
     }

@@ -89,7 +89,10 @@ export default function Profile() {
             onChangeText={text => setUsername(text)}
           />
 
-          <Button title="Update Profile" onPress={onUpdateProfile} />
+          <Button title="Update Profile" onPress={onUpdateProfile}
+           buttonStyle={{    position: "absolute",
+            bottom: 16,
+          width:"100%"}} />
 
           <View style={{height: 30}} />
         </ScrollView>
@@ -101,7 +104,7 @@ export default function Profile() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#fff',
+    
   },
   scrollContainer: {
     flexGrow: 1,
@@ -112,7 +115,7 @@ const styles = StyleSheet.create({
   title: {
     fontSize: 22,
     fontWeight: 'bold',
-    marginBottom: 20,
+    top: -130,
   },
   profileImageContainer: {
     width: 100,
@@ -123,7 +126,7 @@ const styles = StyleSheet.create({
     borderColor: 'gray',
     alignItems: 'center',
     justifyContent: 'center',
-    marginBottom: 20,
+  top: -110,
   },
   profileImage: {
     width: '100%',

@@ -28,7 +28,6 @@ const Home = () => {
     error,
     selectedFilter,
     handleSearch,
-    handleFilterSelect,
     handleNavigateToDetails,
   } = useHome();
 
@@ -73,7 +72,6 @@ const Home = () => {
           <Image source={images.cat} style={styles.circularImage} />
           <Image source={images.bunny} style={styles.circularImage} />
           <Image source={images.bird} style={styles.circularImage} />
-          <Image source={images.turtles} style={styles.circularImage} />
         </View>
         <FlatList
           data={filters}
@@ -87,7 +85,6 @@ const Home = () => {
                 styles.filterButton,
                 selectedFilter === item && styles.selectedFilter,
               ]}
-              onPress={() => handleFilterSelect(item)}
             >
               <Text
                 style={[
@@ -156,22 +153,21 @@ const styles = StyleSheet.create({
   },
   petImage: {
     width: "100%", 
-    borderRadius: 10,
+    borderRadius: 30,
 
   },
   filterContainer: {
     flexDirection: 'row',
     alignItems: 'center',
     marginTop: 40,
+    left:15,
     marginBottom: 10,
-    gap: 14,
+    gap: 40,
   },
   filterButton: {
     paddingVertical: 8,
     paddingHorizontal: 10,
-    backgroundColor: '#f0f0f0',
     borderRadius: 20,
-    marginRight: 5,
   },
   selectedFilter: {
     backgroundColor: '#101C1D',
@@ -197,9 +193,9 @@ const styles = StyleSheet.create({
     top: 100,
   },
   circularImage: {
-    width: 50,
-    height: 50,
-    borderRadius: 25,
+    width: 70,
+    height: 70,
+    borderRadius: 35,
     marginHorizontal: 5,
   },
 
@@ -212,7 +208,8 @@ const styles = StyleSheet.create({
   
   petDetails: {
     backgroundColor: 'rgba(0,0,0,0.3)',
-    
+    borderRadius: 30,
+
     flex: 1,
   },
   petprice: {

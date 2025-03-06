@@ -4,7 +4,7 @@ import { fetchUserDetails } from '../redux/slices/petDetailsSlice';
 
 const useUserDetails = (userId?: string) => {
   const dispatch = useAppDispatch();
-  const { userDetails, loading, error } = useAppSelector(
+  const { userData, loading, error } = useAppSelector(
     (state) => state.petDetails
   );
 
@@ -14,7 +14,7 @@ const useUserDetails = (userId?: string) => {
     }
   }, [dispatch, userId]);
 
-  return { user: userDetails, loading, error };
+  return { user: userData, loading, error };
 };
 
 

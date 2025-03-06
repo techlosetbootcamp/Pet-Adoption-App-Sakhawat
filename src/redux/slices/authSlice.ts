@@ -65,7 +65,6 @@ export const onGoogleButtonPress = async () => {
 
     return userData;
   } catch (error) {
-    console.error('Google Sign-In Error:', error);
     throw error;
   }
 };

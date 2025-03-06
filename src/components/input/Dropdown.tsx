@@ -10,6 +10,7 @@ interface DropdownProps {
   options: string[];
 }
 
+
 const Dropdown: React.FC<DropdownProps> = ({
   label,
   selectedValue,
@@ -20,17 +21,19 @@ const Dropdown: React.FC<DropdownProps> = ({
     <View style={styles.container}>
       <Text style={styles.label}>{label}</Text>
       <View style={styles.pickerContainer}>
-        <Picker
+      <Picker
           selectedValue={selectedValue}
           onValueChange={(itemValue) => onValueChange(itemValue)}
-          style={styles.picker}
-          dropdownIconColor="white" // Hides default dropdown icon
+          style={[
+            styles.picker,
+            { color: selectedValue ? "black" : "gray" }, 
+          ]}
+          dropdownIconColor="white" 
         >
           {options.map((option) => (
             <Picker.Item key={option} label={option} value={option} />
           ))}
         </Picker>
-        {/* Wrap the icon inside a View with pointerEvents="none" */}
         <View style={styles.iconContainer} pointerEvents="none">
           <Ionicons name="chevron-down-outline" size={20} color="black" />
         </View>
@@ -50,9 +53,9 @@ const styles = StyleSheet.create({
   pickerContainer: {
     borderRadius: 5,
     borderBottomWidth: 2,
-    borderColor: "gray",
+    borderColor: "black",
     paddingHorizontal: 10,
-    position: "relative", // Needed for absolute positioning of the icon
+    position: "relative", 
   },
   picker: {
     height: 50,
@@ -60,9 +63,9 @@ const styles = StyleSheet.create({
   },
   iconContainer: {
     position: "absolute",
-    right: 15, // Aligns icon to the right
+    right: 15, 
     top: "50%",
-    marginTop: -10, // Centers icon vertically
+    marginTop: -10, 
   },
 });
 

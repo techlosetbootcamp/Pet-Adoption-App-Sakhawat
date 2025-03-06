@@ -2,28 +2,23 @@
 import { createSlice, PayloadAction, createAsyncThunk } from '@reduxjs/toolkit';
 import firestore from '@react-native-firebase/firestore';
 import { Pet } from '../../types/pets';
-
-
-interface UserDetails {
-  username: string;
-  photoURL: string;
-}
+import { userData } from '../../types/user';
 
 interface PetDetailsState {
   selectedPet: Pet | null;
-  userDetails: UserDetails | null;
+  userData: userData | null;
   loading: boolean;
   error: string | null;
 }
 
 const initialState: PetDetailsState = {
   selectedPet: null,
-  userDetails: null,
+  userData: null,
   loading: false,
   error: null,
 };
 
-export const fetchUserDetails = createAsyncThunk<UserDetails, string, { rejectValue: string }>(
+export const fetchUserDetails = createAsyncThunk<userData, string, { rejectValue: string }>(
   'petDetails/fetchUserDetails',
   async (userId, { rejectWithValue }) => {
     if (!userId) return rejectWithValue('Invalid user ID');
@@ -33,9 +28,8 @@ export const fetchUserDetails = createAsyncThunk<UserDetails, string, { rejectVa
       if (!userDoc.exists) {
         return rejectWithValue('User not found');
       }
-      return userDoc.data() as UserDetails;
+      return userDoc.data() as userData;
     } catch (error) {
-      console.error('Firestore Error:', error);
       return rejectWithValue('Failed to fetch user details');
     }
   }
@@ -47,13 +41,13 @@ const petDetailsSlice = createSlice({
   reducers: {
     setSelectedPet: (state, action: PayloadAction<Pet>) => {
       state.selectedPet = action.payload;
-      state.userDetails = null; 
+      state.userData = null; 
       state.loading = false; 
       state.error = null; 
     },
     clearSelectedPet: (state) => {
       state.selectedPet = null;
-      state.userDetails = null;
+      state.userData = null;
       state.loading = false;
       state.error = null;
     },
@@ -66,7 +60,7 @@ const petDetailsSlice = createSlice({
       })
       .addCase(fetchUserDetails.fulfilled, (state, action) => {
         state.loading = false;
-        state.userDetails = action.payload;
+        state.userData = action.payload;
       })
       .addCase(fetchUserDetails.rejected, (state, action) => {
         state.loading = false;

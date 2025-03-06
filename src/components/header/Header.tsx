@@ -30,7 +30,6 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
-    padding: 20,
     backgroundColor: '#fff',
   },
   headerText: {
@@ -43,6 +42,7 @@ const styles = StyleSheet.create({
     width: 40,
     height: 40,
     borderRadius: 20,
+    top: 7,  
   },
   placeholderImage: {
     width: 40,

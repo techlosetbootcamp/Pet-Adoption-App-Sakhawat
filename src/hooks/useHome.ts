@@ -7,7 +7,7 @@ import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { RootStackParamList } from '../types/rootStackParamList';
 import { Pet } from '../types/pets';
 
-const filters = [ 'Dog', 'Cat', 'Bunny', 'Bird', 'Turtle'];
+const filters = [ 'Dog', 'Cat', 'Bunny', 'Bird'];
 
 export const useHome = () => {
   const navigation = useNavigation<NativeStackNavigationProp<RootStackParamList, 'Home'>>();
@@ -27,10 +27,10 @@ export const useHome = () => {
     searchPets(searchText, selectedFilter);
   };
 
-  const handleFilterSelect = (filter: string) => {
-    setSelectedFilter(filter);
-    searchPets(query, filter.toLowerCase());
-  };
+  // const handleFilterSelect = (filter: string) => {
+  //   setSelectedFilter(filter);
+  //   searchPets(query, filter.toLowerCase());
+  // };
 
   const handleNavigateToDetails = (pet: Pet) => {
     dispatch(setSelectedPet(pet));
@@ -46,7 +46,7 @@ export const useHome = () => {
     error,
     selectedFilter,
     handleSearch,
-    handleFilterSelect,
+    // handleFilterSelect,
     handleNavigateToDetails,
   };
 };

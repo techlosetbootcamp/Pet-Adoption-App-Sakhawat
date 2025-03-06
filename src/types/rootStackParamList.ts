@@ -8,5 +8,6 @@ export type RootStackParamList = {
   MyPetDetails: { petId: string };
   MyDonations: undefined;
   Drawer: undefined; 
+  Donate: undefined;
 
   };

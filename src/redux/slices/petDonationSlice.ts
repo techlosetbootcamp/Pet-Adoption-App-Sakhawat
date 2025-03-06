@@ -23,7 +23,6 @@ const convertToBase64 = async (uri: string): Promise<string> => {
   try {
     return await RNFS.readFile(uri, 'base64');
   } catch (error) {
-    console.error('Error converting image to Base64:', error);
     throw new Error('Failed to convert image to Base64');
   }
 };

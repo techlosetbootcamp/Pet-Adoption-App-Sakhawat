@@ -50,7 +50,7 @@ export const fetchAdoptionRequests = createAsyncThunk(
                 adopterName: adopterData.username || 'Unknown',
                 adopterImage: adopterData.photoURL || '',
                 adopterEmail: adopterData.email || 'No Email',
-                adopterLocation: adopterData.location || 'Unknown',
+              location: adopterData.location || 'Unknown',
                 petName: petData.name,
                 petType: petData.type,
                 adoptionDate: petData.adoptionDate || 'Unknown',
@@ -62,7 +62,6 @@ export const fetchAdoptionRequests = createAsyncThunk(
 
       return requestsData;
     } catch (error) {
-      console.error('Error fetching adoption requests:', error);
       return rejectWithValue('Failed to load adoption requests.');
     }
   }

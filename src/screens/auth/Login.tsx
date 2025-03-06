@@ -134,7 +134,7 @@ const styles = StyleSheet.create({
     fontFamily: 'Montserrat',
     alignSelf: 'flex-end',
     marginRight: 20,
-    textDecorationLine: 'underline',
+    fontWeight: 'bold', 
   },
   checkboxContainer: {
     flexDirection: 'row',

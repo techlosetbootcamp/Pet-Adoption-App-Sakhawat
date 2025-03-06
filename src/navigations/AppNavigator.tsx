@@ -10,6 +10,7 @@ import MyPetDetails from '../screens/details/MyPetDetails';
 import { useAppDispatch, useAppSelector } from '../hooks/useSelector';
 import { fetchUserData } from '../redux/slices/authSlice';
 import { RootStackParamList } from '../types/rootStackParamList';
+import Donate from '../screens/donate/Donate';
 
 const Stack = createNativeStackNavigator<RootStackParamList>();
 
@@ -19,12 +20,11 @@ const AppNavigator: React.FC = () => {
 
   useEffect(() => {
     dispatch(fetchUserData());
-    console.log("User state changed: ", user);
   }, [dispatch]);
 
   return (
     <NavigationContainer>
-      {user?.email ? (
+      {user? (
         <DrawerNavigator />
       ) : (
         <Stack.Navigator screenOptions={{ headerShown: false }}>
@@ -32,6 +32,7 @@ const AppNavigator: React.FC = () => {
           <Stack.Screen name="SignUp" component={SignUp} />
           <Stack.Screen name="RecoverPassword" component={RecoverPassword} />
           {/* Global screens accessible to all users */}
+          <Stack.Screen name="Donate" component={Donate} />
           <Stack.Screen name="PetDetails" component={PetDetails} />
           <Stack.Screen name="MyPetDetails" component={MyPetDetails} />
         </Stack.Navigator>

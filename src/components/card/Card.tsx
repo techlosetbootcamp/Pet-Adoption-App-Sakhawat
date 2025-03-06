@@ -20,7 +20,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     backgroundColor: '#fff',
     padding: 15,
-    borderRadius: 10,
+    borderRadius: 30,
     marginVertical: 8,
     shadowColor: '#000',
     shadowOpacity: 0.4,
@@ -28,7 +28,7 @@ const styles = StyleSheet.create({
     elevation: 5,
     top: 20,
     height: 130,
-    width: '100%',
+    width: '95%',
     marginBottom: 60,
   },
 });

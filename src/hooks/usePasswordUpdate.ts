@@ -39,7 +39,6 @@ const usePasswordUpdate = () => {
       setConfirmNewPassword('');
     } catch (err) {
       if(err instanceof Error) {
-        console.error('Error updating password:', err);
         setError(err.message || 'Failed to update password. Please try again.');
       }
     } finally {

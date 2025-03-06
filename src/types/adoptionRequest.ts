@@ -2,7 +2,7 @@ export type AdoptionRequest= {
     adopterName: string;
     adopterImage: string;
     adopterEmail: string;
-    adopterLocation: string;
+    location: string;
     petName: string;
     petType: string;
     adoptionDate: string;
