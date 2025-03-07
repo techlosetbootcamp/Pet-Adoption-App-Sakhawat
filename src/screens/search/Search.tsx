@@ -17,19 +17,20 @@ import { useAppSelector } from '../../hooks/useSelector';
 import Card from '../../components/card/Card';
 import firestore from '@react-native-firebase/firestore';
 import auth from '@react-native-firebase/auth';
+import { RootState } from '../../redux/store';
 
 const filters = ['Dog', 'Cat', 'Bunny', 'Bird', 'Turtle'];
 
 export default function SearchScreen() {
   const [query, setQuery] = useState('');
   const { results, loading, error, searchPets, handleClick } = useSearch();
-  const selectedFilter = useAppSelector((state) => state.Filter.category);
+  const selectedFilter = useAppSelector((state: RootState) => state.adoptedPet.selectedPet?.type) || null;
   const userFavorites = useAppSelector((state) => state.auth.user?.favorites || []);
   const navigation = useNavigation<NavigationProp<RootStackParamList>>();
 
   const handleSearch = (searchText: string) => {
     setQuery(searchText);
-    searchPets(searchText, selectedFilter);
+    searchPets(searchText, selectedFilter || '');
   };
 
   const handleFavoritePress = async (petId: string) => {
@@ -62,13 +63,14 @@ export default function SearchScreen() {
       <Search onSearch={handleSearch} />
 
       <View style={styles.filterContainer}>
-        {filters.map((item) => (
+        {filters?.map((item) => (
           <TouchableOpacity
             key={item}
             style={[
               styles.filterButton,
               selectedFilter === item && styles.activeFilter,
             ]}
+            
             onPress={() => handleClick(item)}
           >
             <Text

@@ -13,7 +13,7 @@ const TabNavigator = () => (
   <Tab.Navigator
     screenOptions={({ route }) => ({
       headerShown: false, 
-      tabBarShowLabel: false, // Hides tab labels
+      tabBarShowLabel: false,  
 
       tabBarIcon: ({ focused, color, size }) => {
         let iconName: string = ''; 
@@ -64,8 +64,8 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
   },
   selectedTab: {
-    backgroundColor: '#222', // Darker background for selected tab
-    borderRadius: 25, // Ensures it’s rounded
+    backgroundColor: '#222',
+    borderRadius: 25,
   },
 });
 

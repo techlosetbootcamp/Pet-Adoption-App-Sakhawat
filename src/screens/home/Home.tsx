@@ -1,4 +1,3 @@
-
 import React from 'react';
 import {
   View,
@@ -9,116 +8,75 @@ import {
   FlatList,
   ActivityIndicator,
   TouchableOpacity,
-  Image,
   ImageBackground,
 } from 'react-native';
 import Search from '../../components/searchbar/Searchbar';
 import Header from '../../components/header/Header';
-import {useHome} from '../../hooks/useHome';
-import {Pet} from '../../types/pets';
-import images from '../../constants/images';
-import {useAppSelector} from '../../hooks/useSelector';
-import PetCard from '../../components/card/Petcard';
+import { useHome } from '../../hooks/useHome';
+import { Pet } from '../../types/pets';
+import PetCard from '../../components/card/PetCard';
+import PetCategoryList from '../../components/category/PetCategoryList';
 
 const Home = () => {
   const {
-    filters,
     filteredPets,
     status,
     error,
-    selectedFilter,
     handleSearch,
     handleNavigateToDetails,
   } = useHome();
 
-  const RenderPet = ({item}: {item: Pet}) => (
+  const RenderPet = ({ item }: { item: Pet }) => (
     <TouchableOpacity onPress={() => handleNavigateToDetails(item)}>
       <PetCard>
         <ImageBackground source={{ uri: item.image }} style={styles.petImage}>
-        <View style={styles.petDetails}>
-          <Text style={styles.petName}>{item.name}</Text>
-
-          <Text style={styles.petType}>{item.type}</Text>
-          <Text style={styles.petInfo}>Age: {item.age} months</Text>
-          <Text style={styles.petprice}> ${item.amount}</Text>
-        </View>
+          <View style={styles.petDetails}>
+            <Text style={styles.petName}>{item.name}</Text>
+            <Text style={styles.petType}>{item.type}</Text>
+            <Text style={styles.petInfo}>Age: {item.age} months</Text>
+            <Text style={styles.petprice}> ${item.amount}</Text>
+          </View>
         </ImageBackground>
-        </PetCard>
+      </PetCard>
     </TouchableOpacity>
   );
 
-  const user = useAppSelector(store => store.auth.user);
-
   return (
-
-<KeyboardAvoidingView
-  style={styles.container}
-  behavior={Platform.OS === 'ios' ? 'padding' : undefined}
->
-  <FlatList
-    ListHeaderComponent={
-      <>
-        <Header />
-        <View style={styles.title}>
-          <Text style={styles.newText1}>Find an</Text>
-          <Text style={styles.newText3}> Awesome</Text>
-          <Text style={styles.newText2}>Pets for You</Text>
-        </View>
-        <View style={styles.search}>
-          <Search onSearch={handleSearch} />
-        </View>
-        <View style={styles.imageContainer}>
-          <Image source={images.dog} style={styles.circularImage} />
-          <Image source={images.cat} style={styles.circularImage} />
-          <Image source={images.bunny} style={styles.circularImage} />
-          <Image source={images.bird} style={styles.circularImage} />
-        </View>
-        <FlatList
-          data={filters}
-          horizontal
-          showsHorizontalScrollIndicator={false}
-          keyExtractor={item => item}
-          contentContainerStyle={styles.filterContainer}
-          renderItem={({ item }) => (
-            <TouchableOpacity
-              style={[
-                styles.filterButton,
-                selectedFilter === item && styles.selectedFilter,
-              ]}
-            >
-              <Text
-                style={[
-                  styles.filterText,
-                  selectedFilter === item && styles.selectedFilterText,
-                ]}
-              >
-                {item}
-              </Text>
-            </TouchableOpacity>
-          )}
-        />
-        <View style={styles.forYouSection}>
-          <Text style={styles.sectionTitle}>For You</Text>
-        </View>
-      </>
-    }
-    data={filteredPets}
-    keyExtractor={item => item.id}
-    renderItem={RenderPet}
-    ListEmptyComponent={
-      status === 'loading' ? (
-        <ActivityIndicator size="large" color="#101C1D" />
-      ) : error ? (
-        <Text>Error: {error}</Text>
-      ) : (
-        <Text>No pets found</Text>
-      )
-    }
-  />
-</KeyboardAvoidingView>
-);
-} 
-
+    <KeyboardAvoidingView
+      style={styles.container}
+      behavior={Platform.OS === 'ios' ? 'padding' : undefined}
+    >
+      <FlatList
+        ListHeaderComponent={
+          <>
+            <Header />
+            <View style={styles.title}>
+              <Text style={styles.newText1}>Find an</Text>
+              <Text style={styles.newText3}> Awesome</Text>
+              <Text style={styles.newText2}>Pets for You</Text>
+            </View>
+            <View style={styles.search}>
+              <Search onSearch={handleSearch} />
+            </View>
+            <PetCategoryList />
+          </>
+        }
+        data={filteredPets}
+        keyExtractor={(item) => item.id}
+        renderItem={RenderPet}
+        ListEmptyComponent={
+          status === 'loading' ? (
+            <ActivityIndicator size="large" color="#101C1D" />
+          ) : error ? (
+            <Text>Error: {error}</Text>
+          ) : (
+            <Text>No pets found</Text>
+          )
+        }
+      />
+    </KeyboardAvoidingView>
+  );
+};
 
 
 
@@ -184,21 +142,11 @@ const styles = StyleSheet.create({
     marginTop: 30,
     marginBottom: 20, 
   },
-  imageContainer: {
-    flexDirection: 'row',
-    gap: 9,
-    top: 20,
-  },
+
   search: {
     top: 100,
   },
-  circularImage: {
-    width: 70,
-    height: 70,
-    borderRadius: 35,
-    marginHorizontal: 5,
-  },
-
+ 
   sectionTitle: {
     fontFamily: 'Montserrat',
     fontSize: 30,

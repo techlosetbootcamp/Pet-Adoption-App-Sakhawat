@@ -1,16 +1,16 @@
 import { useEffect } from 'react';
 import { useAppDispatch, useAppSelector } from './useSelector';
-import { fetchUserDetails } from '../redux/slices/petDetailsSlice';
+import { fetchUserDetails } from '../redux/slices/petSlice';
 
 const useUserDetails = (userId?: string) => {
   const dispatch = useAppDispatch();
   const { userData, loading, error } = useAppSelector(
-    (state) => state.petDetails
+    (state) => state.adoptedPet
   );
 
   useEffect(() => {
     if (userId) {
-      dispatch(fetchUserDetails(userId));
+      dispatch(fetchUserDetails({ userId, someOption: true }));
     }
   }, [dispatch, userId]);
 

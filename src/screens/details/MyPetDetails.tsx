@@ -14,6 +14,8 @@ import Ionicons from 'react-native-vector-icons/Ionicons';
 import firestore from '@react-native-firebase/firestore';
 import useUserDetails from '../../hooks/usePetDetails';
 import { useAppDispatch, useAppSelector } from '../../hooks/useSelector';
+import PetInfoBox from '../../components/box/PetInfoBox';
+import BackButton from '../../components/back/BackButton';
 
 type PetDetailsRouteProp = RouteProp<RootStackParamList, 'PetDetails'>;
 
@@ -24,7 +26,7 @@ const PetDetails = () => {
   const dispatch = useAppDispatch();
 
   const selectedPet = useAppSelector((state) =>
-    state.petDonation.pets.find(pet => pet.id === petId),
+    state.adoptedPet.pets.find(pet => pet.id === petId),
   );
 
   const { user: owner, loading: ownerLoading, error: ownerError } = useUserDetails(selectedPet?.id || '');
@@ -64,11 +66,16 @@ const PetDetails = () => {
     }
   };
 
+  const petDetails = [
+    { label: 'Age', value: `${selectedPet.age} months` },
+    { label: 'Gender', value: selectedPet.gender },
+    { label: 'Weight', value: `${selectedPet.weight} kg` },
+    { label: 'Vaccine', value: selectedPet.vaccinated ? 'Yes' : 'No' },
+  ];
   return (
     <ScrollView contentContainerStyle={styles.container}>
-      <TouchableOpacity onPress={() => navigation.goBack()}>
-        <Ionicons name="arrow-back" size={30} color="#FFFFFF" style={styles.backIcon} />
-      </TouchableOpacity>
+      <BackButton  />
+      
       <TouchableOpacity style={styles.deleteIcon} onPress={handleDeletePet}>
         <Ionicons name="trash-outline" size={30} color="white" />
       </TouchableOpacity>
@@ -79,23 +86,9 @@ const PetDetails = () => {
         <Text style={styles.type}>{selectedPet.type}</Text>
 
         <View style={styles.infoContainer}>
-          <View style={styles.infoBox}>
-            <Text style={styles.infoLabel}>Age</Text>
-            <Text>{selectedPet.age}</Text>
-          </View>
-          <View style={styles.infoBox}>
-            <Text style={styles.infoLabel}>Gender</Text>
-            <Text>{selectedPet.gender}</Text>
-          </View>
-          <View style={styles.infoBox}>
-            <Text style={styles.infoLabel}>Weight</Text>
-            <Text>{selectedPet.weight} kg</Text>
-          </View>
-          <View style={styles.infoBox}>
-            <Text style={styles.infoLabel}>Vaccine</Text>
-            <Text>{selectedPet.vaccinated ? 'Yes' : 'No'}</Text>
-            
-          </View>
+        {petDetails.map((detail, index) => (
+          detail.value && <PetInfoBox key={index} label={detail.label} value={detail.value} />
+      ))}
         </View>
 
         <View style={styles.ownerInfo}>
@@ -139,16 +132,7 @@ const styles = StyleSheet.create({
   },
     type: { fontSize: 15, color: '#666', top:-15 },
   infoContainer: { flexDirection: 'row', flexWrap: 'wrap', marginBottom: 15 },
-  infoBox: {
-    backgroundColor: '#fdebd0',
-    padding: 10,
-    borderRadius: 10,
-    margin: 5,
-    flex: 1,
-    alignItems: 'center',
-    fontWeight: 'bold',
-  },
-  infoLabel: { fontSize: 12, fontWeight: 'bold', marginBottom: 3, color: '#ff9800', },
+  
   ownerInfo: { flexDirection: 'row', alignItems: 'center', marginBottom: 10 },
   ownerName: { fontSize: 16,top:-10, fontWeight: 'bold' },
   ownerRole: { fontSize: 14, color: '#888', left:55,top:-30, },
@@ -169,10 +153,7 @@ const styles = StyleSheet.create({
     fontSize:15, 
   },
     deleteIcon: { position: 'absolute', top: 20, right: 20, zIndex: 1 },
-  backIcon:{
-    top:20,
-    left:20,
-  }
+  
 });
 
 export default PetDetails;

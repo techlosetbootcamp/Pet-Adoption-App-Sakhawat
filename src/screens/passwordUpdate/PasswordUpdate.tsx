@@ -4,13 +4,12 @@ import {
   Text,
   StyleSheet,
   ActivityIndicator,
-  TouchableOpacity,
+  
 } from 'react-native';
-import Ionicons from 'react-native-vector-icons/Ionicons';
 import Input from '../../components/input/Input';
 import Button from '../../components/button/Buttons';
 import usePasswordUpdate from '../../hooks/usePasswordUpdate';
-import {useNavigation} from '@react-navigation/native';
+import BackButton from '../../components/back/BackButton';
 
 export default function PasswordUpdate() {
   const {
@@ -24,14 +23,12 @@ export default function PasswordUpdate() {
     loading,
     handleUpdatePassword,
   } = usePasswordUpdate();
-  const navigation = useNavigation();
 
   return (
 
       <View style={styles.container}>
-      <TouchableOpacity onPress={() => navigation.goBack()}>
-        <Ionicons name="arrow-back" size={30} style={styles.backIcon} />
-      </TouchableOpacity>
+      <BackButton  />
+      
         <Text style={styles.title}>Update Password</Text>
 
         <Input
@@ -72,7 +69,6 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     alignItems: 'center',
-    // justifyContent: 'center',
     backgroundColor: 'white',
     padding: 20,
   },
@@ -81,10 +77,7 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
     marginBottom: 20,
   },
-  backIcon: {
-    marginTop: 20,
-    marginLeft: -160,
-  },
+  
   errorText: {
     marginBottom: 15,
   },

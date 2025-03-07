@@ -10,7 +10,7 @@ import {
 } from 'react-native';
 import {useFetchAdoptionRequests} from '../../hooks/useAdoptionRequests';
 import Buttons from '../../components/button/Buttons';
-import PetCard from '../../components/card/Petcard';
+import PetCard from '../../components/card/PetCard';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 
 export default function AdoptionRequest() {

@@ -9,8 +9,7 @@ import {
 } from '@react-navigation/drawer';
 import TabNavigator from './TabNavigator';
 import Searchbar from '../components/searchbar/Searchbar';
-// import Favorites from '../screens/favorites/Favorites';
-// import Profile from '../screens/profile/Profile';
+
 import Donate from '../screens/donate/Donate';
 import Request from '../screens/request/AdoptionRequest';
 import UpdatePassword from '../screens/passwordUpdate/PasswordUpdate';
@@ -69,16 +68,14 @@ const DrawerNavigator: React.FC = () => {
     <Drawer.Navigator
       screenOptions={{
         headerShown: false,
-        drawerLabelStyle: { fontWeight: 'bold' } // Make drawer labels bold
+        drawerLabelStyle: { fontWeight: 'bold' }
       }}
       initialRouteName="Tabs"
       drawerContent={(props) => <CustomDrawerContent {...props} />}
     >
       <Drawer.Screen name="Tabs" component={TabNavigator} options={{ title: 'Home', headerShadowVisible: false }} />
       <Drawer.Screen name="Donate" component={Donate} options={{ title: 'Donate' }} />
-      {/* <Drawer.Screen name="Favorites" component={Favorites} options={{ title: 'Favorites' }} /> */}
       <Drawer.Screen name="Request" component={Request} options={{ title: 'Adoption Request' }} />
-      {/* <Drawer.Screen name="Profile" component={Profile} options={{ title: 'Profile' }} /> */}
       <Drawer.Screen name="Update Password" component={UpdatePassword} options={{ title: 'Update Password' }} />
       <Drawer.Screen name="My Donations" component={Mydonation} options={{ title: 'My Donations' }} />
 

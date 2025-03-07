@@ -1,8 +1,6 @@
 import React, { useState } from 'react';
 import { StyleSheet, TextInput, View, TouchableOpacity } from 'react-native';
 import Ionicon from 'react-native-vector-icons/Ionicons';
-// import FontAwesome from 'react-native-vector-icons/FontAwesome'; 
-// import { red } from 'react-native-reanimated/lib/typescript/Colors';
 
 interface SearchProps {
   onSearch: (searchText: string) => void;

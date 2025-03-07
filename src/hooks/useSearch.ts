@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import firestore from '@react-native-firebase/firestore'
 import { useAppDispatch } from './useSelector';
-import { setFilter } from '../redux/slices/filterSlice';
+import { setFilter } from '../redux/slices/petSlice';
 import { Pet } from '../types/pets';
 
 

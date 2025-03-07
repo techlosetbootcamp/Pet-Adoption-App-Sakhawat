@@ -3,12 +3,12 @@ import { useSelector, useDispatch } from 'react-redux';
 import auth from '@react-native-firebase/auth';
 import firestore from '@react-native-firebase/firestore';
 import { AppDispatch, RootState } from '../redux/store';
-import { fetchPets } from '../redux/slices/petDonationSlice';
+import { fetchPets } from '../redux/slices/petSlice';
 
 const useFavorites = () => {
   const dispatch = useDispatch<AppDispatch>();
   const [favoritePetIds, setFavoritePetIds] = useState<string[]>([]);
-  const allPets = useSelector((state: RootState) => state.petDonation.pets);
+  const allPets = useSelector((state: RootState) => state.adoptedPet.pets);
 
   useEffect(() => {
     const userId = auth().currentUser?.uid;

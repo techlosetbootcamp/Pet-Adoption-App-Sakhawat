@@ -1,7 +1,7 @@
 
 
 
-const images = {
+const IMAGES = {
     dog: require('../assets/images/dog.jpg'),
     cat: require('../assets/images/cat.jpg'),
     bird: require('../assets/images/bird.jpg'),
@@ -9,5 +9,5 @@ const images = {
     bunny:require('../assets/images/Bunny.jpg'),
   };
   
-  export default images;
+  export default IMAGES;
   

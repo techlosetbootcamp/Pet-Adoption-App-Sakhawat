@@ -1,14 +1,14 @@
 import React, { useState } from 'react';
 import { View, Text, StyleSheet, ScrollView, Image, Alert, TouchableOpacity, ToastAndroid } from 'react-native';
 import { useDispatch, useSelector } from 'react-redux';
-import { addPet, selectPhoto } from '../../redux/slices/petDonationSlice';
+import { addPet, selectPhoto } from '../../redux/slices/petSlice';
 import { AppDispatch, RootState } from '../../redux/store';
 import Input from '../../components/input/Input';
 import Dropdown from '../../components/input/Dropdown';
 import Button from '../../components/button/Buttons';
 import { useNavigation } from '@react-navigation/native';
+import BackButton from '../../components/back/BackButton';
 import Ionicons from 'react-native-vector-icons/Ionicons';
-
 
 const Donate: React.FC = () => {
   const dispatch = useDispatch<AppDispatch>();
@@ -27,7 +27,7 @@ const Donate: React.FC = () => {
     image: null as string | null,
   });
 
-  const { status } = useSelector((state: RootState) => state.petDonation);
+  const { status } = useSelector((state: RootState) => state.adoptedPet);
 
   const handleChange = (key: string, value: string) => {
     setPet((prevPet) => ({ ...prevPet, [key]: value }));
@@ -85,9 +85,8 @@ const Donate: React.FC = () => {
 const navigation = useNavigation();
 return (
   <ScrollView contentContainerStyle={styles.container}>
-    <TouchableOpacity onPress={() => navigation.goBack()}>
-  <Ionicons name="arrow-back" size={30} style={styles.backIcon} />
-</TouchableOpacity>
+    <BackButton  />
+    
       <Input label="Pet Name" value={pet.name} onChangeText={(value) => handleChange('name', value)} />
       <Input label="Pet Age" value={pet.age} keyboardType="numeric" onChangeText={(value) => handleChange('age', value)} />
 
@@ -174,9 +173,7 @@ const styles = StyleSheet.create({
     color: 'black',
     marginTop: 10,
   },
-  backIcon: {
-    marginBottom: 20,
-  },
+ 
 });
 
 export default Donate;

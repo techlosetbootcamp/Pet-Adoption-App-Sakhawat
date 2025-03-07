@@ -7,9 +7,9 @@ import {
   TouchableOpacity,
   Image,
 } from 'react-native';
-import { toggleFavorite } from '../../redux/slices/favoritesSlice';
-import { useNavigation, useRoute } from '@react-navigation/native';
-import { adoptedPet } from '../../redux/slices/adoptedPetSlice';
+import { toggleFavorite } from '../../redux/slices/authSlice';
+import { useRoute } from '@react-navigation/native';
+import { adoptedPet } from '../../redux/slices/petSlice';
 import { RouteProp } from '@react-navigation/native';
 import { RootStackParamList } from '../../types/rootStackParamList';
 import Ionicons from 'react-native-vector-icons/Ionicons';
@@ -19,6 +19,8 @@ import useUserDetails from '../../hooks/usePetDetails';
 import { useAppDispatch, useAppSelector } from '../../hooks/useSelector';
 import { Pet } from '../../types/pets';
 import { AdoptionRequest } from '../../types/adoptionRequest';
+import PetInfoBox from '../../components/box/PetInfoBox';
+import BackButton from '../../components/back/BackButton';
 
 type PetDetailsRouteProp = RouteProp<RootStackParamList, 'PetDetails'>;
 
@@ -26,7 +28,6 @@ const PetDetails = () => {
   const route = useRoute<PetDetailsRouteProp>();
   const { petId } = route.params;
   const dispatch = useAppDispatch();
-  const navigation = useNavigation();
 
   const [selectedPet, setSelectedPet] = useState<Pet | null>(null);
   const [isFavorite, setIsFavorite] = useState(false);
@@ -92,7 +93,7 @@ const PetDetails = () => {
         adopterName: user.displayName || 'Unknown',
         adopterImage: user.photoURL || '',
         adopterEmail: user.email || 'No Email',
-        adopterLocation: 'Unknown',
+        location: 'Unknown',
         petName: petData.name,
         petType: petData.type,
         adoptionDate: new Date().toISOString(),
@@ -139,12 +140,16 @@ const PetDetails = () => {
     );
   }
 
-
+  const petDetails = [
+    { label: 'Age', value: `${selectedPet.age} months` },
+    { label: 'Gender', value: selectedPet.gender },
+    { label: 'Weight', value: `${selectedPet.weight} kg` },
+    { label: 'Vaccine', value: selectedPet.vaccinated ? 'Yes' : 'No' },
+  ];
   return (
     <ScrollView contentContainerStyle={styles.container}>
-      <TouchableOpacity onPress={() => navigation.goBack()}>
-        <Ionicons name="arrow-back" size={30} color="#FFFFFF" style={styles.backIcon} />
-      </TouchableOpacity>
+      <BackButton  />
+      
       <TouchableOpacity style={styles.favoriteIcon} onPress={handleFavoritePress}>
         <Ionicons name={isFavorite ? 'heart' : 'heart-outline'} size={30} color={isFavorite ? 'red' : 'black'} />
       </TouchableOpacity>
@@ -154,22 +159,9 @@ const PetDetails = () => {
         <Text style={styles.type}>{selectedPet.type}</Text>
 
         <View style={styles.infoContainer}>
-          <View style={styles.infoBox}>
-            <Text style={styles.infoLabel}>Age</Text>
-            <Text>{selectedPet.age}</Text>
-          </View>
-          <View style={styles.infoBox}>
-            <Text style={styles.infoLabel}>Gender</Text>
-            <Text>{selectedPet.gender}</Text>
-          </View>
-          <View style={styles.infoBox}>
-            <Text style={styles.infoLabel}>Weight</Text>
-            <Text>{selectedPet.weight} kg</Text>
-          </View>
-          <View style={styles.infoBox}>
-            <Text style={styles.infoLabel}>Vaccine</Text>
-            <Text>{selectedPet.vaccinated ? 'Yes' : 'No'}</Text>
-          </View>
+        {petDetails.map((detail, index) => (
+          detail.value && <PetInfoBox key={index} label={detail.label} value={detail.value} />
+      ))}
         </View>
 
         <View style={styles.ownerInfo}>
@@ -217,15 +209,7 @@ const styles = StyleSheet.create({
   },
   type: { fontSize: 15, color: '#666',  top: -13},
   infoContainer: { flexDirection: 'row', flexWrap: 'wrap', marginBottom: 15 },
-  infoBox: {
-    backgroundColor: '#fdebd0',
-    padding: 10,
-    borderRadius: 10,
-    margin: 5,
-    flex: 1,
-    alignItems: 'center',
-  },
-  infoLabel: { fontSize: 12, fontWeight: 'bold', marginBottom: 3, color: '#ff9800' },
+  
   ownerInfo: { flexDirection: 'row', alignItems: 'center', marginBottom: 10 },
   ownerName: { fontSize: 16, top: -10, fontWeight: 'bold' },
   ownerRole: { fontSize: 14, color: '#888', left: -60, top: 10 },
@@ -251,7 +235,6 @@ const styles = StyleSheet.create({
   },
   favoriteIcon: { position: 'absolute', top: 20, right: 20, zIndex: 1 },
   adoptButtonText: { color: '#fff', fontSize: 18, fontWeight: 'bold' },
-  backIcon: { top: 20, left: 20 },
 });
 
 export default PetDetails;

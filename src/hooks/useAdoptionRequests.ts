@@ -1,6 +1,6 @@
 import { useEffect } from 'react';
 import { useDispatch } from 'react-redux';
-import { fetchAdoptionRequests } from '../redux/slices/adoptedPetSlice';
+import { fetchAdoptionRequests } from '../redux/slices/petSlice';
 import { useAppSelector } from './useSelector';
 import { AppDispatch } from '../redux/store';
 
