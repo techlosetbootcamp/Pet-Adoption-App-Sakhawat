@@ -1,9 +1,9 @@
-import { useState } from 'react';
-import firestore from '@react-native-firebase/firestore'
-import { useAppDispatch } from './useSelector';
-import { setFilter } from '../redux/slices/petSlice';
-import { Pet } from '../types/pets';
-
+import {useState} from 'react';
+import firestore from '@react-native-firebase/firestore';
+import {useAppDispatch} from '../redux/store';
+import {setFilter} from '../redux/slices/petSlice';
+import {Pet} from '../types/pets';
+import {FIREBASE_COLLECTIONS} from '../constants/firebase';
 
 export const useSearch = () => {
   const [results, setResults] = useState<Pet[]>([]);
@@ -11,9 +11,6 @@ export const useSearch = () => {
   const [error, setError] = useState<string | null>(null);
   const disptch = useAppDispatch();
 
-
-
-  
   const searchPets = async (searchText: string, category: string) => {
     setLoading(true);
     setError(null);
@@ -23,25 +20,24 @@ export const useSearch = () => {
         setError('Search text cannot be empty');
         return;
       }
-  
+
       const q = firestore()
-        .collection('pets')
+        .collection(FIREBASE_COLLECTIONS.pets)
         .where('name', '>=', searchText)
-        .where('name', '<=', searchText + '\uf8ff')
-  
+        .where('name', '<=', searchText + '\uf8ff');
+
       const snapshot = await q.get();
-  
+
       if (snapshot.empty) {
         setError('No pets found matching the search criteria.');
         return;
       }
-  
-      
-      const resultsData: Pet[] = snapshot.docs.map((doc) => ({
+
+      const resultsData: Pet[] = snapshot.docs?.map(doc => ({
         ...(doc.data() as Pet),
         id: doc.id,
       }));
-  
+
       setResults(resultsData);
     } catch (error) {
       setError('Failed to fetch pets.');
@@ -51,21 +47,22 @@ export const useSearch = () => {
   };
 
   const getData = async (category_: string) => {
-    const q = firestore().collection('pets').where('type', '==', category_);
+    const q = firestore()
+      .collection(FIREBASE_COLLECTIONS.pets)
+      .where('type', '==', category_);
     const querySnapshot = await q.get();
     const pets: Pet[] = [];
-    querySnapshot.forEach((doc) => {
-      pets.push({ ...(doc.data() as Pet), id: doc.id });
+    querySnapshot.forEach(doc => {
+      pets.push({...(doc.data() as Pet), id: doc.id});
     });
     return pets;
-  }
+  };
 
   const handleClick = async (_category: string) => {
     disptch(setFilter(_category));
     const data = await getData(_category);
     setResults(data);
-  }
+  };
 
-  return { results, loading, error, searchPets, handleClick };
+  return {results, loading, error, searchPets, handleClick};
 };
-

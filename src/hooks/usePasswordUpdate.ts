@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import {useState} from 'react';
 import auth from '@react-native-firebase/auth';
 
 const usePasswordUpdate = () => {
@@ -26,7 +26,7 @@ const usePasswordUpdate = () => {
 
       const credential = auth.EmailAuthProvider.credential(
         user.email,
-        currentPassword
+        currentPassword,
       );
 
       await user.reauthenticateWithCredential(credential);
@@ -38,7 +38,7 @@ const usePasswordUpdate = () => {
       setNewPassword('');
       setConfirmNewPassword('');
     } catch (err) {
-      if(err instanceof Error) {
+      if (err instanceof Error) {
         setError(err.message || 'Failed to update password. Please try again.');
       }
     } finally {

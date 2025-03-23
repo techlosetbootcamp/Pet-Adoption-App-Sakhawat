@@ -1,14 +1,12 @@
-import { useEffect } from 'react';
-import { useDispatch } from 'react-redux';
-import { fetchAdoptionRequests } from '../redux/slices/petSlice';
-import { useAppSelector } from './useSelector';
-import { AppDispatch } from '../redux/store';
+import {useEffect} from 'react';
+import {fetchAdoptionRequests} from '../redux/slices/petSlice';
+import {useAppDispatch, useAppSelector} from '../redux/store';
 
 export const useFetchAdoptionRequests = () => {
-  const dispatch = useDispatch<AppDispatch>();
+  const dispatch = useAppDispatch();
 
-  const { requests, loading, error } = useAppSelector((state) => state.adoptedPet);
-  const currentUser = useAppSelector((state) => state.auth.user);
+  const {requests, loading, error} = useAppSelector(state => state.adoptedPet);
+  const currentUser = useAppSelector(state => state.auth.user);
 
   useEffect(() => {
     if (currentUser) {
@@ -16,5 +14,5 @@ export const useFetchAdoptionRequests = () => {
     }
   }, [dispatch, currentUser]);
 
-  return { requests, loading, error };
+  return {requests, loading, error};
 };

@@ -1,12 +1,19 @@
-import React, { useState } from 'react';
-import { 
-  View, Text, StyleSheet, KeyboardAvoidingView, ScrollView, 
-  Platform, Keyboard, TouchableWithoutFeedback 
+import React, {useState} from 'react';
+import {
+  View,
+  Text,
+  KeyboardAvoidingView,
+  ScrollView,
+  Platform,
+  Keyboard,
+  TouchableWithoutFeedback,
 } from 'react-native';
 import Input from '../../components/input/Input';
-import Buttons from '../../components/button/Buttons';
-import useSignUp from '../../hooks/useSignUp'; 
+import Buttons from '../../components/button/Button';
+import useSignUp from '../../hooks/useSignUp';
 import CheckBox from 'react-native-check-box';
+import {COLORS} from '../../constants/colors';
+import {signUpStyles} from '../../styles/signUp';
 
 const SignUp = () => {
   const {
@@ -19,81 +26,67 @@ const SignUp = () => {
     setPassword,
     handleSignUp,
     handleLoginRedirect,
-  } = useSignUp(); 
+  } = useSignUp();
   const [isChecked, setIsChecked] = useState(false);
 
   return (
-    <KeyboardAvoidingView style={styles.container} behavior={Platform.OS === 'ios' ? 'padding' : undefined}>
+    <KeyboardAvoidingView
+      style={signUpStyles.container}
+      behavior={Platform.OS === 'ios' ? 'padding' : undefined}>
       <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
-        <ScrollView contentContainerStyle={styles.scrollContainer} keyboardShouldPersistTaps="handled">
-          <Text style={styles.title}>Sign Up</Text>
+        <ScrollView
+          contentContainerStyle={signUpStyles.scrollContainer}
+          keyboardShouldPersistTaps="handled">
+          <Text style={signUpStyles.title}>Sign Up</Text>
 
-          {errorMessage ? <Text style={styles.errorText}>{errorMessage}</Text> : null}
+          {errorMessage ? (
+            <Text style={signUpStyles.errorText}>{errorMessage}</Text>
+          ) : null}
 
           <Input label="Username" value={username} onChangeText={setUsername} />
-          <Input label="Email" value={email} onChangeText={setEmail} keyboardType="email-address" />
-          <Input label="Password" value={password} onChangeText={setPassword} secureTextEntry />
+          <Input
+            label="Email"
+            value={email}
+            onChangeText={setEmail}
+            keyboardType="email-address"
+          />
+          <Input
+            label="Password"
+            value={password}
+            onChangeText={setPassword}
+            secureTextEntry
+          />
 
-          <View style={styles.checkboxContainer}>
+          <View style={signUpStyles.checkboxContainer}>
             <CheckBox
               isChecked={isChecked}
-              onClick={() => setIsChecked(!isChecked)} 
-              checkBoxColor="#333" 
+              onClick={() => setIsChecked(!isChecked)}
+              checkBoxColor={COLORS.darkgray}
             />
-            <Text style={styles.checkboxText}>
+            <Text style={signUpStyles.checkboxText}>
               I agree to the{' '}
-              <Text style={styles.linkText}>Terms of Service</Text> and{' '}
-              <Text style={styles.linkText}>Privacy Policy</Text>.
+              <Text style={signUpStyles.linkText}>Terms of Service</Text> and{' '}
+              <Text style={signUpStyles.linkText}>Privacy Policy</Text>.
             </Text>
           </View>
 
           <Buttons
             title="Sign Up"
             onPress={handleSignUp}
-            buttonStyle={{ backgroundColor: '#101C1D', width: 200 }}
-            textStyle={{ color: '#FFF', fontSize: 18 }}
+            buttonStyle={signUpStyles.signUpButton}
+            textStyle={signUpStyles.signUpButtonText}
           />
 
           <Buttons
             title="Login"
             onPress={handleLoginRedirect}
-            buttonStyle={{ backgroundColor: '#FFF', width: 200, marginTop: 20 }}
-            textStyle={{ color: '#101C1D', fontSize: 18 }}
+            buttonStyle={signUpStyles.loginButton}
+            textStyle={signUpStyles.loginButtonText}
           />
         </ScrollView>
       </TouchableWithoutFeedback>
     </KeyboardAvoidingView>
   );
 };
-
-const styles = StyleSheet.create({
-  container: { flex: 1, backgroundColor: '#fff' },
-  scrollContainer: { flexGrow: 1, justifyContent: 'center', alignItems: 'center', padding: 20 },
-  title: { fontSize: 36, fontWeight: '800', textAlign: 'left', fontFamily: 'Montserrat', marginBottom: 30, alignSelf: 'flex-start' },
-  checkboxContainer: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    marginBottom: 20,
-    marginTop: 10,
-    marginRight: 20,
-  },
-  checkboxText: {
-    fontSize: 14,
-    color: '#333',
-    fontFamily: 'Montserrat',
-    flexShrink: 1,
-    marginLeft: 8,
-  },
-  linkText: {
-    textDecorationLine: 'underline',
-    color: '#333',
-  },
-  errorText: {
-    color: 'red',
-    fontSize: 14,
-    marginTop: 10,
-    textAlign: 'center',
-  },
-});
 
 export default SignUp;

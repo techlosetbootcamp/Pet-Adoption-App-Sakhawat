@@ -1,14 +1,14 @@
-import { useState } from 'react';
-import { useDispatch } from 'react-redux';
-import { registerUser } from '../redux/slices/authSlice';
-import { AppDispatch } from '../redux/store';
-import { useNavigation } from '@react-navigation/native';
-import { NativeStackNavigationProp } from '@react-navigation/native-stack';
-import { RootStackParamList } from '../types/rootStackParamList';
+import {useState} from 'react';
+import {registerUser} from '../redux/slices/authSlice';
+import {useNavigation} from '@react-navigation/native';
+import {NativeStackNavigationProp} from '@react-navigation/native-stack';
+import {RootStackParamList} from '../types/rootStackParamList';
+import {useAppDispatch} from '../redux/store';
 
 const useSignUp = () => {
-  const navigation = useNavigation<NativeStackNavigationProp<RootStackParamList>>();
-  const dispatch = useDispatch<AppDispatch>();
+  const navigation =
+    useNavigation<NativeStackNavigationProp<RootStackParamList>>();
+  const dispatch = useAppDispatch();
 
   const [username, setUsername] = useState('');
   const [email, setEmail] = useState('');
@@ -22,7 +22,9 @@ const useSignUp = () => {
     }
 
     try {
-      const resultAction = await dispatch(registerUser({ username, email, password }));
+      const resultAction = await dispatch(
+        registerUser({username, email, password}),
+      );
       if (registerUser.fulfilled.match(resultAction)) {
         navigation.navigate('Login');
       } else {

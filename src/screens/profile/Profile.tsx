@@ -9,48 +9,43 @@ import {
   TouchableWithoutFeedback,
   Keyboard,
   Platform,
-  StyleSheet,
 } from 'react-native';
 import useProfile from '../../hooks/useProfile';
 import Input from '../../components/input/Input';
-import Button from '../../components/button/Buttons';
-import {updateProfile} from '../../redux/slices/authSlice';
-import {useAppDispatch} from '../../hooks/useSelector';
+import Button from '../../components/button/Button';
+import {profileStyles} from '../../styles/profile';
 
 export default function Profile() {
-  const {user, handleUpdateProfile, handleImageSelect} = useProfile();
-  const dispatch = useAppDispatch();
-
+  const {
+    user,
+    handleUpdateProfile,
+    handleImageSelect,
+    localPhoto,
+    setLocalPhoto,
+  } = useProfile();
   const [username, setUsername] = useState('');
-  const [photoURL, setPhotoURL] = useState('');
 
   useEffect(() => {
     if (user) {
       setUsername(user.username || '');
-      setPhotoURL(user.photoURL || '');
+      setLocalPhoto(user.photoURL || '');
     }
   }, [user]);
 
   const onUpdateProfile = () => {
-    handleUpdateProfile(username, photoURL);
+    handleUpdateProfile(username, localPhoto);
   };
 
   const getImage = async () => {
-    const imageurl = await handleImageSelect();
-    if (imageurl) {
-      setPhotoURL(imageurl);
-    }
-    try {
-      if (user?.username && imageurl) {
-        dispatch(updateProfile({username: user?.username, photoURL: imageurl}));
-      }
-    } catch (error) {
+    const imageUrl = await handleImageSelect();
+    if (imageUrl) {
+      setLocalPhoto(imageUrl);
     }
   };
 
   if (!user) {
     return (
-      <View style={styles.container}>
+      <View style={profileStyles.container}>
         <Text>Loading user data...</Text>
       </View>
     );
@@ -60,39 +55,39 @@ export default function Profile() {
     <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
       <KeyboardAvoidingView
         behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
-        style={styles.container}>
+        style={profileStyles.container}>
         <ScrollView
-          contentContainerStyle={styles.scrollContainer}
+          contentContainerStyle={profileStyles.scrollContainer}
           keyboardShouldPersistTaps="handled"
           showsVerticalScrollIndicator={false}>
-          <Text style={styles.title}>Profile Settings</Text>
+          <Text style={profileStyles.title}>Profile Settings</Text>
 
           <TouchableOpacity
-            style={styles.profileImageContainer}
+            style={profileStyles.profileImageContainer}
             onPress={getImage}>
-            {photoURL ? (
-              <Image source={{uri: photoURL}} style={styles.profileImage} />
+            {localPhoto ? (
+              <Image
+                source={{uri: localPhoto}}
+                style={profileStyles.profileImage}
+              />
             ) : (
-              <Text style={styles.placeholderText}>+</Text>
+              <Text style={profileStyles.placeholderText}>+</Text>
             )}
           </TouchableOpacity>
 
-          <Input
-            label="Username"
-            value={username}
-            onChangeText={text => setUsername(text)}
-          />
+          <Input label="Username" value={username} onChangeText={setUsername} />
           <Input
             label="Email"
             value={user.email || ''}
             editable={false}
-            onChangeText={text => setUsername(text)}
+            onChangeText={() => {}}
           />
 
-          <Button title="Update Profile" onPress={onUpdateProfile}
-           buttonStyle={{    position: "absolute",
-            bottom: 16,
-          width:"100%"}} />
+          <Button
+            title="Update Profile"
+            onPress={onUpdateProfile}
+            buttonStyle={profileStyles.button}
+          />
 
           <View style={{height: 30}} />
         </ScrollView>
@@ -100,41 +95,3 @@ export default function Profile() {
     </TouchableWithoutFeedback>
   );
 }
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    
-  },
-  scrollContainer: {
-    flexGrow: 1,
-    padding: 20,
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  title: {
-    fontSize: 22,
-    fontWeight: 'bold',
-    top: -130,
-  },
-  profileImageContainer: {
-    width: 100,
-    height: 100,
-    borderRadius: 50,
-    borderWidth: 2,
-    borderStyle: 'dashed',
-    borderColor: 'gray',
-    alignItems: 'center',
-    justifyContent: 'center',
-  top: -110,
-  },
-  profileImage: {
-    width: '100%',
-    height: '100%',
-    borderRadius: 50,
-  },
-  placeholderText: {
-    color: 'gray',
-    fontSize: 24,
-  },
-});

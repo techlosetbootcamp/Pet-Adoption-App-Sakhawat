@@ -1,12 +1,13 @@
-import { createSlice, createAsyncThunk, PayloadAction } from '@reduxjs/toolkit';
+import {createSlice, createAsyncThunk, PayloadAction} from '@reduxjs/toolkit';
 import firestore from '@react-native-firebase/firestore';
 import auth from '@react-native-firebase/auth';
-import { launchImageLibrary } from 'react-native-image-picker';
+import {launchImageLibrary} from 'react-native-image-picker';
 import RNFS from 'react-native-fs';
-import { RootState } from '../store';
-import { AdoptionRequest } from '../../types/adoptionRequest';
-import { Pet } from '../../types/pets';
-import { User } from '../../types/user';
+import {RootState} from '../store';
+import {AdoptionRequest} from '../../types/adoptionRequest';
+import {Pet} from '../../types/pets';
+import {User} from '../../types/user';
+import {FIREBASE_COLLECTIONS} from '../../constants/firebase';
 
 interface PetState {
   requests: AdoptionRequest[];
@@ -36,20 +37,23 @@ const convertToBase64 = async (uri: string): Promise<string> => {
     throw new Error('Failed to convert image to Base64');
   }
 };
-export const fetchUserDetails = createAsyncThunk<any, { userId: string; someOption: boolean }>(
-  'pet/fetchUserDetails',
-  async (params) => {
-    const { userId, someOption } = params;
-    const response = await firestore().collection('users').doc(userId).get();
-    if (!response.exists) {
-      throw new Error('User not found');
-    }
-    return response.data();
+export const fetchUserDetails = createAsyncThunk<
+  any,
+  {userId: string; someOption: boolean}
+>('pet/fetchUserDetails', async params => {
+  const {userId, someOption} = params;
+  const response = await firestore()
+    .collection(FIREBASE_COLLECTIONS.users)
+    .doc(userId)
+    .get();
+  if (!response.exists) {
+    throw new Error('User not found');
   }
-);
+  return response.data();
+});
 export const fetchAdoptionRequests = createAsyncThunk(
   'pets/fetchAdoptionRequests',
-  async (_, { getState, rejectWithValue }) => {
+  async (_, {getState, rejectWithValue}) => {
     try {
       const state = getState() as RootState;
       const currentUser = state.auth.user;
@@ -59,21 +63,24 @@ export const fetchAdoptionRequests = createAsyncThunk(
       }
 
       const petsSnapshot = await firestore()
-        .collection('pets')
+        .collection(FIREBASE_COLLECTIONS.pets)
         .where('userId', '==', currentUser.uid)
         .get();
 
       const requestsData: AdoptionRequest[] = [];
 
-      for (const petDoc of petsSnapshot.docs) {
-        const petData = petDoc.data() as Pet;
+      for (const petDoc of petsSnapshot?.docs) {
+        const petData = petDoc?.data() as Pet;
 
-        if (petData.adoptedBy && petData.adoptedBy.length > 0) {
-          for (const adopterId of petData.adoptedBy) {
-            const adopterDoc = await firestore().collection('users').doc(adopterId).get();
+        if (petData?.adoptedBy && petData?.adoptedBy?.length > 0) {
+          for (const adopterId of petData?.adoptedBy) {
+            const adopterDoc = await firestore()
+              .collection(FIREBASE_COLLECTIONS.users)
+              .doc(adopterId)
+              .get();
 
             if (adopterDoc.exists) {
-              const adopterData = adopterDoc.data() as User;
+              const adopterData = adopterDoc?.data() as User;
               requestsData.push({
                 adopterName: adopterData.username || 'Unknown',
                 adopterImage: adopterData.photoURL || '',
@@ -92,15 +99,14 @@ export const fetchAdoptionRequests = createAsyncThunk(
     } catch (error) {
       return rejectWithValue('Failed to load adoption requests.');
     }
-  }
+  },
 );
-
 
 export const selectPhoto = createAsyncThunk(
   'pets/selectPhoto',
-  async (_, { rejectWithValue }) => {
+  async (_, {rejectWithValue}) => {
     try {
-      const result = await launchImageLibrary({ mediaType: 'photo' });
+      const result = await launchImageLibrary({mediaType: 'photo'});
 
       if (result.assets && result.assets.length > 0) {
         const uri = result.assets[0].uri;
@@ -111,7 +117,7 @@ export const selectPhoto = createAsyncThunk(
 
         const base64String = await convertToBase64(uri);
 
-        return `data:image/jpeg;base64,${base64String}`; 
+        return `data:image/jpeg;base64,${base64String}`;
       } else {
         throw new Error('No image selected');
       }
@@ -120,72 +126,75 @@ export const selectPhoto = createAsyncThunk(
         return rejectWithValue(error.message || 'Failed to select image.');
       }
     }
-  }
+  },
 );
-export const fetchPets = createAsyncThunk<
-  Pet[],
-  void,
-  { rejectValue: string }
->(
-  "petDonation/fetchPets",
-  async (_, { rejectWithValue }) => {
+export const fetchPets = createAsyncThunk<Pet[], void, {rejectValue: string}>(
+  'petDonation/fetchPets',
+  async (_, {rejectWithValue}) => {
     try {
-      const snapshot = await firestore().collection("pets").get();
+      const snapshot = await firestore()
+        .collection(FIREBASE_COLLECTIONS.pets)
+        .get();
 
-      const pets: Pet[] = snapshot.docs.map((doc) => {
+      const pets: Pet[] = snapshot.docs?.map(doc => {
         const data = doc.data();
 
         return {
           id: doc.id,
-          name: (data.name as string) || "",
+          name: (data.name as string) || '',
           age: data.age || 0,
-          breed: data.breed || "",
+          breed: data.breed || '',
           amount: data.amount || 0,
-          location: data.location || "",
-          image: data.image || "",
-          type: data.type || "",
-          gender: data.gender || "",
-          description: data.description || "",
+          location: data.location || '',
+          image: data.image || '',
+          type: data.type || '',
+          gender: data.gender || '',
+          description: data.description || '',
           weight: data.weight || 0,
           Vaccinated: data.vaccinated || false,
-          userName: data.userName || "Unknown User",
-          userId: data.userId || "",
-          date: data.date ? new Date(data.date).toISOString() : "",
+          userName: data.userName || 'Unknown User',
+          userId: data.userId || '',
+          date: data.date ? new Date(data.date).toISOString() : '',
         };
       });
 
       return pets;
     } catch (error) {
       return rejectWithValue(
-        error instanceof Error ? error.message : "Failed to fetch pets."
+        error instanceof Error ? error.message : 'Failed to fetch pets.',
       );
     }
-  }
+  },
 );
-export const addPet = createAsyncThunk<Pet, Omit<Pet, "id">, { rejectValue: string }>(
-  "pets/addPet",
-  async (newPet, { rejectWithValue }) => {
-    try {
-      const currentUser = auth().currentUser;
+export const addPet = createAsyncThunk<
+  Pet,
+  Omit<Pet, 'id'>,
+  {rejectValue: string}
+>('pets/addPet', async (newPet, {rejectWithValue}) => {
+  try {
+    const currentUser = auth().currentUser;
 
-      if (!currentUser) {
-        return rejectWithValue("No user is logged in.");
-      }
-
-      const petWithUser = {
-        ...newPet,
-        userId: currentUser.uid,
-        userName: currentUser.displayName || "Unknown User",
-        date: new Date().toISOString(),
-      };
-
-      const docRef = await firestore().collection("pets").add(petWithUser);
-      return { id: docRef.id, ...petWithUser } as Pet;
-    } catch (error) {
-      return rejectWithValue(error instanceof Error ? error.message : "Failed to add pet.");
+    if (!currentUser) {
+      return rejectWithValue('No user is logged in.');
     }
+
+    const petWithUser = {
+      ...newPet,
+      userId: currentUser.uid,
+      userName: currentUser.displayName || 'Unknown User',
+      date: new Date().toISOString(),
+    };
+
+    const docRef = await firestore()
+      .collection(FIREBASE_COLLECTIONS.pets)
+      .add(petWithUser);
+    return {id: docRef.id, ...petWithUser} as Pet;
+  } catch (error) {
+    return rejectWithValue(
+      error instanceof Error ? error.message : 'Failed to add pet.',
+    );
   }
-);
+});
 
 const petSlice = createSlice({
   name: 'pets',
@@ -203,13 +212,13 @@ const petSlice = createSlice({
     deletePet: (state, action: PayloadAction<string>) => {
       state.pets = state.pets.filter(pet => pet.id !== action.payload);
     },
-    clearSelectedPet: (state) => {
+    clearSelectedPet: state => {
       state.selectedPet = undefined;
     },
   },
-  extraReducers: (builder) => {
+  extraReducers: builder => {
     builder
-      .addCase(fetchPets.pending, (state) => {
+      .addCase(fetchPets.pending, state => {
         state.status = 'loading';
         state.error = null;
       })
@@ -221,7 +230,7 @@ const petSlice = createSlice({
         state.status = 'failed';
         state.error = action.payload as string;
       })
-      .addCase(addPet.pending, (state) => {
+      .addCase(addPet.pending, state => {
         state.status = 'loading';
         state.error = null;
       })
@@ -235,7 +244,7 @@ const petSlice = createSlice({
       })
       .addCase(selectPhoto.fulfilled, (state, action) => {
         if (state.selectedPet) {
-          state.selectedPet.image = action.payload ?? "";
+          state.selectedPet.image = action.payload ?? '';
         }
       })
       .addCase(fetchAdoptionRequests.fulfilled, (state, action) => {
@@ -244,5 +253,11 @@ const petSlice = createSlice({
   },
 });
 
-export const { adoptedPet, setFilter, setSelectedPet, deletePet, clearSelectedPet } = petSlice.actions;
+export const {
+  adoptedPet,
+  setFilter,
+  setSelectedPet,
+  deletePet,
+  clearSelectedPet,
+} = petSlice.actions;
 export default petSlice.reducer;

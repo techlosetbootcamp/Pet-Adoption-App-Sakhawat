@@ -1,6 +1,6 @@
-import { useState } from 'react';
-import { Alert } from 'react-native';
-import auth from '@react-native-firebase/auth'; 
+import {useState} from 'react';
+import {Alert} from 'react-native';
+import auth from '@react-native-firebase/auth';
 
 const useRecoverPassword = () => {
   const [email, setEmail] = useState('');
@@ -14,8 +14,7 @@ const useRecoverPassword = () => {
     try {
       await auth().sendPasswordResetEmail(email);
       Alert.alert('Success', 'Password reset email sent! Check your inbox.');
-    } catch (error) {
-    }
+    } catch (error) {}
   };
 
   return {

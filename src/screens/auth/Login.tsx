@@ -1,18 +1,19 @@
 import React from 'react';
-import { 
-  View, 
-  Text, 
-  StyleSheet, 
-  KeyboardAvoidingView, 
-  ScrollView, 
-  Platform, 
-  Keyboard, 
-  TouchableWithoutFeedback 
+import {
+  View,
+  Text,
+  KeyboardAvoidingView,
+  ScrollView,
+  Platform,
+  Keyboard,
+  TouchableWithoutFeedback,
 } from 'react-native';
-import Input from '../../components/input/Input'; 
-import Buttons from '../../components/button/Buttons'; 
-import useLogin from '../../hooks/useLogin'; 
+import Input from '../../components/input/Input';
+import Buttons from '../../components/button/Button';
+import useLogin from '../../hooks/useLogin';
 import CheckBox from 'react-native-check-box';
+import {COLORS} from '../../constants/colors';
+import {loginStyles} from '../../styles/login';
 
 const Login = () => {
   const {
@@ -25,23 +26,21 @@ const Login = () => {
     handleLogin,
     handleForgotPassword,
     handleSignUp,
-    handleCheckBox, 
+    handleCheckBox,
     GooglePress,
     isLoading,
     error,
-  } = useLogin(); 
+  } = useLogin();
 
   return (
-    <KeyboardAvoidingView 
-      style={styles.container} 
-      behavior={Platform.OS === 'ios' ? 'padding' : undefined}
-    >
+    <KeyboardAvoidingView
+      style={loginStyles.container}
+      behavior={Platform.OS === 'ios' ? 'padding' : undefined}>
       <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
-        <ScrollView 
-          contentContainerStyle={styles.scrollContainer} 
-          keyboardShouldPersistTaps="handled"
-        >
-          <Text style={styles.title}>Login</Text>
+        <ScrollView
+          contentContainerStyle={loginStyles.scrollContainer}
+          keyboardShouldPersistTaps="handled">
+          <Text style={loginStyles.title}>Login</Text>
 
           <Input
             label="Email"
@@ -57,109 +56,54 @@ const Login = () => {
             secureTextEntry
           />
 
-          <Text style={styles.forgotPasswordText} onPress={handleForgotPassword}>
+          <Text
+            style={loginStyles.forgotPasswordText}
+            onPress={handleForgotPassword}>
             Forgot Password?
           </Text>
 
-          <View style={styles.checkboxContainer}>
+          <View style={loginStyles.checkboxContainer}>
             <CheckBox
               isChecked={isChecked}
-              onClick={handleCheckBox} 
-              checkBoxColor="    color: '#333',
- "
+              onClick={handleCheckBox}
+              checkBoxColor={COLORS.darkgray}
             />
-            <Text style={styles.checkboxText}>
+            <Text style={loginStyles.checkboxText}>
               I agree to the{' '}
-              <Text style={styles.linkText}>Terms of Service</Text> and{' '}
-              <Text style={styles.linkText}>Privacy Policy</Text>.
+              <Text style={loginStyles.linkText}>Terms of Service</Text> and{' '}
+              <Text style={loginStyles.linkText}>Privacy Policy</Text>.
             </Text>
           </View>
 
-          {error && <Text style={styles.errorText}>{error}</Text>}
+          {error && <Text style={loginStyles.errorText}>{error}</Text>}
 
           <Buttons
             title="Login"
             onPress={handleLogin}
             isLoading={isLoading}
-            buttonStyle={{ backgroundColor: '#101C1D', width: 200 }}
-            textStyle={{ color: '#FFF', fontSize: 18 }}
+            buttonStyle={loginStyles.loginButton}
+            textStyle={loginStyles.loginButtonText}
           />
 
           <Buttons
             title="Sign Up"
             onPress={handleSignUp}
             isLoading={isLoading}
-            buttonStyle={{ backgroundColor: '#FFF', width: 200, marginTop: 20 }}
-            textStyle={{ color: '#101C1D', fontSize: 18 }}
+            buttonStyle={loginStyles.signUpButton}
+            textStyle={loginStyles.signUpButtonText}
           />
 
           <Buttons
             title={googleLoader ? 'Loading...' : 'Sign in with Google'}
             onPress={GooglePress}
             isLoading={isLoading}
-            buttonStyle={{ backgroundColor: '#101C1D', width: 200 }}
-            
-            textStyle={{ color: '#FFF', fontSize: 18 }}
+            buttonStyle={loginStyles.googleButton}
+            textStyle={loginStyles.googleButtonText}
           />
         </ScrollView>
       </TouchableWithoutFeedback>
     </KeyboardAvoidingView>
   );
 };
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#fff',
-  },
-  scrollContainer: {
-    flexGrow: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-    padding: 20,
-  },
-  title: {
-    fontSize: 36,
-    fontWeight: '800',
-    textAlign: 'left',
-    fontFamily: 'Montserrat',
-    marginBottom: 30,
-    alignSelf: 'flex-start',
-  },
-  forgotPasswordText: {
-    fontSize: 14,
-    color: '#101C1D',
-    marginBottom: 20,
-    marginTop: -10,
-    fontFamily: 'Montserrat',
-    alignSelf: 'flex-end',
-    marginRight: 20,
-    fontWeight: 'bold', 
-  },
-  checkboxContainer: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    marginBottom: 20,
-    marginTop: 10,
-    marginRight: 20,
-  },
-  checkboxText: {
-    fontSize: 14,
-    color: '#333',
-     fontFamily: 'Montserrat',
-    flexShrink: 1,
-    marginLeft: 8,
-  },
-  linkText: {
-    textDecorationLine: 'underline',
-    color: '#333',
-  },
-  errorText: {
-    color: 'red',
-    fontSize: 14,
-    marginTop: 10,
-    textAlign: 'center',
-  },
-});
 
 export default Login;

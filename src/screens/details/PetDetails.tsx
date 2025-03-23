@@ -1,240 +1,130 @@
-import React, { useEffect, useState } from 'react';
+import React from 'react';
 import {
   View,
   Text,
-  StyleSheet,
   ScrollView,
   TouchableOpacity,
   Image,
+  Alert,
 } from 'react-native';
-import { toggleFavorite } from '../../redux/slices/authSlice';
-import { useRoute } from '@react-navigation/native';
-import { adoptedPet } from '../../redux/slices/petSlice';
-import { RouteProp } from '@react-navigation/native';
-import { RootStackParamList } from '../../types/rootStackParamList';
+import {useRoute, useNavigation} from '@react-navigation/native';
+import {RouteProp} from '@react-navigation/native';
+import {RootStackParamList} from '../../types/rootStackParamList';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import firestore from '@react-native-firebase/firestore';
-import auth from '@react-native-firebase/auth';
 import useUserDetails from '../../hooks/usePetDetails';
-import { useAppDispatch, useAppSelector } from '../../hooks/useSelector';
-import { Pet } from '../../types/pets';
-import { AdoptionRequest } from '../../types/adoptionRequest';
-import PetInfoBox from '../../components/box/PetInfoBox';
-import BackButton from '../../components/back/BackButton';
+import {useAppSelector} from '../../redux/store';
+import PetInfoBox from '../../components/petinfobox/PetInfoBox';
+import BackButton from '../../components/backbutton/BackButton';
+import {COLORS} from '../../constants/colors';
+import {FIREBASE_COLLECTIONS} from '../../constants/firebase';
+import {GET_PET_DETAILS_LIST} from '../../constants/petdetailslist';
+import {petDetailsStyles} from '../../styles/petDetails';
 
 type PetDetailsRouteProp = RouteProp<RootStackParamList, 'PetDetails'>;
 
 const PetDetails = () => {
   const route = useRoute<PetDetailsRouteProp>();
-  const { petId } = route.params;
-  const dispatch = useAppDispatch();
+  const navigation = useNavigation();
+  const {petId} = route.params;
 
-  const [selectedPet, setSelectedPet] = useState<Pet | null>(null);
-  const [isFavorite, setIsFavorite] = useState(false);
+  const selectedPet = useAppSelector(state =>
+    state.adoptedPet.pets.find(pet => pet.id === petId),
+  );
 
-  
-  useEffect(() => {
-    const user = auth().currentUser;
-  }, []);
-
-  useEffect(() => {
-    const fetchPetDetails = async () => {
-      try {
-
-        const petDoc = await firestore().collection('pets').doc(petId).get();
-        if (petDoc.exists) {
-
-          setSelectedPet(petDoc.data() as Pet);
-        }
-      } catch (error) {
-      }
-    };
-    fetchPetDetails();
-  }, [petId]);
-
-  const userFavorites = useAppSelector((state) => state.auth.user?.favorites || []);
-
-  useEffect(() => {
-    setIsFavorite(userFavorites.includes(petId));
-  }, [userFavorites, petId]);
-
-  const userId = selectedPet?.userId ?? '';
-  const { user: owner } = useUserDetails(userId);
-  
-  
-  
-  const handleAdoptNowPress = async () => {
-    const user = auth().currentUser;
-  
-    if (!user) {
-      return;
-    }
-  
-    try {
-      const petRef = firestore().collection('pets').doc(petId);
-
-      const petSnapshot = await petRef.get();
-      if (!petSnapshot.exists) {
-        return;
-      }
-      
-      const petData = petSnapshot.data(); 
-      if (!petData) {
-        return;
-      }
-      
-      
-      await petRef.update({
-        adoptedBy: petData.adoptedBy ? firestore.FieldValue.arrayUnion(user.uid) : [user.uid],
-        adoptionDate: new Date().toISOString(),
-      });
-  
-      const adoptionRequest: AdoptionRequest = {
-        adopterName: user.displayName || 'Unknown',
-        adopterImage: user.photoURL || '',
-        adopterEmail: user.email || 'No Email',
-        location: 'Unknown',
-        petName: petData.name,
-        petType: petData.type,
-        adoptionDate: new Date().toISOString(),
-      };
-  
-      dispatch(adoptedPet(adoptionRequest));
-  
-      setSelectedPet((prev) =>
-        prev ? { ...prev, adoptedBy: [...(prev.adoptedBy || []), user.uid] } : null
-      );
-  
-    } catch (error) {
-    }
-  };
-  
-  
-  const handleFavoritePress = async () => {
-    const user = auth().currentUser;
-    if (!user) return;
-  
-    const userRef = firestore().collection('users').doc(user.uid);
-    try {
-      if (isFavorite) {
-        await userRef.update({
-          favorites: firestore.FieldValue.arrayRemove(petId),
-        });
-      } else {
-        await userRef.update({
-          favorites: firestore.FieldValue.arrayUnion(petId),
-        });
-      }
-  
-      dispatch(toggleFavorite(petId));
-      setIsFavorite((prev) => !prev);
-    } catch (error) {
-    }
-  };
+  const {user: owner} = useUserDetails(selectedPet?.id || '');
 
   if (!selectedPet) {
     return (
-      <View style={styles.container}>
-        <Text>Loading pet details...</Text>
+      <View style={petDetailsStyles.container}>
+        <Text>No pet selected or loading...</Text>
       </View>
     );
   }
 
-  const petDetails = [
-    { label: 'Age', value: `${selectedPet.age} months` },
-    { label: 'Gender', value: selectedPet.gender },
-    { label: 'Weight', value: `${selectedPet.weight} kg` },
-    { label: 'Vaccine', value: selectedPet.vaccinated ? 'Yes' : 'No' },
-  ];
+  const handleDeletePet = async () => {
+    try {
+      Alert.alert(
+        'Delete Pet',
+        'Are you sure you want to delete this pet?',
+        [
+          {text: 'Cancel', style: 'cancel'},
+          {
+            text: 'Delete',
+            onPress: async () => {
+              await firestore()
+                .collection(FIREBASE_COLLECTIONS.pets)
+                .doc(selectedPet.id)
+                .delete();
+              Alert.alert('Success', 'Pet deleted successfully.');
+              navigation.goBack();
+            },
+            style: 'destructive',
+          },
+        ],
+        {cancelable: true},
+      );
+    } catch (error) {
+      Alert.alert('Error', 'Failed to delete pet.');
+    }
+  };
+
   return (
-    <ScrollView contentContainerStyle={styles.container}>
-      <BackButton  />
-      
-      <TouchableOpacity style={styles.favoriteIcon} onPress={handleFavoritePress}>
-        <Ionicons name={isFavorite ? 'heart' : 'heart-outline'} size={30} color={isFavorite ? 'red' : 'black'} />
+    <ScrollView contentContainerStyle={petDetailsStyles.container}>
+      <BackButton />
+
+      <TouchableOpacity
+        style={petDetailsStyles.favoriteIcon}
+        onPress={handleDeletePet}>
+        <Ionicons name="favorite-outline" size={30} color={COLORS.white} />
       </TouchableOpacity>
-      <View style={styles.petCard}>
-        <Text style={styles.petName}>{selectedPet.name}</Text>
-        <Text style={styles.price}>${selectedPet.amount}</Text>
-        <Text style={styles.type}>{selectedPet.type}</Text>
 
-        <View style={styles.infoContainer}>
-        {petDetails.map((detail, index) => (
-          detail.value && <PetInfoBox key={index} label={detail.label} value={detail.value} />
-      ))}
+      <View style={petDetailsStyles.petCard}>
+        <Text style={petDetailsStyles.petName}>{selectedPet?.name}</Text>
+        <Text style={petDetailsStyles.price}>${selectedPet?.amount}</Text>
+        <Text style={petDetailsStyles.type}>{selectedPet?.type}</Text>
+
+        <View style={petDetailsStyles.infoContainer}>
+          {GET_PET_DETAILS_LIST({
+            ...selectedPet,
+            gender: selectedPet.gender || '',
+            weight: selectedPet.weight || 0,
+            vaccinated: selectedPet.vaccinated ?? false,
+          }).map(
+            (detail, index) =>
+              detail.value && (
+                <PetInfoBox
+                  key={index}
+                  label={detail.label}
+                  value={detail.value}
+                />
+              ),
+          )}
         </View>
 
-        <View style={styles.ownerInfo}>
-          {owner?.photoURL && <Image source={{ uri: owner.photoURL }} style={styles.ownerImage} />}
-          <Text style={styles.ownerName}>{owner?.username || 'Unknown User'}</Text>
-          <Text style={styles.ownerRole}>Owner</Text>
+        <View style={petDetailsStyles.ownerInfo}>
+          {owner?.photoURL && (
+            <Image
+              source={{uri: owner.photoURL}}
+              style={petDetailsStyles.ownerImage}
+            />
+          )}
+          <Text style={petDetailsStyles.ownerName}>
+            {owner?.username || 'Unknown User'}
+          </Text>
         </View>
+        <Text style={petDetailsStyles.ownerRole}>Owner</Text>
 
-        <Text style={styles.description}>{selectedPet.description}</Text>
-        <Text style={styles.location}>
-          {selectedPet.location} <Ionicons name="location-outline" size={20} color="red" />
+        <Text style={petDetailsStyles.description}>
+          {selectedPet.description}
         </Text>
-
-        <TouchableOpacity style={styles.adoptButton} onPress={handleAdoptNowPress}>
-          <Text style={styles.adoptButtonText}>Adopt Now</Text>
-        </TouchableOpacity>
+        <Text style={petDetailsStyles.location}>
+          {selectedPet.location}
+          <Ionicons name="location-outline" size={14} color="red" />
+        </Text>
       </View>
     </ScrollView>
   );
 };
-
-const styles = StyleSheet.create({
-  container: { flexGrow: 1, backgroundColor: '#C4C4C4' },
-  petCard: {
-    position: 'absolute',
-    backgroundColor: '#fff',
-    height: 450,
-    width: '100%',
-    bottom: 0,
-    borderTopLeftRadius: 40,
-    borderTopRightRadius: 40,
-    padding: 20,
-    shadowColor: '#000',
-    shadowOpacity: 0.1,
-    shadowRadius: 10,
-  },
-  petName: { fontSize: 28, fontWeight: 'bold', top: 30 },
-  price: {
-    fontSize: 30,
-    color: '#ff9800',
-    fontWeight: 'bold',
-    alignSelf: 'flex-end',
-    textAlign: 'right',
-    marginLeft: 'auto',
-  },
-  type: { fontSize: 15, color: '#666',  top: -13},
-  infoContainer: { flexDirection: 'row', flexWrap: 'wrap', marginBottom: 15 },
-  
-  ownerInfo: { flexDirection: 'row', alignItems: 'center', marginBottom: 10 },
-  ownerName: { fontSize: 16, top: -10, fontWeight: 'bold' },
-  ownerRole: { fontSize: 14, color: '#888', left: -60, top: 10 },
-  description: { fontSize: 18, color: '#555', marginBottom: 20 },
-  ownerImage: { width: 40, height: 40, borderRadius: 20, marginRight: 10 },
-  location: {
-    top: 220,
-    alignSelf: 'flex-end',
-    textAlign: 'right',
-    right: 20,
-    position: 'absolute',
-    fontSize: 15,
-  },
-  adoptButton: {
-    backgroundColor: '#111',
-    padding: 15,
-    borderRadius: 30,
-    alignItems: 'center',
-    position: 'absolute',
-    bottom: 40,
-    width: 250,
-    alignSelf: 'center',
-  },
-  favoriteIcon: { position: 'absolute', top: 20, right: 20, zIndex: 1 },
-  adoptButtonText: { color: '#fff', fontSize: 18, fontWeight: 'bold' },
-});
 
 export default PetDetails;

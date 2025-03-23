@@ -1,7 +1,8 @@
-import { useState, useEffect } from 'react';
+import {useState, useEffect} from 'react';
 import firestore from '@react-native-firebase/firestore';
-import { useSelector } from 'react-redux';
-import { Pet } from '../types/pets';
+import {Pet} from '../types/pets';
+import {useAppSelector} from '../redux/store';
+import {FIREBASE_COLLECTIONS} from '../constants/firebase';
 
 interface RootState {
   auth: {
@@ -12,7 +13,7 @@ interface RootState {
 }
 
 const useMyDonation = () => {
-  const user = useSelector((state: RootState) => state.auth.user);
+  const user = useAppSelector((state: RootState) => state.auth.user);
   const [pets, setPets] = useState<Pet[]>([]);
   const [loading, setLoading] = useState(true);
 
@@ -23,33 +24,27 @@ const useMyDonation = () => {
       return;
     }
 
-
     setLoading(true);
     const unsubscribe = firestore()
-      .collection('pets')
-      .where('userId', '==', user.uid) 
-      .onSnapshot(
-        (querySnapshot) => {
-          if (querySnapshot.empty) {
-          } else {
-          }
-
-          const petsData: Pet[] = querySnapshot.docs.map((doc) => ({
-            id: doc.id,
-            ...doc.data(),
-          })) as Pet[];
-          setPets(petsData);
-          setLoading(false);
-        },
-        (error) => {
-          setLoading(false);
+      .collection(FIREBASE_COLLECTIONS.pets)
+      .where('userId', '==', user.uid)
+      .onSnapshot(querySnapshot => {
+        if (querySnapshot.empty) {
+        } else {
         }
-      );
+
+        const petsData: Pet[] = querySnapshot.docs?.map(doc => ({
+          id: doc.id,
+          ...doc.data(),
+        })) as Pet[];
+        setPets(petsData);
+        setLoading(false);
+      });
 
     return () => unsubscribe();
   }, [user?.uid]);
 
-  return { pets, loading };
+  return {pets, loading};
 };
 
 export default useMyDonation;
