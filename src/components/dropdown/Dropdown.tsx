@@ -3,7 +3,7 @@ import {View, Text} from 'react-native';
 import {Picker} from '@react-native-picker/picker';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import {COLORS} from '../../constants/colors';
-import {DropDwonStyles} from '../../styles/dropDown';
+import {dropDwonStyles} from '../../styles/dropDown';
 
 interface DropdownProps {
   label: string;
@@ -19,14 +19,14 @@ const Dropdown: React.FC<DropdownProps> = ({
   options,
 }) => {
   return (
-    <View style={DropDwonStyles.container}>
-      <Text style={DropDwonStyles.label}>{label}</Text>
-      <View style={DropDwonStyles.pickerContainer}>
+    <View style={dropDwonStyles.container}>
+      <Text style={dropDwonStyles.label}>{label}</Text>
+      <View style={dropDwonStyles.pickerContainer}>
         <Picker
           selectedValue={selectedValue}
           onValueChange={itemValue => onValueChange(itemValue)}
           style={[
-            DropDwonStyles.picker,
+            dropDwonStyles.picker,
             {color: selectedValue ? COLORS.black : COLORS.gray},
           ]}
           dropdownIconColor={COLORS.white}>
@@ -34,7 +34,7 @@ const Dropdown: React.FC<DropdownProps> = ({
             <Picker.Item key={option} label={option} value={option} />
           ))}
         </Picker>
-        <View style={DropDwonStyles.iconContainer} pointerEvents="none">
+        <View style={dropDwonStyles.iconContainer} pointerEvents="none">
           <Ionicons
             name="chevron-down-outline"
             size={20}

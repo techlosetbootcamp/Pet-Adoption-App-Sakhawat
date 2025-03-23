@@ -1,7 +1,7 @@
 import {StyleSheet} from 'react-native';
 import {COLORS} from '../constants/colors';
 
-export const DropDwonStyles = StyleSheet.create({
+export const dropDwonStyles = StyleSheet.create({
   container: {
     marginBottom: 15,
   },

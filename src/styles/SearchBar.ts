@@ -1,7 +1,7 @@
 import {StyleSheet} from 'react-native';
 import {COLORS} from '../constants/colors';
 
-export const SearchBarStyles = StyleSheet.create({
+export const searchBarStyles = StyleSheet.create({
   container: {
     top: -100,
     flexDirection: 'row',
