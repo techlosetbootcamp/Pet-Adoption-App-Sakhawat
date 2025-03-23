@@ -2,7 +2,7 @@ import React, {useState} from 'react';
 import {TextInput, View, TouchableOpacity} from 'react-native';
 import Ionicon from 'react-native-vector-icons/Ionicons';
 import {COLORS} from '../../constants/colors';
-import {SearchBarStyles} from '../../styles/SearchBar';
+import {SearchBarStyles} from '../../styles/searchBar';
 
 interface SearchProps {
   onSearch?: (searchText: string) => void;

@@ -3,7 +3,7 @@ import {View, Text} from 'react-native';
 import {Picker} from '@react-native-picker/picker';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import {COLORS} from '../../constants/colors';
-import {DropDwonStyles} from '../../styles/DropDown';
+import {DropDwonStyles} from '../../styles/dropDown';
 
 interface DropdownProps {
   label: string;
