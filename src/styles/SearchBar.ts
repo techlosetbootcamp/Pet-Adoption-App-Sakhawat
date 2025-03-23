@@ -11,14 +11,14 @@ export const SearchBarStyles = StyleSheet.create({
     paddingHorizontal: 15,
     paddingVertical: 10,
   },
-  icon: {
-    marginRight: 10,
-  },
   input: {
     flex: 1,
     fontSize: 16,
     color: COLORS.darkgray,
     left: 4,
+  },
+  icon: {
+    marginRight: 10,
   },
   button: {
     position: 'absolute',
